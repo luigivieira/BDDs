@@ -22,9 +22,13 @@ all: wide
 
 full: ASPECTRATIO = ""
 full: build
-
+	$(CP) $(OUTPUT_DIR)$(SEP)$(FILE).pdf $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf
+	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).pdf
+    
 wide: ASPECTRATIO = "\def\classopts{,aspectratio=169}\input{" $(FILE) "}"
 wide: build
+	$(CP) $(OUTPUT_DIR)$(SEP)$(FILE).pdf $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf
+	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).pdf
 
 build: $(FILE).tex
 ifeq ($(OS),Windows_NT)
@@ -44,4 +48,5 @@ clean:
     $(OUTPUT_DIR)$(SEP)$(FILE).nav $(OUTPUT_DIR)$(SEP)$(FILE).snm
 
 clean_all: clean
-	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).pdf
+	if exist $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf $(RM) $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf
+	if exist $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf $(RM) $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf

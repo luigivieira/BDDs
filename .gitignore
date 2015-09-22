@@ -1,5 +1,8 @@
-# Ignore output directories
-output
+# Ignora tudo no diretório de saída...
+output/*
 
-# Vim session file
+# ... exceto o arquivo PDF gerado
+!output/*.pdf
+
+# Ignora o arquivo de sessão do Vim
 *session.vim
