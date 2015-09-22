@@ -1,0 +1,755 @@
+\providecommand\classopts{}
+\expandafter\documentclass\expandafter[table, usenames, svgnames, dvipsnames,14pt, \classopts]{beamer}
+\usetheme[everytitleformat=uppercase,frametitleformat=lowercase,progressbar=frametitle]{m} % load the metropolis theme
+\usefonttheme[onlymath]{serif}
+
+\usepackage[portuguese]{babel} % For writing in Portuguese
+\usepackage[utf8]{inputenc} % For using unicode characters (easier with accents)
+\usepackage{outlines} % For labeled itemize/enumerate blocks
+\usepackage{fancybox} % For drawing fancy boxes
+\usepackage{ragged2e} % For justifying text
+\usepackage{multirow} % For spanning multiple rows in a table
+
+\usepackage{tikz-qtree} % For the graphs
+\usetikzlibrary{shapes.arrows,trees,positioning}
+
+\usepackage{amsmath} % For math symbols
+\boldmath
+
+\usepackage{tabularx} % For creating tables with data centered in cells
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title{Diagramas de Decisão Binários (DDB's)}
+\date{\today}
+\author{Luiz Carlos Vieira}
+\institute{Instituto de Matemática e Estatística da Universidade de São Paulo}
+
+% definition symbol
+\newcommand\defeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
+
+% Image's path
+\DeclareGraphicsExtensions{.pdf,.jpg,.png}
+\graphicspath{{./images/}}
+
+\setbeamerfont{footnote}{size=\tiny}
+
+\begin{document}
+\maketitle
+
+%===========================================
+\section{Representação de Funções Booleanas}
+%===========================================
+
+%-------------------------------------------
+\begin{frame}{Funções booleanas}
+
+    \begin{outline}
+        \1 Formalismo descritivo importante para sistemas de \textit{hardware} e de \textit{software}
+            \2[-] tais como circuitos síncronos e assíncronos
+            \2[-] sistemas reativos
+            \2[-] e programas de estados finitos
+
+        \vspace{1em}
+            
+        \1 Representação computacional eficiente
+            \2[-] e que auxilia na verificação de sistemas
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Definição: variáveis booleanas}
+
+    \begin{block}{\textbf{Definição 6.1(a)}}
+        Uma variável booleana $x$ é uma variável que só pode assumir os valores $0$ e $1$. Denotamos variáveis booleanas por $x_1$, $x_2$, $\cdots$, e $x$, $y$ e $z$, $\cdots$
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Definição: funções booleanas}
+
+    \begin{block}{\textbf{Definição 6.1(b)}}
+        As seguintes funções são definidas no conjunto $\{0,1\}$:
+        \\
+        \begin{outline}
+            \1 $\overline{0} \defeq 1$ e $\overline{1} \defeq 0$;
+                
+            \1 $x \cdot y \defeq 1$ se $x$ e $y$ têm valor $1$; caso contrário, $x \cdot y \defeq 0$;
+            
+            \1 $x + y \defeq 0$ se $x$ e $y$ têm valor $0$; caso contrário, $x + y \defeq 1$;
+            
+            \1 $x \oplus y \defeq 1$ se exatamente um entre $x$ e $y$ é igual a $1$; caso contrário, $x \oplus y \defeq 0$.
+        \end{outline}        
+        
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Variáveis e funções booleanas}
+
+    \begin{block}{\textbf{Ou seja:}}
+        Uma função booleana $f$ com $n$ variáveis é uma função de $\{0,1\}^n$ para $\{0,1\}$. Escrevemos $f(x_1,x_2,\dots,x_n)$ ou $f(\mathcal{V})$ para indicar que uma representação sintática de $f$ só depende das variáveis booleanas em $\mathcal{V}$.
+    \end{block}
+
+    \setlength{\fboxsep}{-5pt}
+    \setlength{\parfillskip}{-5pt plus 0em}
+    \ovalbox{\begin{quotation}
+        \justifying
+        \noindent\small
+        Note que $\cdot$, $+$ e $\oplus$ são funções booleanas com duas variáveis, enquanto que $\bar{~}$ é uma função booleana com uma única variável. As funções binárias $\cdot$, $+$ e $\oplus$ são escritas em notação infixa, isto é, escrevemos $x + y$ em vez de $+(x,y)$, etc.
+    \end{quotation}}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Alguns exemplos de funções booleanas}
+
+    \begin{outline}[enumerate]
+        \1 $f(x,y) \defeq x \cdot (y + \overline{x})$
+            
+        \vspace{1em}
+            
+        \1 $g(x,y) \defeq x \cdot y + (1 \oplus \overline{x})$
+
+        \vspace{1em}
+
+        \1 $h(x,y,z) \defeq x + y \cdot (x \oplus \overline{y})$
+
+        \vspace{1em}
+
+        \1 $k() \defeq 1 \oplus (0 \cdot \overline{1})$
+    \end{outline}        
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Representação de funções booleanas}
+
+    O que já se estudou até então são duas formas de se representar funções booleanas.
+
+    \begin{outline}
+        \1 \textbf{fórmulas proposicionais}:
+            \2[-] $\land$ denota $\cdot$
+            \2[-] $\lor$ denota $+$
+            \2[-] $\lnot$ denota $\bar{~}$
+            \2[-] e $\top$ e $\bot$ denotam, respectivamente, $1$ e $0$
+        
+        \vspace{1em}
+        
+        \1 \textbf{tabelas-verdade}: representam funções booleanas de maneira óbvia
+    \end{outline}        
+            
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Tabelas-verdade de funções booleanas}
+
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+            \begin{center}
+                \begin{table}
+                    \caption{Tabela-verdade da função booleana $f(x,y) \defeq \overline{x + y}$}
+                    \vspace{1em}
+                    \begin{tabular}{cc|c}
+                        $x$ & $y$ & $f(x,y)$\\
+                        \hline
+                        $1$ & $1$ & $0$\\
+                        $0$ & $1$ & $0$\\
+                        $1$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            \end{center}
+
+        \column{0.5\textwidth}
+            \begin{center}
+                \begin{table}
+                    \caption{Tabela-verdade da fórmula proposicional $\phi: \lnot(p \lor q)$}
+                    \vspace{1em}
+                    \begin{tabular}{cc|c}
+                        $p$ & $q$ & $\phi$\\
+                        \hline
+                        $V$ & $V$ & $F$\\
+                        $F$ & $V$ & $F$\\
+                        $V$ & $F$ & $F$\\
+                        $F$ & $F$ & $V$\\
+                    \end{tabular}
+                \end{table}
+            \end{center}
+    \end{columns}
+            
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Vantagens e desvantagens}
+
+    \begin{center}
+        \scriptsize
+        
+        \setlength{\tabcolsep}{2pt}
+        \renewcommand{\arraystretch}{-1}
+        \newcommand{\tabitem}{~~\llap{\textbullet}~}
+        
+        \begin{table}
+            \caption{Vantagens e desvantagens das tabelas-verdade e das fórmulas proposicionais ao representar funções booleanas}
+            \begin{tabular}{C{0.2\textwidth}|L{0.4\textwidth}L{0.4\textwidth}}
+                & \multicolumn{1}{c}{\small \textbf{Tabelas-Verdade}} & \multicolumn{1}{c}{\small \textbf{Fórmulas Proposicionais}}\\
+                \hline
+                \textbf{\small Vantagens} &
+                    \begin{itemize}
+                        \item operações\footnote{verificação de satisfação e validade, e comparação de duas funções booleanas\label{operacoes}} simples
+                    \end{itemize}
+                    &
+                    \begin{itemize}
+                        \item representação compacta
+                    \end{itemize}
+                    \\
+                            
+                \textbf{\small Desvantagens} &
+                    \begin{itemize}
+                        \item ineficientes em espaço
+                        \item computacionalmente intratável
+                    \end{itemize}
+                    &
+                    \begin{itemize}
+                        \item operações\footnotemark[1] difíceis
+                        \item computacionalmente custoso
+                    \end{itemize}
+                    \\
+            \end{tabular}
+        \end{table}
+    \end{center}
+            
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Comparação geral}
+
+    \begin{center}
+        \scriptsize
+        
+        \setlength{\tabcolsep}{3pt}
+        \renewcommand{\arraystretch}{1.5}        
+        
+        \begin{table}
+            \caption{Comparação geral das formas de representação de funções booleanas}
+            \begin{tabular}{C{0.25\textwidth}|cccccc}
+                & & \multicolumn{2}{c}{\textbf{teste de}} & \multicolumn{3}{c}{\textbf{operações booleanas}}\\[-3.5mm]
+                \textbf{Representação de funções booleanas} & \textbf{compacta?} & \textbf{satisfação} & \textbf{validade} & $\cdot$ & $+$ & $\bar{~}$\\
+                \hline
+                \textbf{fórmulas proposicionais} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} \\
+                \textbf{fórmulas FND} & \textcolor{teal}{algumas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil}\\
+                \textbf{fórmulas FNC} & \textcolor{teal}{algumas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
+                \textbf{tabelas-verdade ordenadas} & \textcolor{BrickRed}{nunca} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
+                \textbf{DDBO's reduzidos} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{+/-} & \textcolor{teal}{+/-} & \textcolor{ForestGreen}{fácil}\\
+            \end{tabular}
+        \end{table}
+    \end{center}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Definição: Árvore de Decisão Binária Finita}
+
+    \begin{block}{\textbf{Definição 6.3}}
+        Seja $T$ uma árvore de decisão binária finita. Então $T$ determina \textit{uma única} função booleana das variáveis nos nós não-terminais da seguinte maneira:
+        
+        \begin{quotation}
+        \noindent\small\justifying
+        Dada uma atribuição de $0$'s e $1$'s às variáveis booleanas que ocorrem em $T$, começamos pela raiz de $T$ e pegamos a \textit{linha tracejada} sempre que o valor da variável no nó atual é $0$; caso contrário, percorremos a \textit{linha sólida}. O valor da função é o valor do nó terminal atingido.
+        \end{quotation}
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Por exemplo}
+
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+
+            \begin{figure}
+
+                \begin{tikzpicture}
+                    [scale=1.0,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                  
+                    \node (x) at (3.0, 5.0)  {$x$};
+                    \node (y1) at (1.5, 3.0)  {$y$};
+                    \node (y2) at (4.5, 3.0)  {$y$};
+                    \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (2.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (0c) at (5.5, 1.0) {$0$};
+
+                    \draw[dashed, thick] (x) -- (y1);
+                    \draw[thick] (x) -- (y2);
+                    \draw[dashed, thick] (y1) -- (1);
+                    \draw[thick] (y1) -- (0a);
+                    \draw[dashed, thick] (y2) -- (0b);
+                    \draw[thick] (y2) -- (0c);
+
+                    % Animations
+                    \uncover<2->{
+                        \node[red] at (3.0, 5.0)  {$x$};
+                    }
+                    \uncover<3->{
+                        \draw[dashed, thick, red] (x) -- (y1);
+                    }
+                    \uncover<4->{
+                        \node[red] at (1.5, 3.0)  {$y$};
+                        \draw[thick, red] (y1) -- (0a);
+                    }
+                    \uncover<5->{
+                        \node[rectangle, scale=0.7, red] at (2.5, 1.0)  {$0$};
+                    }                  
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.6\textwidth}
+            \begin{outline}
+                \renewcommand{\outlineii}{enumerate}
+                \1 Árvore da função: $f(x,y) \defeq \overline{x + y}$
+               
+                \vspace{1em}
+               
+                \1 Para encontrar $f(0,1)$:
+                    \uncover<2->{\2 \textcolor<2>{red}{inicia-se pela raiz}}
+                    \uncover<3->{\2 \textcolor<3>{red}{como $x$ é $0$, segue-se pela linha pontilhada}}
+                    \uncover<4->{\2 \textcolor<4>{red}{como $y$ é $1$, segue-se pela linha sólida}}
+                    \uncover<5->{\2 \textcolor<5>{red}{chega-se à folha $0$; logo $f(0,1) = 0$}}
+            \end{outline}
+    
+    \end{columns}
+            
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Semelhanças com tabelas-verdade}
+
+    \begin{outline}
+        \1 Árvores de Decisão Binárias são semelhantes às tabelas-verdade em relação ao tamanho
+            \2[-] se $f$ depender de $n$ variáveis booleanas, a árvore correspondente terá pelo menos $2^{n+1}-1$ nós (contra as $2^n$ linhas da tabela verdade)
+        
+        \vspace{1em}
+        
+        \1 Mas muitas vezes elas contêm redundâncias que podem ser exploradas
+    \end{outline}      
+
+    \setlength{\fboxsep}{-5pt}
+    \setlength{\parfillskip}{-5pt plus 0em}
+    \ovalbox{\begin{quotation}
+        \justifying
+        \noindent\scriptsize
+        A exploração de redundâncias em Árvores de Decisão Binárias faz com que deixem de ser árvores e se tornem grafos. Assim, passam a ser chamados de Diagramas de Decisão Binários (BDDs).
+    \end{quotation}}    
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Remoção de nós terminais duplicados}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.9,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (12,6);
+          
+            % Leftmost graph
+            \node (x) at (3.0, 5.0)  {$x$};
+            \node (y1) at (1.5, 3.0)  {$y$};
+            \node (y2) at (4.5, 3.0)  {$y$};
+            \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
+            \node[rectangle, scale=0.7, blue] (0a) at (2.5, 1.0) {$0$};
+            \node[rectangle, scale=0.7, red] (0b) at (3.5, 1.0) {$0$};
+            \node[rectangle, scale=0.7, red] (0c) at (5.5, 1.0) {$0$};
+
+            \draw[dashed, thick] (x) -- (y1);
+            \draw[thick] (x) -- (y2);
+            \draw[dashed, thick] (y1) -- (1);
+            \draw[thick] (y1) -- (0a);
+            \draw[dashed, thick, blue] (y2) -- (0b);
+            \draw[thick, blue] (y2) -- (0c);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (6.5,4.0) {\scriptsize Simplificação C1};
+            
+            % Rightmost graph
+            \node (x_) at (10.0, 5.0)  {$x$};
+            \node (y1_) at (8.5, 3.0)  {$y$};
+            \node (y2_) at (11.5, 3.0)  {$y$};
+            \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
+            \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
+
+            \draw[dashed, thick] (x_) -- (y1_);
+            \draw[thick] (x_) -- (y2_);
+            \draw[dashed, thick] (y1_) -- (1_);
+            \draw[thick] (y1_) -- (0_);
+            \draw[bend left, thick, blue] (y2_) to (0_);
+            \draw[bend right, dashed, thick, blue] (y2_) to (0_);
+        \end{tikzpicture}
+
+    \end{figure}
+
+    \begin{quotation}
+    \noindent\footnotesize\justifying
+        Se um DDB contém mais de um nó terminal $0$, redirecionam-se todas as arestas que apontam para tais nós para apenas um deles. Repete-se o mesmo processo para os nós terminais com $1$
+    \end{quotation}    
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Remoção de testes redundantes}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.9,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (12,6);
+          
+            % Leftmost graph
+            \node (x) at (3.0, 5.0)  {$x$};
+            \node (y1) at (1.5, 3.0)  {$y$};
+            \node[red] (y2) at (4.5, 3.0)  {$y$};
+            \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
+            \node[rectangle, scale=0.7, blue] (0) at (2.5, 1.0) {$0$};
+
+            \draw[dashed, thick] (x) -- (y1);
+            \draw[thick, blue] (x) -- (y2);
+            \draw[dashed, thick] (y1) -- (1);
+            \draw[thick] (y1) -- (0);
+            \draw[bend left, thick, red] (y2) to (0);
+            \draw[bend right, dashed, thick, red] (y2) to (0);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (6.5,4.0) {\scriptsize Simplificação C2};
+            
+            % Rightmost graph
+            \node (x_) at (10.0, 5.0)  {$x$};
+            \node (y1_) at (8.5, 3.0)  {$y$};
+            \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
+            \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
+
+            \draw[dashed, thick] (x_) -- (y1_);
+            \draw[thick, blue] (x_) -- (0_);
+            \draw[dashed, thick] (y1_) -- (1_);
+            \draw[thick] (y1_) -- (0_);
+        \end{tikzpicture}
+
+    \end{figure}
+    
+    \begin{quotation}
+    \noindent\footnotesize\justifying
+        Se ambas as arestas de um nó $n$ apontam para o mesmo nó $m$, elimina-se o nó $n$, enviando todas as arestas que nele chegavam para $m$.
+    \end{quotation}
+    
+\end{frame}
+%-------------------------------------------
+
+\begin{frame}{teste}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.9,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            \draw[help lines] (0,0) grid (12,6);
+          
+            % Leftmost graph
+            \node (z) at (3.0, 5.5)  {$z$};
+            \node (x1) at (1.5, 4.0)  {$x$};
+            \node (x2) at (4.5, 4.0)  {$x$};
+            
+            \node (y1) at (0.6, 2.5)  {$y$};
+            \node[red] (y2) at (2.4, 2.5)  {$y$};
+            \node[red] (y3) at (3.6, 2.5)  {$y$};
+            \node (y4) at (5.4, 2.5)  {$y$};
+            
+            \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
+            \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
+
+            \draw[dashed, thick] (z) -- (x1);
+            \draw[thick] (z) -- (x2);
+            \draw[dashed, thick] (x1) -- (y1);
+            \draw[thick] (x1) -- (y2);
+            \draw[dashed, thick] (x2) -- (y3);
+            \draw[thick] (x2) -- (y4);
+            
+            \draw[dashed, thick] (y1) to (0);
+            \draw[thick] (y1) to (1);
+            \draw[dashed, thick, red] (y2) to (0);
+            \draw[thick, red] (y2) to (1);
+            \draw[dashed, thick, red] (y3) to (0);
+            \draw[thick, red] (y3) to (1);
+            \draw[thick] (y4) to (0);
+            \draw[dashed, thick] (y4) to (1);
+            
+            %\draw[bend right, dashed, thick, red] (y2) to (0);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (6.5,4.0) {\scriptsize Simplificação C3};
+            
+            % Rightmost graph
+            \node (z_) at (10.0, 5.5)  {$z$};
+            \node (x1_) at (8.5, 4.0)  {$x$};
+            \node (x2_) at (11.5, 4.0)  {$x$};
+            
+            \node (y1_) at (7.6, 2.5)  {$y$};
+            \node (y2_) at (9.4, 2.5)  {$y$};
+            \node (y3_) at (10.6, 2.5)  {$y$};
+            \node (y4_) at (12.4, 2.5)  {$y$};
+            
+            \node[rectangle, scale=0.7] (0_) at (8.5, 0.5) {$0$};
+            \node[rectangle, scale=0.7] (1_) at (11.5, 0.5) {$1$};
+
+            \draw[dashed, thick] (z_) -- (x1_);
+            \draw[thick] (z_) -- (x2_);
+            \draw[dashed, thick] (x1_) -- (y1_);
+            \draw[thick] (x1_) -- (y2_);
+            \draw[dashed, thick] (x2_) -- (y3_);
+            \draw[thick] (x2_) -- (y4_);
+            
+            \draw[dashed, thick] (y1_) to (0_);
+            \draw[thick] (y1_) to (1_);
+            \draw[dashed, thick] (y2_) to (0_);
+            \draw[thick] (y2_) to (1_);
+            \draw[dashed, thick] (y3_) to (0_);
+            \draw[thick] (y3_) to (1_);
+            \draw[thick] (y4_) to (0_);
+            \draw[dashed, thick] (y4_) to (1_);
+        \end{tikzpicture}
+
+    \end{figure}
+    
+\end{frame}
+
+%-------------------------------------------
+\begin{frame}{Remoção de nós não-terminais duplicados}
+
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+
+            \begin{center}
+                \begin{tikzpicture}
+
+                    \tikzset{font=\small, level distance=1.5cm, sibling distance=1mm}
+                    \tikzset{every node/.style={circle, minimum height=5mm, draw=black, thick, align=center, text depth = 0pt}}
+                    \tikzset{edge from parent/.style={draw=black, thick}}
+                
+                    \Tree[.\node{$z$};
+                        \edge[dashed];
+                        [.\node{$x$};
+                            \edge[dashed];
+                            [.\node(yl1){$y$}; ]
+                            \edge[solid];
+                            [.\node(yl2){$y$};
+                                \edge[dashed];
+                                [.\node(0)[left=1.0mm of yl1,rectangle]{$0$}; ]
+                            ]
+                        ]
+                        \edge[solid];
+                        [.\node{$x$};
+                            \edge[dashed];
+                            [.\node(yr1){$y$}; ]
+                            \edge[solid];
+                            [.\node(yr2){$y$};
+                                \edge[dashed];
+                                [.\node(1)[left=1.0mm of yr1,rectangle]{$1$}; ] 
+                            ]
+                        ]
+                    ]        
+                    
+                    \draw[dashed, thick] (yl1) to (0);
+                    \draw[solid, thick] (yl1) to (1);
+                    
+                    \draw[solid, thick] (yl2) to (1);
+                    
+                    \draw[dashed, thick] (yr1) to (0);
+                    \draw[solid, thick] (yr1) to (1);
+                    
+                    \draw[solid, thick] (yr2) to (0);
+                \end{tikzpicture}
+            \end{center}
+
+        \column{0.2\textwidth}   
+            
+            \begin{center}
+                \begin{tikzpicture}[every node/.style={single arrow, draw=black}]
+                    \node[fill=white]{\scriptsize Simplificação C3};
+                \end{tikzpicture}
+            \end{center}
+            
+        \column{0.4\textwidth}            
+            
+            \begin{center}
+                \begin{tikzpicture}
+
+                    \tikzset{font=\small, level distance=1.5cm, sibling distance=1mm}
+                    \tikzset{every node/.style={circle, minimum height=5mm, draw=black, thick, align=center, text depth = 0pt}}
+                    \tikzset{edge from parent/.style={draw=black, thick}}
+                
+                    \Tree[.\node{$z$};
+                        \edge[dashed];
+                        [.\node{$x$};
+                            \edge[dashed];
+                            [.\node(yl){$y$}; ]
+                            \edge[solid];
+                            [.\node(yc){$y$};
+                                \edge[dashed];
+                                [.\node(0)[left=1.0mm of yl,rectangle]{$0$}; ]
+                            ]
+                        ]
+                        \edge[solid];
+                        [.\node(xr){$x$};
+                            \edge[solid];
+                            [.\node(yr){$y$};
+                                \edge[dashed];
+                                [.\node(1)[left=1.0mm of yc,rectangle]{$1$}; ] 
+                            ]
+                        ]
+                    ]        
+                    
+                    \draw[dashed, thick] (yl) to (0);
+                    \draw[solid, thick] (yl) to (1);
+                    
+                    \draw[dashed, thick] (xr) to (yc);
+                    
+                    \draw[solid, thick] (yc) to (1);
+                    
+                    \draw[solid, thick] (yr) to (0);                    
+                \end{tikzpicture}
+            \end{center}
+            
+    \end{columns}
+    
+    \begin{quotation}
+    \noindent\footnotesize\justifying
+        Se dois nós distintos $n$ e $m$ são raizes de sub-DDBs idênticos, pode-se eliminar um deles redirecionando todas as arestas que chegam nele para o outro
+    \end{quotation}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Mais simplificações}
+
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+
+            \begin{center}
+                \begin{tikzpicture}
+
+                    \tikzset{font=\small, level distance=1.5cm, sibling distance=1mm}
+                    \tikzset{every node/.style={circle, minimum height=5mm, draw=black, thick, align=center, text depth = 0pt}}
+                    \tikzset{edge from parent/.style={draw=black, thick}}
+                
+                    \Tree[.\node{$z$};
+                        \edge[dashed];
+                        [.\node{$x$};
+                            \edge[dashed];
+                            [.\node(yl){$y$}; ]
+                            \edge[solid];
+                            [.\node(yc){$y$};
+                                \edge[dashed];
+                                [.\node(0)[left=1.0mm of yl,rectangle]{$0$}; ]
+                            ]
+                        ]
+                        \edge[solid];
+                        [.\node(xr){$x$};
+                            \edge[solid];
+                            [.\node(yr){$y$};
+                                \edge[dashed];
+                                [.\node(1)[left=1.0mm of yc,rectangle]{$1$}; ] 
+                            ]
+                        ]
+                    ]        
+                    
+                    \draw[dashed, thick] (yl) to (0);
+                    \draw[solid, thick] (yl) to (1);
+                    
+                    \draw[dashed, thick] (xr) to (yc);
+                    
+                    \draw[solid, thick] (yc) to (1);
+                    
+                    \draw[solid, thick] (yr) to (0);                    
+                \end{tikzpicture}
+            \end{center}
+
+        \column{0.2\textwidth}   
+            
+            \begin{center}
+                \begin{tikzpicture}[every node/.style={single arrow, draw=black}]
+                    \node[fill=white]{\scriptsize C3 + C2};
+                \end{tikzpicture}
+            \end{center}
+            
+        \column{0.4\textwidth}            
+            
+            \begin{center}
+                \begin{tikzpicture}
+
+                    \tikzset{font=\small, level distance=1.5cm, sibling distance=10.0mm}
+                    \tikzset{every node/.style={circle, minimum height=5mm, draw=black, thick, align=center, text depth = 0pt}}
+                    \tikzset{edge from parent/.style={draw=black, thick}}
+                
+                    \Tree[.\node{$z$};
+                        \edge[dashed];
+                        [.\node[below left=2.0mm of x](yl){$y$};
+                            \edge[dashed];
+                            [.\node(0)[below=8.0mm of yr,rectangle]{$0$}; ]
+                        ]
+                        \edge[solid];
+                        [.\node(x){$x$};
+                            \edge[solid];
+                            [.\node(yr){$y$};
+                                \edge[dashed];
+                                [.\node(1)[rectangle]{$1$}; ] 
+                            ]
+                        ]
+                    ]        
+                    
+                    \draw[dashed, thick] (x) to (yl);
+                    \draw[solid, thick] (yl) to (1);
+                    \draw[solid, thick] (yr) to (0);
+                \end{tikzpicture}
+            \end{center}
+            
+    \end{columns}
+    
+    \begin{quotation}
+    \noindent\footnotesize\justifying
+        O DDB ainda pode ser simplificado com a remoção de um dos nós $y$ duplicados (novo C3) e a remoção de um ponto de decisão $x$ redundante (novo C2)
+    \end{quotation}
+    
+\end{frame}
+%-------------------------------------------
+
+\end{document}

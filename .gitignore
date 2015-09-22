@@ -1,0 +1,5 @@
+# Ignore output directories
+output
+
+# Vim session file
+*session.vim
