@@ -1,8 +1,12 @@
-# Ignora tudo no diretório de saída...
-output/*
-
-# ... exceto o arquivo PDF gerado
-!output/*.pdf
+# Ignora os arquivos temporários do LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.blg
+*.bbl
+*.nav
+*.snm
 
 # Ignora o arquivo de sessão do Vim
 *session.vim
