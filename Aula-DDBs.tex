@@ -1,6 +1,6 @@
 \providecommand\classopts{}
 \expandafter\documentclass\expandafter[table, usenames, svgnames, dvipsnames,14pt, \classopts]{beamer}
-\usetheme[everytitleformat=uppercase,frametitleformat=lowercase,progressbar=frametitle]{m} % load the metropolis theme
+\usetheme[everytitleformat=regular,frametitleformat=lowercase,progressbar=frametitle,numbering=fraction]{m} % load the metropolis theme
 \usefonttheme[onlymath]{serif}
 
 \usepackage[portuguese]{babel} % For writing in Portuguese
@@ -9,6 +9,8 @@
 \usepackage{fancybox} % For drawing fancy boxes
 \usepackage{ragged2e} % For justifying text
 \usepackage{multirow} % For spanning multiple rows in a table
+\usepackage{caption}  % For custom captions in tables and figures
+\captionsetup{labelformat=empty}
 
 \usepackage{tikz-qtree} % For the graphs
 \usetikzlibrary{shapes.arrows,trees,positioning}
@@ -21,7 +23,7 @@
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
-\title{Diagramas de Decisão Binários (DDB's)}
+\title{Diagramas de Decisão Binários (DDBs)}
 \date{\today}
 \author{Luiz Carlos Vieira}
 \institute{Instituto de Matemática e Estatística da Universidade de São Paulo}
@@ -38,6 +40,27 @@
 \begin{document}
 \maketitle
 
+%-------------------------------------------
+\begin{frame}{Conteúdo}
+
+    \begin{outline}
+        \1 Representação de Funções Booleanas
+            \2[-] fórmulas proposicionais e tabelas-verdade
+            \2[-] diagramas de decisão binários (DDBs)
+            \2[-] diagramas de decisão binários ordenados (DDBOs)
+
+        \vspace{1em}
+            
+        \1 Algoritmos para DDBOs Reduzidos
+            \2[-] algoritmo \texttt{reduzir}
+            \2[-] algoritmo \texttt{aplicar}
+            \2[-] algoritmo \texttt{restringir}
+            \2[-] algoritmo \texttt{existe}
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
 %===========================================
 \section{Representação de Funções Booleanas}
 %===========================================
@@ -46,15 +69,11 @@
 \begin{frame}{Funções booleanas}
 
     \begin{outline}
-        \1 Formalismo descritivo importante para sistemas de \textit{hardware} e de \textit{software}
-            \2[-] tais como circuitos síncronos e assíncronos
-            \2[-] sistemas reativos
-            \2[-] e programas de estados finitos
+        \1 Parte do formalismo descritivo de sistemas de \textit{hardware} e \textit{software}
 
         \vspace{1em}
             
-        \1 Representação computacional eficiente
-            \2[-] e que auxilia na verificação de sistemas
+        \1 Que precisa ser representado computacionalmente de forma eficiente
     \end{outline}
 
 \end{frame}
@@ -92,19 +111,15 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Variáveis e funções booleanas}
+\begin{frame}{Funções e variáveis booleanas}
 
-    \begin{block}{\textbf{Ou seja:}}
-        Uma função booleana $f$ com $n$ variáveis é uma função de $\{0,1\}^n$ para $\{0,1\}$. Escrevemos $f(x_1,x_2,\dots,x_n)$ ou $f(\mathcal{V})$ para indicar que uma representação sintática de $f$ só depende das variáveis booleanas em $\mathcal{V}$.
-    \end{block}
-
-    \setlength{\fboxsep}{-5pt}
-    \setlength{\parfillskip}{-5pt plus 0em}
-    \ovalbox{\begin{quotation}
-        \justifying
-        \noindent\small
-        Note que $\cdot$, $+$ e $\oplus$ são funções booleanas com duas variáveis, enquanto que $\bar{~}$ é uma função booleana com uma única variável. As funções binárias $\cdot$, $+$ e $\oplus$ são escritas em notação infixa, isto é, escrevemos $x + y$ em vez de $+(x,y)$, etc.
-    \end{quotation}}
+    \begin{outline}
+        \1 Uma função booleana $f$ com $n$ variáveis é uma função de $\{0,1\}^n$ para $\{0,1\}$.
+        
+        \vspace{1em}
+        
+        \1 Escreve-se $f(x_1,x_2,\dots,x_n)$ ou $f(\mathcal{V})$ para indicar que uma representação sintática de $f$ só depende das variáveis booleanas em $\mathcal{V}$.
+    \end{outline}
     
 \end{frame}
 %-------------------------------------------
@@ -132,9 +147,9 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Representação de funções booleanas}
+\begin{frame}{wffs e tabelas-verdade}
 
-    O que já se estudou até então são duas formas de se representar funções booleanas.
+    As fórmulas proposicionais bem-formadas (\textit{wffs}) e as tabelas-verdade são duas formas de se representar funções booleanas
 
     \begin{outline}
         \1 \textbf{fórmulas proposicionais}:
@@ -174,7 +189,7 @@
         \column{0.5\textwidth}
             \begin{center}
                 \begin{table}
-                    \caption{Tabela-verdade da fórmula proposicional $\phi: \lnot(p \lor q)$}
+                    \caption{Tabela-verdade da fórmula proposicional $\phi \equiv \lnot(p \lor q)$}
                     \vspace{1em}
                     \begin{tabular}{cc|c}
                         $p$ & $q$ & $\phi$\\
@@ -202,11 +217,11 @@
         \newcommand{\tabitem}{~~\llap{\textbullet}~}
         
         \begin{table}
-            \caption{Vantagens e desvantagens das tabelas-verdade e das fórmulas proposicionais ao representar funções booleanas}
+            \caption{Há vantagens e desvantagens no uso de tabelas-verdade e fórmulas proposicionais para representar funções booleanas}
             \begin{tabular}{C{0.2\textwidth}|L{0.4\textwidth}L{0.4\textwidth}}
-                & \multicolumn{1}{c}{\small \textbf{Tabelas-Verdade}} & \multicolumn{1}{c}{\small \textbf{Fórmulas Proposicionais}}\\
+                & \multicolumn{1}{c}{\textbf{Tabelas-Verdade}} & \multicolumn{1}{c}{\textbf{Fórmulas Proposicionais}}\\
                 \hline
-                \textbf{\small Vantagens} &
+                \textbf{Vantagens} &
                     \begin{itemize}
                         \item operações\footnote{verificação de satisfação e validade, e comparação de duas funções booleanas\label{operacoes}} simples
                     \end{itemize}
@@ -216,7 +231,7 @@
                     \end{itemize}
                     \\
                             
-                \textbf{\small Desvantagens} &
+                \textbf{Desvantagens} &
                     \begin{itemize}
                         \item ineficientes em espaço
                         \item computacionalmente intratável
@@ -224,7 +239,7 @@
                     &
                     \begin{itemize}
                         \item operações\footnotemark[1] difíceis
-                        \item computacionalmente custoso
+                        \item computacionalmente intratável
                     \end{itemize}
                     \\
             \end{tabular}
@@ -235,25 +250,90 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Comparação geral}
+\begin{frame}{Operações sobre funções booleanas}
+
+    As operações $\cdot$, $+$, $\oplus$ e $\bar{~}$ sobre duas funções $f$ e $g$ são realizadas de forma simples:
+
+    \begin{outline}
+        \1 Com tabelas-verdade
+            \2[-] operação diretamente aplicada a cada linha, adicionando variáveis se necessário
+            \2[-] mas computacionalmente intratável ($2^n$ linhas)
+
+        \vspace{1em}
+            
+        \1 Com fórmulas proposicionais
+            \2[-] manipulação sintática da Lógica Proposicional
+            \2[-] por exemplo: $f \cdot g$ e $f \oplus g$ são respectivamente $\phi \land \psi$ e $(\phi \land \lnot{\psi}) \lor (\lnot{\phi} \land \psi)$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Utilizando formas normais}
+
+    \begin{outline}
+        \1 As formas normais facilitam em alguns aspectos
+            \2[-] e dificultam em outros
+        
+        \vspace{1em}
+        
+        \1 Podem ser mais longas do que as fórmulas originais equivalentes não-normalizadas
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Forma Normal Conjuntiva (\uppercase{CNF})}
+
+    \begin{outline}
+        \1 Facilita o teste de validade
+            \2[-] busca de cláusula disjuntiva sem preposições complementares
+            \2[-] teste de satisfação não é igualmente fácil
+        
+        \vspace{1em}
+        
+        \1 Facilita a operação de conjunção ($\cdot$)
+            \2[-] se $f$ e $g$ são CNFs, o resultado de $f \cdot g$ é CNF
+        
+        \vspace{1em}
+        
+        \1 Dificulta as demais operações ($+$, $\oplus$ e $\bar{~}$)
+            \2[-] distributividade recursiva para manter CNF
+    \end{outline}
+
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.8\linewidth}
+                \noindent\scriptsize
+                A forma normal disjuntiva (DNF) -- disjunção de conjunções -- é dual com a CNF em relação a essas propriedades
+            \end{minipage}
+        }
+    \end{center}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Resumo da eficiência das representações}
 
     \begin{center}
         \scriptsize
         
-        \setlength{\tabcolsep}{3pt}
+        \setlength{\tabcolsep}{1pt}
         \renewcommand{\arraystretch}{1.5}        
         
         \begin{table}
-            \caption{Comparação geral das formas de representação de funções booleanas}
-            \begin{tabular}{C{0.25\textwidth}|cccccc}
+            \begin{tabular}{C{0.25\textwidth}|C{0.15\textwidth}*{5}{C{0.12\textwidth}}}
                 & & \multicolumn{2}{c}{\textbf{teste de}} & \multicolumn{3}{c}{\textbf{operações booleanas}}\\[-3.5mm]
                 \textbf{Representação de funções booleanas} & \textbf{compacta?} & \textbf{satisfação} & \textbf{validade} & $\cdot$ & $+$ & $\bar{~}$\\
                 \hline
                 \textbf{fórmulas proposicionais} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} \\
-                \textbf{fórmulas FND} & \textcolor{teal}{algumas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{fórmulas FNC} & \textcolor{teal}{algumas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
+                \textbf{fórmulas CNF} & \textcolor{teal}{algumas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
+                \textbf{fórmulas NDF} & \textcolor{teal}{algumas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil}\\
                 \textbf{tabelas-verdade ordenadas} & \textcolor{BrickRed}{nunca} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{DDBO's reduzidos} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{+/-} & \textcolor{teal}{+/-} & \textcolor{ForestGreen}{fácil}\\
+                \textbf{DDBOs reduzidos\footnote{que ainda serão explorados nessa aula}} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{mais ou menos} & \textcolor{teal}{mais ou menos} & \textcolor{ForestGreen}{fácil}\\
             \end{tabular}
         \end{table}
     \end{center}
