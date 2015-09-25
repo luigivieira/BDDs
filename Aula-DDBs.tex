@@ -378,26 +378,26 @@
                     \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (0c) at (5.5, 1.0) {$0$};
 
-                    \draw[dashed, thick] (x) -- (y1);
-                    \draw[thick] (x) -- (y2);
-                    \draw[dashed, thick] (y1) -- (1);
-                    \draw[thick] (y1) -- (0a);
-                    \draw[dashed, thick] (y2) -- (0b);
-                    \draw[thick] (y2) -- (0c);
+                    \draw[dashed, thick] (x) to (y1);
+                    \draw[thick] (x) to (y2);
+                    \draw[dashed, thick] (y1) to (1);
+                    \draw[thick] (y1) to (0a);
+                    \draw[dashed, thick] (y2) to (0b);
+                    \draw[thick] (y2) to (0c);
 
                     % Animations
                     \uncover<3->{
-                        \node[red] at (3.0, 5.0)  {$x$};
+                        \node[magenta] at (3.0, 5.0)  {$x$};
                     }
                     \uncover<4->{
-                        \draw[dashed, thick, red] (x) -- (y1);
+                        \draw[dashed, thick, magenta] (x) to (y1);
                     }
                     \uncover<5->{
-                        \node[red] at (1.5, 3.0)  {$y$};
-                        \draw[thick, red] (y1) -- (0a);
+                        \node[magenta] at (1.5, 3.0)  {$y$};
+                        \draw[thick, magenta] (y1) to (0a);
                     }
                     \uncover<6->{
-                        \node[rectangle, scale=0.7, red] at (2.5, 1.0)  {$0$};
+                        \node[rectangle, scale=0.7, magenta] at (2.5, 1.0)  {$0$};
                     }                  
                 \end{tikzpicture}
 
@@ -423,6 +423,150 @@
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}{Junto com a tabela-verdade}
+
+    Para a função booleana $f(x,y) \defeq \overline{x + y}$:
+
+    \begin{columns}[c]
+        \column{0.6\textwidth}
+
+            \begin{figure}
+
+                \begin{tikzpicture}
+                    [scale=1.0,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                  
+                    \node (x) at (3.0, 5.0)  {$x$};
+                    \node (y1) at (1.5, 3.0)  {$y$};
+                    \node (y2) at (4.5, 3.0)  {$y$};
+                    \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (2.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (0c) at (5.5, 1.0) {$0$};
+
+                    \draw[dashed, thick] (x) to (y1);
+                    \draw[thick] (x) to (y2);
+                    \draw[dashed, thick] (y1) to (1);
+                    \draw[thick] (y1) to (0a);
+                    \draw[dashed, thick] (y2) to (0b);
+                    \draw[thick] (y2) to (0c);
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.4\textwidth}
+            \begin{center}
+                \begin{table}
+                    \begin{tabular}{cc|c}
+                        $x$ & $y$ & $f(x,y)$\\
+                        \hline
+                        $1$ & $1$ & $0$\\
+                        $0$ & $1$ & $0$\\
+                        $1$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            \end{center}
+    
+    \end{columns}
+            
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Outro exemplo}
+
+    Para a função booleana $f(p,q,r) \defeq \overline{p} + (q \cdot r)$:
+    
+    \vspace{-0.5em}
+    
+    \begin{center}
+        \scriptsize
+        \ovalbox{
+            \begin{minipage}[h]{0.8\linewidth}
+                \centering
+                equivalente à fórmula proposicional $\phi \equiv p \to (q \land r)$
+            \end{minipage}
+        }
+    \end{center}
+   
+   \vspace{-1.0em}
+   
+    \begin{columns}[c]
+        \column{0.6\textwidth}
+
+            \begin{figure}
+
+                \begin{tikzpicture}
+                    [scale=0.7,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node (p) at (4.0, 6.0)  {$p$};
+                    \node (q1) at (2.0, 4.0)  {$q$};
+                    \node (q2) at (6.0, 4.0)  {$q$};
+                    \node (r1) at (1.0, 2.0)  {$r$};
+                    \node (r2) at (3.0, 2.0)  {$r$};
+                    \node (r3) at (5.0, 2.0)  {$r$};
+                    \node (r4) at (7.0, 2.0)  {$r$};
+                    
+                    \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1c) at (2.4, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1d) at (3.6, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (4.4, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (0b) at (5.6, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (0c) at (6.4, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (1e) at (7.6, 0.0) {$1$};
+
+                    \draw[dashed, thick] (p) to (q1);
+                    \draw[thick] (p) to (q2);
+                    \draw[dashed, thick] (q1) to (r1);
+                    \draw[thick] (q1) to (r2);
+                    \draw[dashed, thick] (q2) to (r3);
+                    \draw[thick] (q2) to (r4);
+                    \draw[dashed, thick] (r1) to (1a);
+                    \draw[thick] (r1) to (1b);
+                    \draw[dashed, thick] (r2) to (1c);
+                    \draw[thick] (r2) to (1d);
+                    \draw[dashed, thick] (r3) to (0a);
+                    \draw[thick] (r3) to (0b);
+                    \draw[dashed, thick] (r4) to (0c);
+                    \draw[thick] (r4) to (1e);
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.4\textwidth}
+            \begin{center}
+                \small
+                \begin{table}
+                    \begin{tabular}{ccc|c}
+                        $p$ & $q$ & $r$ & $f(p,q,r)$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $1$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            \end{center}
+    
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}{Semelhanças com tabelas-verdade}
 
     \begin{outline}
@@ -434,14 +578,15 @@
         \1 Mas muitas vezes elas contêm redundâncias que podem ser exploradas
     \end{outline}      
 
-    \setlength{\fboxsep}{-5pt}
-    \setlength{\parfillskip}{-5pt plus 0em}
-    \ovalbox{\begin{quotation}
-        \justifying
-        \noindent\scriptsize
-        A exploração de redundâncias em Árvores de Decisão Binárias faz com que deixem de ser árvores e se tornem grafos. Assim, passam a ser chamados de Diagramas de Decisão Binários (BDDs).
-    \end{quotation}}    
-    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.8\linewidth}
+                \noindent\scriptsize
+                A exploração de redundâncias em Árvores de Decisão Binárias faz com que deixem de ser árvores e se tornem grafos. Assim, passam a ser chamados de Diagramas de Decisão Binários (BDDs).
+            \end{minipage}
+        }
+    \end{center}
+   
 \end{frame}
 %-------------------------------------------
 
@@ -466,20 +611,20 @@
             \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
             \node[rectangle, scale=0.7] (0c) at (5.5, 1.0) {$0$};
 
-            \draw[dashed, thick] (x) -- (y1);
-            \draw[thick] (x) -- (y2);
-            \draw[dashed, thick] (y1) -- (1);
-            \draw[thick] (y1) -- (0a);
-            \draw[dashed, thick] (y2) -- (0b);
-            \draw[thick] (y2) -- (0c);
+            \draw[dashed, thick] (x) to (y1);
+            \draw[thick] (x) to (y2);
+            \draw[dashed, thick] (y1) to (1);
+            \draw[thick] (y1) to (0a);
+            \draw[dashed, thick] (y2) to (0b);
+            \draw[thick] (y2) to (0c);
 
             \uncover<2->{
                 \node[rectangle, scale=0.7, blue] (0a) at (2.5, 1.0) {$0$};
                 \node[rectangle, scale=0.7, red] (0b) at (3.5, 1.0) {$0$};
                 \node[rectangle, scale=0.7, red] (0c) at (5.5, 1.0) {$0$};
 
-                \draw[dashed, thick, blue] (y2) -- (0b);
-                \draw[thick, blue] (y2) -- (0c);
+                \draw[dashed, thick, blue] (y2) to (0b);
+                \draw[thick, blue] (y2) to (0c);
             }
             
             \uncover<3->{
@@ -493,10 +638,10 @@
                 \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
                 \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
 
-                \draw[dashed, thick] (x_) -- (y1_);
-                \draw[thick] (x_) -- (y2_);
-                \draw[dashed, thick] (y1_) -- (1_);
-                \draw[thick] (y1_) -- (0_);
+                \draw[dashed, thick] (x_) to (y1_);
+                \draw[thick] (x_) to (y2_);
+                \draw[dashed, thick] (y1_) to (1_);
+                \draw[thick] (y1_) to (0_);
                 \draw[bend left, thick, blue] (y2_) to (0_);
                 \draw[bend right, dashed, thick, blue] (y2_) to (0_);
             }
@@ -531,10 +676,10 @@
             \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
             \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
 
-            \draw[dashed, thick] (x) -- (y1);
-            \draw[thick] (x) -- (y2);
-            \draw[dashed, thick] (y1) -- (1);
-            \draw[thick] (y1) -- (0);
+            \draw[dashed, thick] (x) to (y1);
+            \draw[thick] (x) to (y2);
+            \draw[dashed, thick] (y1) to (1);
+            \draw[thick] (y1) to (0);
             \draw[bend left, thick] (y2) to (0);
             \draw[bend right, dashed, thick] (y2) to (0);
             
@@ -542,7 +687,7 @@
                 \node[red] (y2) at (4.5, 3.0)  {$y$};
                 \node[rectangle, scale=0.7, blue] (0) at (2.5, 1.0) {$0$};
                 
-                \draw[thick, blue] (x) -- (y2);
+                \draw[thick, blue] (x) to (y2);
                 \draw[bend left, thick, red] (y2) to (0);
                 \draw[bend right, dashed, thick, red] (y2) to (0);
             }
@@ -557,10 +702,10 @@
                 \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
                 \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
 
-                \draw[dashed, thick] (x_) -- (y1_);
-                \draw[thick, blue] (x_) -- (0_);
-                \draw[dashed, thick] (y1_) -- (1_);
-                \draw[thick] (y1_) -- (0_);
+                \draw[dashed, thick] (x_) to (y1_);
+                \draw[thick, blue] (x_) to (0_);
+                \draw[dashed, thick] (y1_) to (1_);
+                \draw[thick] (y1_) to (0_);
             }
         \end{tikzpicture}
 
@@ -599,12 +744,12 @@
             \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
             \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
 
-            \draw[dashed, thick] (z) -- (x1);
-            \draw[thick] (z) -- (x2);
-            \draw[dashed, thick] (x1) -- (y1);
-            \draw[thick] (x1) -- (y2);
-            \draw[dashed, thick] (x2) -- (y3);
-            \draw[thick] (x2) -- (y4);
+            \draw[dashed, thick] (z) to (x1);
+            \draw[thick] (z) to (x2);
+            \draw[dashed, thick] (x1) to (y1);
+            \draw[thick] (x1) to (y2);
+            \draw[dashed, thick] (x2) to (y3);
+            \draw[thick] (x2) to (y4);
             
             \draw[dashed, thick] (y1) to (0);
             \draw[thick] (y1) to (1);
@@ -619,7 +764,7 @@
                 \node[blue] (y2) at (2.4, 2.5)  {$y$};
                 \node[red] (y3) at (3.6, 2.5)  {$y$};
                 
-                \draw[dashed, thick, blue] (x2) -- (y3);
+                \draw[dashed, thick, blue] (x2) to (y3);
                 \draw[dashed, thick, blue] (y2) to (0);
                 \draw[thick, blue] (y2) to (1);                
                 \draw[dashed, thick, red] (y3) to (0);
@@ -642,12 +787,12 @@
                 \node[rectangle, scale=0.7] (0_) at (9.0, 0.5) {$0$};
                 \node[rectangle, scale=0.7] (1_) at (12.0, 0.5) {$1$};
 
-                \draw[dashed, thick] (z_) -- (x1_);
-                \draw[thick] (z_) -- (x2_);
-                \draw[dashed, thick] (x1_) -- (y1_);
-                \draw[thick] (x1_) -- (y2_);
-                \draw[dashed, thick, blue] (x2_) -- (y2_);
-                \draw[thick] (x2_) -- (y4_);
+                \draw[dashed, thick] (z_) to (x1_);
+                \draw[thick] (z_) to (x2_);
+                \draw[dashed, thick] (x1_) to (y1_);
+                \draw[thick] (x1_) to (y2_);
+                \draw[dashed, thick, blue] (x2_) to (y2_);
+                \draw[thick] (x2_) to (y4_);
                 
                 \draw[dashed, thick] (y1_) to (0_);
                 \draw[thick] (y1_) to (1_);
@@ -692,12 +837,12 @@
             \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
             \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
 
-            \draw[dashed, thick] (z) -- (x1);
-            \draw[thick] (z) -- (x2);
-            \draw[dashed, thick] (x1) -- (y1);
-            \draw[thick] (x1) -- (y2);
-            \draw[dashed, thick] (x2) -- (y2);
-            \draw[thick] (x2) -- (y4);
+            \draw[dashed, thick] (z) to (x1);
+            \draw[thick] (z) to (x2);
+            \draw[dashed, thick] (x1) to (y1);
+            \draw[thick] (x1) to (y2);
+            \draw[dashed, thick] (x2) to (y2);
+            \draw[thick] (x2) to (y4);
             
             \draw[dashed, thick] (y1) to (0);
             \draw[thick] (y1) to (1);
@@ -710,16 +855,16 @@
                 \node[red] (y1) at (0.6, 2.5)  {$y$};
                 \node[blue] (y2) at (2.4, 2.5)  {$y$};
                 
-                \draw[dashed, thick, blue] (x1) -- (y1);
+                \draw[dashed, thick, blue] (x1) to (y1);
                 \draw[dashed, thick, red] (y1) to (0);
                 \draw[thick, red] (y1) to (1);
             }
             
             \uncover<3->{
                 \node[red] (x1) at (1.5, 4.0)  {$x$};
-                \draw[dashed, thick, blue] (z) -- (x1);
-                \draw[dashed, thick, red] (x1) -- (y1);
-                \draw[thick, red] (x1) -- (y2);
+                \draw[dashed, thick, blue] (z) to (x1);
+                \draw[dashed, thick, red] (x1) to (y1);
+                \draw[thick, red] (x1) to (y2);
             }
 
             \uncover<4->{
@@ -736,10 +881,10 @@
                 \node[rectangle, scale=0.7] (0_) at (7.5, 0.5) {$0$};
                 \node[rectangle, scale=0.7] (1_) at (10.5, 0.5) {$1$};
 
-                \draw[dashed, thick, blue] (z_) -- (y2_);
-                \draw[thick] (z_) -- (x2_);
-                \draw[dashed, thick] (x2_) -- (y2_);
-                \draw[thick] (x2_) -- (y4_);
+                \draw[dashed, thick, blue] (z_) to (y2_);
+                \draw[thick] (z_) to (x2_);
+                \draw[dashed, thick] (x2_) to (y2_);
+                \draw[thick] (x2_) to (y4_);
                 
                 \draw[dashed, thick] (y2_) to (0_);
                 \draw[thick] (y2_) to (1_);
@@ -754,6 +899,338 @@
     \noindent\footnotesize\justifying
         As simplificações C1, C2 e C3 podem ser encadeadas. Por exemplo, o DDB anterior ainda pode ser simplificado com a remoção de um dos nós $y$ duplicados (C3) e a remoção de um ponto de decisão $x$ redundante (C2)
     \end{quotation}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exercício 1}
+
+    {\small
+    Reduza a árvore de decisão binária da função $f(p,q,r) \defeq \overline{p} + (q \cdot r)$ apresentada anteriormente:}
+   
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+
+            \begin{figure}
+
+                \begin{tikzpicture}
+                    [scale=0.7,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node (p) at (4.0, 6.0)  {$p$};
+                    \node (q1) at (2.0, 4.0)  {$q$};
+                    \node (q2) at (6.0, 4.0)  {$q$};
+                    \node (r1) at (1.0, 2.0)  {$r$};
+                    \node (r2) at (3.0, 2.0)  {$r$};
+                    \node (r3) at (5.0, 2.0)  {$r$};
+                    \node (r4) at (7.0, 2.0)  {$r$};
+                    
+                    \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1c) at (2.4, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (1d) at (3.6, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (4.4, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (0b) at (5.6, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (0c) at (6.4, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (1e) at (7.6, 0.0) {$1$};
+
+                    \draw[dashed, thick] (p) to (q1);
+                    \draw[thick] (p) to (q2);
+                    \draw[dashed, thick] (q1) to (r1);
+                    \draw[thick] (q1) to (r2);
+                    \draw[dashed, thick] (q2) to (r3);
+                    \draw[thick] (q2) to (r4);
+                    \draw[dashed, thick] (r1) to (1a);
+                    \draw[thick] (r1) to (1b);
+                    \draw[dashed, thick] (r2) to (1c);
+                    \draw[thick] (r2) to (1d);
+                    \draw[dashed, thick] (r3) to (0a);
+                    \draw[thick] (r3) to (0b);
+                    \draw[dashed, thick] (r4) to (0c);
+                    \draw[thick] (r4) to (1e);
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+            
+            {\small
+                Simplificações:
+                {\scriptsize
+                    \begin{outline}
+                        \1[\textbf{C1}.] Remoção de nós terminais duplicados
+                        \1[\textbf{C2}.] Remoção de testes redundantes
+                        \1[\textbf{C3}.] Remoção de nós não-terminais duplicados
+                    \end{outline}
+                }
+            }
+    
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Solução -- 1º passo}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.7,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (16,6);
+          
+            %Leftmost graph
+            \node (p) at (4.0, 6.0)  {$p$};
+            \node (q1) at (2.0, 4.0)  {$q$};
+            \node (q2) at (6.0, 4.0)  {$q$};
+            \node (r1) at (1.0, 2.0)  {$r$};
+            \node (r2) at (3.0, 2.0)  {$r$};
+            \node (r3) at (5.0, 2.0)  {$r$};
+            \node (r4) at (7.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7, blue] (1a) at (0.4, 0.0) {$1$};
+            \node[rectangle, scale=0.7, red] (1b) at (1.6, 0.0) {$1$};
+            \node[rectangle, scale=0.7, red] (1c) at (2.4, 0.0) {$1$};
+            \node[rectangle, scale=0.7, red] (1d) at (3.6, 0.0) {$1$};
+            \node[rectangle, scale=0.7, red] (0a) at (4.4, 0.0) {$0$};
+            \node[rectangle, scale=0.7, red] (0b) at (5.6, 0.0) {$0$};
+            \node[rectangle, scale=0.7, blue] (0c) at (6.4, 0.0) {$0$};
+            \node[rectangle, scale=0.7, red] (1e) at (7.6, 0.0) {$1$};
+
+            \draw[dashed, thick] (p) to (q1);
+            \draw[thick] (p) to (q2);
+            \draw[dashed, thick] (q1) to (r1);
+            \draw[thick] (q1) to (r2);
+            \draw[dashed, thick] (q2) to (r3);
+            \draw[thick] (q2) to (r4);
+            \draw[dashed, thick] (r1) to (1a);
+            \draw[thick] (r1) to (1b);
+            \draw[dashed, thick] (r2) to (1c);
+            \draw[thick] (r2) to (1d);
+            \draw[dashed, thick] (r3) to (0a);
+            \draw[thick] (r3) to (0b);
+            \draw[dashed, thick] (r4) to (0c);
+            \draw[thick] (r4) to (1e);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C1};
+                
+            % Rightmost graph
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q1_) at (11.0, 4.0)  {$q$};
+            \node (q2_) at (15.0, 4.0)  {$q$};
+            \node (r1_) at (10.0, 2.0)  {$r$};
+            \node (r2_) at (12.0, 2.0)  {$r$};
+            \node (r3_) at (14.0, 2.0)  {$r$};
+            \node (r4_) at (16.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7, blue] (1_) at (11.0, 0.0) {$1$};
+            \node[rectangle, scale=0.7, blue] (0_) at (15.0, 0.0) {$0$};
+
+            \draw[dashed, thick] (p_) to (q1_);
+            \draw[thick] (p_) to (q2_);
+            \draw[dashed, thick] (q1_) to (r1_);
+            \draw[thick] (q1_) to (r2_);
+            \draw[dashed, thick] (q2_) to (r3_);
+            \draw[thick] (q2_) to (r4_);
+            \draw[bend right=40, dashed, thick] (r1_) to (1_);
+            \draw[bend left=20, thick] (r1_) to (1_);
+            \draw[bend right=20, dashed, thick] (r2_) to (1_);
+            \draw[bend left=40, thick] (r2_) to (1_);
+            \draw[bend right=40, dashed, thick] (r3_) to (0_);
+            \draw[bend left=20, thick] (r3_) to (0_);
+            \draw[bend right=20, dashed, thick] (r4_) to (0_);
+            \draw[bend left=90, thick] (r4_) to (1_);
+                      
+        \end{tikzpicture}
+
+    \end{figure}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Solução -- 2º passo}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.7,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (16,6);
+          
+            %Leftmost graph
+            \node (p) at (4.0, 6.0)  {$p$};
+            \node (q1) at (2.0, 4.0)  {$q$};
+            \node (q2) at (6.0, 4.0)  {$q$};
+            \node[red] (r1) at (1.0, 2.0)  {$r$};
+            \node[red] (r2) at (3.0, 2.0)  {$r$};
+            \node[red] (r3) at (5.0, 2.0)  {$r$};
+            \node (r4) at (7.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7] (1) at (2.0, 0.0) {$1$};
+            \node[rectangle, scale=0.7] (0) at (6.0, 0.0) {$0$};
+
+            \draw[dashed, thick] (p) to (q1);
+            \draw[thick] (p) to (q2);
+            \draw[dashed, thick, blue] (q1) to (r1);
+            \draw[thick, blue] (q1) to (r2);
+            \draw[dashed, thick, blue] (q2) to (r3);
+            \draw[thick] (q2) to (r4);
+            \draw[bend right=40, dashed, thick, red] (r1) to (1);
+            \draw[bend left=20, thick, red] (r1) to (1);
+            \draw[bend right=20, dashed, thick, red] (r2) to (1);
+            \draw[bend left=40, thick, red] (r2) to (1);
+            \draw[bend right=40, dashed, thick, red] (r3) to (0);
+            \draw[bend left=20, thick, red] (r3) to (0);
+            \draw[bend right=20, dashed, thick] (r4) to (0);
+            \draw[bend left=90, thick] (r4) to (1);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
+                
+            % Rightmost graph
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q1_) at (11.0, 4.0)  {$q$};
+            \node (q2_) at (15.0, 4.0)  {$q$};
+            \node (r4_) at (16.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
+            \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
+
+            \draw[dashed, thick] (p_) to (q1_);
+            \draw[thick] (p_) to (q2_);
+            \draw[bend right, dashed, thick, blue] (q1_) to (1_);
+            \draw[bend left, thick, blue] (q1_) to (1_);
+            \draw[bend right, dashed, thick, blue] (q2_) to (0_);
+            \draw[thick] (q2_) to (r4_);
+            \draw[bend right=20, dashed, thick] (r4_) to (0_);
+            \draw[bend left=90, thick] (r4_) to (1_);
+                      
+        \end{tikzpicture}
+
+    \end{figure}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Solução -- 3º passo}
+
+    \begin{figure}
+
+        \begin{tikzpicture}
+            [scale=0.7,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (16,6);
+          
+            %Leftmost graph
+            \node (p_) at (4.0, 6.0)  {$p$};
+            \node[red] (q1_) at (2.0, 4.0)  {$q$};
+            \node (q2_) at (6.0, 4.0)  {$q$};
+            \node (r4_) at (7.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7] (1_) at (2.0, 0.0) {$1$};
+            \node[rectangle, scale=0.7] (0_) at (6.0, 0.0) {$0$};
+
+            \draw[dashed, thick, blue] (p_) to (q1_);
+            \draw[thick] (p_) to (q2_);
+            \draw[bend right, dashed, thick, red] (q1_) to (1_);
+            \draw[bend left, thick, red] (q1_) to (1_);
+            \draw[bend right, dashed, thick] (q2_) to (0_);
+            \draw[thick] (q2_) to (r4_);
+            \draw[bend right=20, dashed, thick] (r4_) to (0_);
+            \draw[bend left=90, thick] (r4_) to (1_);
+            
+            % Arrow with text
+            \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
+                
+            % Rightmost graph
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q2_) at (15.0, 4.0)  {$q$};
+            \node (r4_) at (16.0, 2.0)  {$r$};
+            
+            \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
+            \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
+
+            \draw[bend right, dashed, thick, blue] (p_) to (1_);
+            \draw[thick] (p_) to (q2_);
+            \draw[bend right, dashed, thick] (q2_) to (0_);
+            \draw[thick] (q2_) to (r4_);
+            \draw[bend right=20, dashed, thick] (r4_) to (0_);
+            \draw[bend left=90, thick] (r4_) to (1_);
+        \end{tikzpicture}
+
+    \end{figure}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{\uppercase{DDB} reduzido $\times$ tabela-verdade}
+
+    Função booleana: $f(p,q,r) \defeq \overline{p} + (q \cdot r)$:
+  
+    \begin{columns}[c]
+        \column{0.6\textwidth}
+
+            \begin{figure}
+
+                \begin{tikzpicture}
+                    [scale=0.9,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node[magenta] (p) at (3.0, 5.0)  {$p$};
+                    \node (q) at (6.0, 4.0)  {$q$};
+                    \node[orange] (r) at (4.0, 2.0)  {$r$};
+                    
+                    \node[rectangle, scale=0.7, magenta] (1) at (2.0, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (0) at (6.0, 1.0) {$0$};
+
+                    \draw[dashed, thick, magenta] (p) to (1);
+                    \draw[thick] (p) to (q);
+                    \draw[dashed, thick] (q) to (0);
+                    \draw[thick] (q) to (r);
+                    \draw[dashed, thick] (r) to (0);
+                    \draw[thick, orange] (r) to (1);
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.4\textwidth}
+            \begin{center}
+                \small
+                \begin{table}
+                    \begin{tabular}{ccc|c}
+                        \textcolor{magenta}{$p$} & $q$ & $r$ & $f(p,q,r)$\\
+                        \hline
+                        \textcolor{magenta}{$0$} & $0$ & $0$ & \textcolor{magenta}{$1$}\\
+                        \textcolor{magenta}{$0$} & $0$ & $1$ & \textcolor{magenta}{$1$}\\
+                        \textcolor{magenta}{$0$} & $1$ & $0$ & \textcolor{magenta}{$1$}\\
+                        \textcolor{magenta}{$0$} & $1$ & $1$ & \textcolor{magenta}{$1$}\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & \textcolor{orange}{$1$} & \textcolor{orange}{$1$}\\
+                    \end{tabular}
+                \end{table}
+            \end{center}
+    
+    \end{columns}
     
 \end{frame}
 %-------------------------------------------
