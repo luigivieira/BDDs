@@ -1,5 +1,4 @@
 TEX=pdflatex
-BIB=bibtex
 FILE=Aula-DDBs
 OUTPUT_DIR=output
 TEXMFOUTPUT=$(OUTPUT_DIR)
@@ -36,9 +35,6 @@ ifeq ($(OS),Windows_NT)
 else
 	$(MD) $(OUTPUT_DIR)
 endif
-	$(TEX) $(ASPECTRATIO) -output-directory $(OUTPUT_DIR) $(FILE).tex
-	$(BIB) $(OUTPUT_DIR)$(SEP)$(FILE)
-	$(TEX) $(ASPECTRATIO) -output-directory $(OUTPUT_DIR) $(FILE).tex
 	$(TEX) $(ASPECTRATIO) -output-directory $(OUTPUT_DIR) $(FILE).tex
 
 clean:
