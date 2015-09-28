@@ -61,10 +61,6 @@
 \end{frame}
 %-------------------------------------------
 
-%===========================================
-\section{Representação de Funções Booleanas}
-%===========================================
-
 %-------------------------------------------
 \begin{frame}{Funções booleanas}
 
@@ -2341,6 +2337,108 @@
 
     \end{columns}
     
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{\uppercase{BDD}s ordenados}
+
+    \begin{outline}
+        \1 Quando a ordem das variáveis de teste nos caminhos que levam da raiz até uma folha é sempre a mesma, o BDD é dito \textit{ordenado}
+            \2[-] e passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
+        
+        \vspace{1em}
+        
+        \1 Esse compromisso com a ordem dá uma representação única de funções booleanas com OBDDs
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Teorema: OBDDs reduzidos são únicos}
+
+    \begin{block}{\textbf{Teorema 6.7}}
+        A representação em OBDD reduzido de uma função dada $f$ é unica. Isto é, sejam $B$ e $B^\prime$ dois OBDDs reduzidos com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Características de \uppercase{OBDD}s}
+
+    \begin{outline}
+        \1 As simplificações C1-C3 em um OBDD produzem sempre o mesmo OBDD reduzido
+            \2[-] chamado então de \textit{forma canônica}
+        
+        \vspace{1em}
+        
+        \1 ODDBs permitem representações compactas de certas classes de funções booleanas
+            \2[-] que seriam exponenciais em outros formatos/representações
+            
+        \vspace{1em}
+        
+        \1 Por outro lado, as operações $\cdot$ e $+$ apresentadas anteriormente não funcionam
+            \2[-] pois podem introduzir ocorrÊncias múltiplas de uma mesma variável
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Importância da representação canônica}
+
+    \scriptsize
+
+    \begin{outline}
+        \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ODDB reduzido que a represente contém tal variável;
+        
+        \vspace{1em}
+        
+        \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por ODDBs com ordem compatível, é possível decidir eficientemente se são equivalentes reduzindo seus ODDBs e comparando sua estrutura;
+            
+        \vspace{1em}
+        
+        \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu ODDB reduzido é igual a $B_1$;
+        
+        \vspace{1em}
+        
+        \1 \textbf{Teste de implicação}. Pode-se testar se uma função $f$ implica em outra $g$ calculando o ODDB para $f \cdot g$ e verificando que ele é igual a $B_0$;
+        
+        \vspace{1em}
+        
+        \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ODDB reduzido não é igual a $B_0$.
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo \texttt{reduzir}}
+
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo \texttt{aplicar}}
+
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo \texttt{restringir}}
+
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo \texttt{existe}}
+
+
 \end{frame}
 %-------------------------------------------
 
