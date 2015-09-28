@@ -23,7 +23,7 @@
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
-\title{Diagramas de Decisão Binários (DDBs)}
+\title{Diagramas de Decisão Binários (BDDs)}
 \date{\today}
 \author{Luiz Carlos Vieira}
 \institute{Instituto de Matemática e Estatística da Universidade de São Paulo}
@@ -46,12 +46,12 @@
     \begin{outline}
         \1 Representação de Funções Booleanas
             \2[-] fórmulas proposicionais e tabelas-verdade
-            \2[-] diagramas de decisão binários (DDBs)
-            \2[-] diagramas de decisão binários ordenados (DDBOs)
+            \2[-] diagramas de decisão binários (BDDs)
+            \2[-] diagramas de decisão binários ordenados (OBDDs)
 
         \vspace{1em}
             
-        \1 Algoritmos para DDBOs Reduzidos
+        \1 Algoritmos para OBDDs Reduzidos
             \2[-] algoritmo \texttt{reduzir}
             \2[-] algoritmo \texttt{aplicar}
             \2[-] algoritmo \texttt{restringir}
@@ -69,11 +69,11 @@
 \begin{frame}{Funções booleanas}
 
     \begin{outline}
-        \1 Parte do formalismo descritivo de sistemas de \textit{hardware} e \textit{software}
+        \1 Parte fundamental do formalismo descritivo de sistemas de \textit{hardware} e \textit{software}
 
         \vspace{1em}
             
-        \1 Que precisa ser representado computacionalmente de forma eficiente
+        \1 Que precisa ser computacionalmente representado de forma eficiente
     \end{outline}
 
 \end{frame}
@@ -83,7 +83,7 @@
 \begin{frame}{Definição: variáveis booleanas}
 
     \begin{block}{\textbf{Definição 6.1(a)}}
-        Uma variável booleana $x$ é uma variável que só pode assumir os valores $0$ e $1$. Denotamos variáveis booleanas por $x_1$, $x_2$, $\cdots$, e $x$, $y$ e $z$, $\cdots$
+        Uma variável booleana $x$ é uma variável que só pode assumir os valores $0$ e $1$. Denotamos variáveis booleanas por $x_1$, $x_2$, $...$, e $x$, $y$ e $z$, $...$.
     \end{block}
 
 \end{frame}
@@ -149,7 +149,7 @@
 %-------------------------------------------
 \begin{frame}{wffs e tabelas-verdade}
 
-    As fórmulas proposicionais bem-formadas (\textit{wffs}) e as tabelas-verdade são duas formas de se representar funções booleanas
+    As fórmulas proposicionais bem-formadas (\textit{wffs}) e as tabelas-verdade são duas representações de funções booleanas
 
     \begin{outline}
         \1 \textbf{fórmulas proposicionais}:
@@ -209,63 +209,63 @@
 %-------------------------------------------
 \begin{frame}{Vantagens e desvantagens}
 
-    \begin{center}
-        \scriptsize
-        
+    {\small
+        Há vantagens e desvantagens no uso de tabelas-verdade e fórmulas proposicionais para representar funções booleanas
+    }
+
+    {\scriptsize
         \setlength{\tabcolsep}{2pt}
-        \renewcommand{\arraystretch}{-1}
-        \newcommand{\tabitem}{~~\llap{\textbullet}~}
-        
+        \renewcommand{\arraystretch}{1.5}        
         \begin{table}
-            \caption{Há vantagens e desvantagens no uso de tabelas-verdade e fórmulas proposicionais para representar funções booleanas}
-            \begin{tabular}{C{0.2\textwidth}|L{0.4\textwidth}L{0.4\textwidth}}
-                & \multicolumn{1}{c}{\textbf{Tabelas-Verdade}} & \multicolumn{1}{c}{\textbf{Fórmulas Proposicionais}}\\
+            \begin{tabular}{C{0.3\textwidth}|C{0.35\textwidth}C{0.35\textwidth}}
+                & {\small\textbf{Tabelas-Verdade}} & {\small\textbf{Fórmulas Proposicionais}}\\
                 \hline
-                \textbf{Vantagens} &
-                    \begin{itemize}
-                        \item operações\footnote{verificação de satisfação e validade, e comparação de duas funções booleanas\label{operacoes}} simples
-                    \end{itemize}
-                    &
-                    \begin{itemize}
-                        \item representação compacta
-                    \end{itemize}
-                    \\
-                            
-                \textbf{Desvantagens} &
-                    \begin{itemize}
-                        \item ineficientes em espaço
-                        \item computacionalmente intratável
-                    \end{itemize}
-                    &
-                    \begin{itemize}
-                        \item operações\footnotemark[1] difíceis
-                        \item computacionalmente intratável
-                    \end{itemize}
-                    \\
+                {\small\textbf{Vantagens}} & verificações\footnote{satisfação, validade e equivalência\label{verificacoes}} simples & representação compacta\\
+
+                {\small\textbf{Desvantagens}} & ineficientes em espaço & verificações\footnotemark[1] não tão simples\\
             \end{tabular}
         \end{table}
+    }
+
+    \vspace{-2em}
+    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.7\linewidth}
+                \noindent\scriptsize\centering
+                Ambas são computacionalmente caras para muitas variáveis
+            \end{minipage}
+        }
     \end{center}
-            
+
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Operações sobre funções booleanas}
+\begin{frame}{Também nas operações booleanas}
 
-    As operações $\cdot$, $+$, $\oplus$ e $\bar{~}$ sobre duas funções $f$ e $g$ são realizadas de forma simples:
+    As operações booleanas ($\cdot$, $+$, $\oplus$ e $\bar{~}$) entre duas funções $f$ e $g$ também são simples:
 
     \begin{outline}
         \1 Com tabelas-verdade
-            \2[-] operação diretamente aplicada a cada linha, adicionando variáveis se necessário
-            \2[-] mas computacionalmente intratável ($2^n$ linhas)
+            \2[-] operação diretamente aplicada a cada linha
+            \2[-] acrescentando variáveis inexistentes, se necessário
 
         \vspace{1em}
             
         \1 Com fórmulas proposicionais
             \2[-] manipulação sintática da Lógica Proposicional
-            \2[-] por exemplo: $f \cdot g$ e $f \oplus g$ são respectivamente $\phi \land \psi$ e $(\phi \land \lnot{\psi}) \lor (\lnot{\phi} \land \psi)$
     \end{outline}
 
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.9\linewidth}
+                \noindent\scriptsize\justifying
+                Computacionalmente caro com tabelas-verdade ($2^n$ linhas) e imediata com fórmulas proposicionais (por exemplo, $f \cdot g$ e $f \oplus g$ são respectivamente $\phi \land \psi$ e $(\phi \land \lnot{\psi}) \lor (\lnot{\phi} \land \psi)$)
+            \end{minipage}
+        }
+    \end{center}
+    
 \end{frame}
 %-------------------------------------------
 
@@ -273,14 +273,13 @@
 \begin{frame}{Utilizando formas normais}
 
     \begin{outline}
-        \1 As formas normais facilitam em alguns aspectos
-            \2[-] e dificultam em outros
+        \1 A representação de fórmulas proposicionais em formas normais é facilitada em alguns aspectos
+            \2[-] mas é dificultada em outros
         
         \vspace{1em}
         
-        \1 Podem ser mais longas do que as fórmulas originais equivalentes não-normalizadas
+        \1 De forma geral, elas podem ser muito longas no pior caso
     \end{outline}
-
 \end{frame}
 %-------------------------------------------
 
@@ -289,18 +288,18 @@
 
     \begin{outline}
         \1 Facilita o teste de validade
-            \2[-] busca de cláusula disjuntiva sem preposições complementares
-            \2[-] teste de satisfação não é igualmente fácil
+            \2[-] cláusula disjuntiva sem preposições complementares
+            \2[-] teste de satisfação não é semelhante
         
         \vspace{1em}
         
-        \1 Facilita a operação de conjunção ($\cdot$)
-            \2[-] se $f$ e $g$ são CNFs, o resultado de $f \cdot g$ é CNF
+        \1 Facilita a operação de conjunção ($\land$)
+            \2[-] se $\phi$ e $\psi$ são CNFs, o resultado de $\phi \land \psi$ é CNF
         
         \vspace{1em}
         
-        \1 Dificulta as demais operações ($+$, $\oplus$ e $\bar{~}$)
-            \2[-] distributividade recursiva para manter CNF
+        \1 Dificulta as demais operações ($\lor$ e $\lnot$)
+            \2[-] aplicação de distributividade para manter CNF
     \end{outline}
 
     \begin{center}
@@ -333,7 +332,7 @@
                 \textbf{fórmulas CNF} & \textcolor{teal}{algumas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
                 \textbf{fórmulas NDF} & \textcolor{teal}{algumas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil}\\
                 \textbf{tabelas-verdade ordenadas} & \textcolor{BrickRed}{nunca} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{DDBOs reduzidos\footnote{que ainda serão explorados nessa aula}} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{mais ou menos} & \textcolor{teal}{mais ou menos} & \textcolor{ForestGreen}{fácil}\\
+                \textbf{OBDDs\footnote{Diagramas de Decisão Binários Ordenados -- que serão explorados a seguir} reduzidos} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{mais ou menos} & \textcolor{teal}{mais ou menos} & \textcolor{ForestGreen}{fácil}\\
             \end{tabular}
         \end{table}
     \end{center}
@@ -423,10 +422,22 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Junto com a tabela-verdade}
+\begin{frame}{Comparando com a tabela-verdade}
 
     Para a função booleana $f(x,y) \defeq \overline{x + y}$:
 
+    \vspace{-0.5em}
+    
+    \begin{center}
+        \scriptsize
+        \ovalbox{
+            \begin{minipage}[h]{0.8\linewidth}
+                \centering
+                equivalente à fórmula proposicional $\phi \equiv \lnot{(p \lor q)}$
+            \end{minipage}
+        }
+    \end{center}    
+    
     \begin{columns}[c]
         \column{0.6\textwidth}
 
@@ -463,10 +474,10 @@
                     \begin{tabular}{cc|c}
                         $x$ & $y$ & $f(x,y)$\\
                         \hline
-                        $1$ & $1$ & $0$\\
+                        $0$ & $0$ & $1$\\
                         $0$ & $1$ & $0$\\
                         $1$ & $0$ & $0$\\
-                        $0$ & $0$ & $1$\\
+                        $1$ & $1$ & $0$\\
                     \end{tabular}
                 \end{table}
             \end{center}
@@ -477,9 +488,9 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Outro exemplo}
+\begin{frame}{Outro exemplo comparativo}
 
-    Para a função booleana $f(p,q,r) \defeq \overline{p} + (q \cdot r)$:
+    Para a função booleana $f(x,y,z) \defeq \overline{x} + (y \cdot z)$:
     
     \vspace{-0.5em}
     
@@ -507,13 +518,13 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (p) at (4.0, 6.0)  {$p$};
-                    \node (q1) at (2.0, 4.0)  {$q$};
-                    \node (q2) at (6.0, 4.0)  {$q$};
-                    \node (r1) at (1.0, 2.0)  {$r$};
-                    \node (r2) at (3.0, 2.0)  {$r$};
-                    \node (r3) at (5.0, 2.0)  {$r$};
-                    \node (r4) at (7.0, 2.0)  {$r$};
+                    \node (x) at (4.0, 6.0)  {$x$};
+                    \node (y1) at (2.0, 4.0)  {$y$};
+                    \node (y2) at (6.0, 4.0)  {$y$};
+                    \node (z1) at (1.0, 2.0)  {$z$};
+                    \node (z2) at (3.0, 2.0)  {$z$};
+                    \node (z3) at (5.0, 2.0)  {$z$};
+                    \node (z4) at (7.0, 2.0)  {$z$};
                     
                     \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
@@ -524,20 +535,20 @@
                     \node[rectangle, scale=0.7] (0c) at (6.4, 0.0) {$0$};
                     \node[rectangle, scale=0.7] (1e) at (7.6, 0.0) {$1$};
 
-                    \draw[dashed, thick] (p) to (q1);
-                    \draw[thick] (p) to (q2);
-                    \draw[dashed, thick] (q1) to (r1);
-                    \draw[thick] (q1) to (r2);
-                    \draw[dashed, thick] (q2) to (r3);
-                    \draw[thick] (q2) to (r4);
-                    \draw[dashed, thick] (r1) to (1a);
-                    \draw[thick] (r1) to (1b);
-                    \draw[dashed, thick] (r2) to (1c);
-                    \draw[thick] (r2) to (1d);
-                    \draw[dashed, thick] (r3) to (0a);
-                    \draw[thick] (r3) to (0b);
-                    \draw[dashed, thick] (r4) to (0c);
-                    \draw[thick] (r4) to (1e);
+                    \draw[dashed, thick] (x) to (y1);
+                    \draw[thick] (x) to (y2);
+                    \draw[dashed, thick] (y1) to (z1);
+                    \draw[thick] (y1) to (z2);
+                    \draw[dashed, thick] (y2) to (z3);
+                    \draw[thick] (y2) to (z4);
+                    \draw[dashed, thick] (z1) to (1a);
+                    \draw[thick] (z1) to (1b);
+                    \draw[dashed, thick] (z2) to (1c);
+                    \draw[thick] (z2) to (1d);
+                    \draw[dashed, thick] (z3) to (0a);
+                    \draw[thick] (z3) to (0b);
+                    \draw[dashed, thick] (z4) to (0c);
+                    \draw[thick] (z4) to (1e);
                 \end{tikzpicture}
 
             \end{figure}
@@ -547,7 +558,7 @@
                 \small
                 \begin{table}
                     \begin{tabular}{ccc|c}
-                        $p$ & $q$ & $r$ & $f(p,q,r)$\\
+                        $x$ & $y$ & $z$ & $f(x,y,z)$\\
                         \hline
                         $0$ & $0$ & $0$ & $1$\\
                         $0$ & $0$ & $1$ & $1$\\
@@ -577,21 +588,12 @@
         
         \1 Mas muitas vezes elas contêm redundâncias que podem ser exploradas
     \end{outline}      
-
-    \begin{center}
-        \ovalbox{
-            \begin{minipage}[h]{0.8\linewidth}
-                \noindent\scriptsize
-                A exploração de redundâncias em Árvores de Decisão Binárias faz com que deixem de ser árvores e se tornem grafos. Assim, passam a ser chamados de Diagramas de Decisão Binários (BDDs).
-            \end{minipage}
-        }
-    \end{center}
    
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Remoção de nós terminais duplicados}
+\begin{frame}{Primeira simplificação}
 
     \begin{figure}
 
@@ -651,14 +653,15 @@
 
     \begin{quotation}
     \noindent\footnotesize\justifying
-        Se um DDB contém mais de um nó terminal $0$, redirecionam-se todas as arestas que apontam para tais nós para apenas um deles. Repete-se o mesmo processo para os nós terminais com $1$
+        \textbf{C1. Remoção de terminais duplicados}\\
+        Se há mais de um nó terminal $0$, todas as arestas que apontam para tais nós são redirecionadas para apenas um deles. O processo é então repetido para os nós terminais $1$
     \end{quotation}    
     
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Remoção de testes redundantes}
+\begin{frame}{Segunda simplificação}
 
     \begin{figure}
 
@@ -713,14 +716,15 @@
     
     \begin{quotation}
     \noindent\footnotesize\justifying
-        Se ambas as arestas de um nó $n$ apontam para o mesmo nó $m$, elimina-se o nó $n$, enviando todas as arestas que nele chegavam para $m$.
+        \textbf{C2. Remoção de testes redundantes}\\
+        Se ambas as arestas de um nó $n$ apontam para o mesmo nó $m$, o nó $n$ é eliminado e todas as arestas que nele chegavam são redirecionadas diretamente para o nó $m$.
     \end{quotation}
     
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Remoção de nós não-terminais duplicados}
+\begin{frame}{Terceira simplificação}
 
     \begin{figure}
 
@@ -807,14 +811,15 @@
     
     \begin{quotation}
     \noindent\footnotesize\justifying
-        Se dois nós distintos $n$ e $m$ são raizes de sub-DDBs idênticos, pode-se eliminar um deles redirecionando todas as arestas que chegam nele para o outro
+        \textbf{C3. Remoção de nós não-terminais duplicados}\\
+        Se dois nós distintos $n$ e $m$ são raízes de subárvores idênticas, um dos nós é eliminado e todas as arestas que nele chegavam são redirecionadas para o outro
     \end{quotation}
     
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Simplificações encadeadas}
+\begin{frame}{Processo de redução}
 
     \begin{figure}
 
@@ -897,7 +902,7 @@
     
     \begin{quotation}
     \noindent\footnotesize\justifying
-        As simplificações C1, C2 e C3 podem ser encadeadas. Por exemplo, o DDB anterior ainda pode ser simplificado com a remoção de um dos nós $y$ duplicados (C3) e a remoção de um ponto de decisão $x$ redundante (C2)
+        As simplificações são encadeadas até não mais ser possível. O exemplo anterior é completamente reduzido após a eliminação de um dos nós $y$ duplicados (C3) seguida da eliminação de um ponto de decisão $x$ redundante (C2)
     \end{quotation}
     
 \end{frame}
@@ -907,7 +912,7 @@
 \begin{frame}{Exercício 1}
 
     {\small
-    Reduza a árvore de decisão binária da função $f(p,q,r) \defeq \overline{p} + (q \cdot r)$ apresentada anteriormente:}
+    Reduza a árvore de decisão binária da função $f(x,y,z) \defeq \overline{x} + (y \cdot z)$ apresentada anteriormente:}
    
     \begin{columns}[c]
         \column{0.5\textwidth}
@@ -921,13 +926,13 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (p) at (4.0, 6.0)  {$p$};
-                    \node (q1) at (2.0, 4.0)  {$q$};
-                    \node (q2) at (6.0, 4.0)  {$q$};
-                    \node (r1) at (1.0, 2.0)  {$r$};
-                    \node (r2) at (3.0, 2.0)  {$r$};
-                    \node (r3) at (5.0, 2.0)  {$r$};
-                    \node (r4) at (7.0, 2.0)  {$r$};
+                    \node (p) at (4.0, 6.0)  {$x$};
+                    \node (q1) at (2.0, 4.0)  {$y$};
+                    \node (q2) at (6.0, 4.0)  {$y$};
+                    \node (r1) at (1.0, 2.0)  {$z$};
+                    \node (r2) at (3.0, 2.0)  {$z$};
+                    \node (r3) at (5.0, 2.0)  {$z$};
+                    \node (r4) at (7.0, 2.0)  {$z$};
                     
                     \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
@@ -959,7 +964,7 @@
         \column{0.5\textwidth}
             
             {\small
-                Simplificações:
+                Resumo das simplificações:
                 {\scriptsize
                     \begin{outline}
                         \1[\textbf{C1}.] Remoção de nós terminais duplicados
@@ -987,13 +992,13 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p) at (4.0, 6.0)  {$p$};
-            \node (q1) at (2.0, 4.0)  {$q$};
-            \node (q2) at (6.0, 4.0)  {$q$};
-            \node (r1) at (1.0, 2.0)  {$r$};
-            \node (r2) at (3.0, 2.0)  {$r$};
-            \node (r3) at (5.0, 2.0)  {$r$};
-            \node (r4) at (7.0, 2.0)  {$r$};
+            \node (p) at (4.0, 6.0)  {$x$};
+            \node (q1) at (2.0, 4.0)  {$y$};
+            \node (q2) at (6.0, 4.0)  {$y$};
+            \node (r1) at (1.0, 2.0)  {$z$};
+            \node (r2) at (3.0, 2.0)  {$z$};
+            \node (r3) at (5.0, 2.0)  {$z$};
+            \node (r4) at (7.0, 2.0)  {$z$};
             
             \node[rectangle, scale=0.7, blue] (1a) at (0.4, 0.0) {$1$};
             \node[rectangle, scale=0.7, red] (1b) at (1.6, 0.0) {$1$};
@@ -1023,13 +1028,13 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C1};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$p$};
-            \node (q1_) at (11.0, 4.0)  {$q$};
-            \node (q2_) at (15.0, 4.0)  {$q$};
-            \node (r1_) at (10.0, 2.0)  {$r$};
-            \node (r2_) at (12.0, 2.0)  {$r$};
-            \node (r3_) at (14.0, 2.0)  {$r$};
-            \node (r4_) at (16.0, 2.0)  {$r$};
+            \node (p_) at (13.0, 6.0)  {$x$};
+            \node (q1_) at (11.0, 4.0) {$y$};
+            \node (q2_) at (15.0, 4.0) {$y$};
+            \node (r1_) at (10.0, 2.0) {$z$};
+            \node (r2_) at (12.0, 2.0) {$z$};
+            \node (r3_) at (14.0, 2.0) {$z$};
+            \node (r4_) at (16.0, 2.0) {$z$};
             
             \node[rectangle, scale=0.7, blue] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7, blue] (0_) at (15.0, 0.0) {$0$};
@@ -1069,13 +1074,13 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p) at (4.0, 6.0)  {$p$};
-            \node (q1) at (2.0, 4.0)  {$q$};
-            \node (q2) at (6.0, 4.0)  {$q$};
-            \node[red] (r1) at (1.0, 2.0)  {$r$};
-            \node[red] (r2) at (3.0, 2.0)  {$r$};
-            \node[red] (r3) at (5.0, 2.0)  {$r$};
-            \node (r4) at (7.0, 2.0)  {$r$};
+            \node (p) at (4.0, 6.0)       {$x$};
+            \node (q1) at (2.0, 4.0)      {$y$};
+            \node (q2) at (6.0, 4.0)      {$y$};
+            \node[red] (r1) at (1.0, 2.0) {$z$};
+            \node[red] (r2) at (3.0, 2.0) {$z$};
+            \node[red] (r3) at (5.0, 2.0) {$z$};
+            \node (r4) at (7.0, 2.0)      {$z$};
             
             \node[rectangle, scale=0.7] (1) at (2.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0) at (6.0, 0.0) {$0$};
@@ -1099,10 +1104,10 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$p$};
-            \node (q1_) at (11.0, 4.0)  {$q$};
-            \node (q2_) at (15.0, 4.0)  {$q$};
-            \node (r4_) at (16.0, 2.0)  {$r$};
+            \node (p_) at (13.0, 6.0)  {$x$};
+            \node (q1_) at (11.0, 4.0) {$y$};
+            \node (q2_) at (15.0, 4.0) {$y$};
+            \node (r4_) at (16.0, 2.0) {$z$};
             
             \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
@@ -1136,10 +1141,10 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p_) at (4.0, 6.0)  {$p$};
-            \node[red] (q1_) at (2.0, 4.0)  {$q$};
-            \node (q2_) at (6.0, 4.0)  {$q$};
-            \node (r4_) at (7.0, 2.0)  {$r$};
+            \node (p_) at (4.0, 6.0)       {$x$};
+            \node[red] (q1_) at (2.0, 4.0) {$y$};
+            \node (q2_) at (6.0, 4.0)      {$y$};
+            \node (r4_) at (7.0, 2.0)      {$z$};
             
             \node[rectangle, scale=0.7] (1_) at (2.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (6.0, 0.0) {$0$};
@@ -1157,9 +1162,9 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$p$};
-            \node (q2_) at (15.0, 4.0)  {$q$};
-            \node (r4_) at (16.0, 2.0)  {$r$};
+            \node (p_) at (13.0, 6.0)  {$x$};
+            \node (q2_) at (15.0, 4.0) {$y$};
+            \node (r4_) at (16.0, 2.0) {$z$};
             
             \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
@@ -1178,9 +1183,9 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{DDB} reduzido $\times$ tabela-verdade}
+\begin{frame}{Comparando com a tabela-verdade}
 
-    Função booleana: $f(p,q,r) \defeq \overline{p} + (q \cdot r)$:
+    Função booleana: $f(x,y,z) \defeq \overline{x} + (y \cdot z)$:
   
     \begin{columns}[c]
         \column{0.6\textwidth}
@@ -1194,17 +1199,17 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node[magenta] (p) at (3.0, 5.0)  {$p$};
-                    \node (q) at (6.0, 4.0)  {$q$};
-                    \node[orange] (r) at (4.0, 2.0)  {$r$};
+                    \node[magenta] (p) at (3.0, 5.0) {$x$};
+                    \node[orange] (q) at (6.0, 4.0)  {$y$};
+                    \node[orange] (r) at (4.0, 2.0)  {$z$};
                     
-                    \node[rectangle, scale=0.7, magenta] (1) at (2.0, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (1) at (2.0, 1.0) {$1$};
                     \node[rectangle, scale=0.7] (0) at (6.0, 1.0) {$0$};
 
                     \draw[dashed, thick, magenta] (p) to (1);
                     \draw[thick] (p) to (q);
                     \draw[dashed, thick] (q) to (0);
-                    \draw[thick] (q) to (r);
+                    \draw[thick, orange] (q) to (r);
                     \draw[dashed, thick] (r) to (0);
                     \draw[thick, orange] (r) to (1);
                 \end{tikzpicture}
@@ -1216,7 +1221,7 @@
                 \small
                 \begin{table}
                     \begin{tabular}{ccc|c}
-                        \textcolor{magenta}{$p$} & $q$ & $r$ & $f(p,q,r)$\\
+                        \textcolor{magenta}{$x$} & $y$ & $z$ & $f(x,y,z)$\\
                         \hline
                         \textcolor{magenta}{$0$} & $0$ & $0$ & \textcolor{magenta}{$1$}\\
                         \textcolor{magenta}{$0$} & $0$ & $1$ & \textcolor{magenta}{$1$}\\
@@ -1225,11 +1230,539 @@
                         $1$ & $0$ & $0$ & $0$\\
                         $1$ & $0$ & $1$ & $0$\\
                         $1$ & $1$ & $0$ & $0$\\
-                        $1$ & $1$ & \textcolor{orange}{$1$} & \textcolor{orange}{$1$}\\
+                        $1$ & \textcolor{orange}{$1$} & \textcolor{orange}{$1$} & \textcolor{orange}{$1$}\\
                     \end{tabular}
                 \end{table}
             \end{center}
     
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{\uppercase{BDD}s}
+
+    \begin{center}
+        \shadowbox{
+            \begin{minipage}[h]{0.9\linewidth}
+                \noindent
+                A redução faz com que as árvores se tornem grafos. Por isso, passam a ser chamados de \textbf{Diagramas de Decisão Binários (BDDs)}.
+            \end{minipage}
+        }
+    \end{center}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Definição: gda}
+
+    \begin{block}{\textbf{Definição 6.4}}
+        Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que omeça e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (gda) é um grafo direcionado que não contém nenhum ciclo. Um nó em um gda é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Definição: \uppercase{BDD}s}
+
+    \begin{block}{\textbf{Definição 6.5}}
+        Um diagrama de decisão binário (BDD) é um gda finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{\uppercase{BDD} como gda}
+
+    \begin{outline}
+        \1 Por convenção, as linhas sólidas ou pontilhadas de um BDD são sempre consideradas como indo para baixo
+            \2[-] por isso eles são grafos direcionados
+        
+        \vspace{1em}
+        
+        \1 Os BDDs são acíclicos (gda) e têm um único nó inicial
+
+        \vspace{1em}
+        
+        \1 As simplificações C1--C3 preservam essas propriedades
+            \2[-] BDDs totalmente reduzidos têm 1 ou 2 nós terminais
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{\uppercase{BDD}s elementares}
+
+    \begin{figure}
+
+        \caption{O BDD $B_0$ representa a função booleana constante $0$; analogamente, o BDD $B_1$ representa a função booleana constante $1$; e, finalmente, o BDD $B_x$ representa a variável booleana $x$}
+    
+        \begin{tikzpicture}
+            [scale=1.0,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (8,6);
+
+            \node[draw=none, scale=0.6] at (0.0, 2.8) {$B_0$};
+            \node[rectangle, scale=0.7] at (0.0, 2.0) {$0$};
+
+            \node[draw=none, scale=0.6] at (3.0, 2.8) {$B_1$};
+            \node[rectangle, scale=0.7] at (3.0, 2.0) {$1$};
+            
+            \node[draw=none, scale=0.6] at (6.0, 2.8) {$B_x$};
+            \node (x) at (6.0, 2.0) {$x$};
+            \node[rectangle, scale=0.7] (0) at (5.0, 0.0) {$0$};
+            \node[rectangle, scale=0.7] (1) at (7.0, 0.0) {$1$};
+
+            \draw[dashed, thick] (x) to (0);
+            \draw[thick] (x) to (1);
+        \end{tikzpicture}
+
+    \end{figure}
+
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Verificações sobre \uppercase{BDD}s}
+
+    \begin{outline}
+        \1 \textbf{Satisfação}. Um BDD representa uma função que pode ser satisfeita se um nó terminal $1$ pode ser acessado da raiz por meio de um caminho consistente
+        
+        \vspace{1em}
+        
+        \1 \textbf{Validade}. Um BDD representa uma função válida se nenhum ponto terminal $0$ é acessível por um caminho consistente
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplos óbvios}
+
+    \begin{columns}[c]
+        \column{0.3\textwidth}
+
+            \begin{figure}
+
+                \caption{$f(x,y) \defeq x \cdot y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                  
+                    \node (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7] (0) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (4.5, 1.0) {$1$};
+
+                    \draw[dashed, thick] (x) to (0);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.3\textwidth}
+            \begin{figure}
+
+                \caption{$g(x) \defeq x + \overline{x}$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+
+                    \node[magenta] (x) at (3.0, 5.0) {$x$};
+                    \node[rectangle, scale=0.7] (1) at (3.0, 1.0) {$1$};
+
+                    \draw[dashed, thick, bend right, magenta] (x) to (1);
+                    \draw[thick, bend left, magenta] (x) to (1);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.3\textwidth}
+            \begin{figure}
+
+                \caption{$h(y) \defeq y \cdot \overline{y}$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+
+                    \node[magenta] (y) at (3.0, 5.0) {$y$};
+                    \node[rectangle, scale=0.7] (0) at (3.0, 1.0) {$0$};
+
+                    \draw[dashed, thick, bend right, magenta] (y) to (0);
+                    \draw[thick, bend left, magenta] (y) to (0);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+        
+    \end{columns}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Operações sobre \uppercase{BDD}s}
+
+    \begin{outline}
+        \small
+        \1 \textbf{Operação de negação ($\bar{~}$)}. Obtem-se um BDD que representa $\overline{f}$ substituindo todos os terminais $0$ em $B_f$ por terminais $1$ e vice-versa
+        
+        \vspace{1em}
+        
+        \1 \textbf{Operação de conjunção ($\cdot$)}. Obtem-se um BDD que representa $f \cdot g$ substituindo todos os nós terminais $1$ em $B_f$ diretamente por uma cópia de $B_g$
+        
+        \vspace{1em}
+        
+        \1 \textbf{Operação de disjunção ($+$)}. Obtem-se um BDD que representa $f + g$ substituindo todos os nós terminais $0$ em $B_f$ diretamente por uma cópia de $B_g$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplo da negação}
+
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+
+            \begin{figure}
+
+                \caption{$f(x,y) \defeq x \cdot y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                  
+                    \node (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7, magenta] (0) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7, orange] (1) at (4.5, 1.0) {$1$};
+
+                    \draw[dashed, thick] (x) to (0);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+            \begin{figure}
+
+                \caption{$g(x,y) \defeq \overline{x \cdot y}$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                  
+                    \node (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7, orange] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7, magenta] (0) at (4.5, 1.0) {$0$};
+
+                    \draw[dashed, thick] (x) to (1);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (1);
+                    \draw[thick] (y) to (0);
+
+                \end{tikzpicture}
+
+            \end{figure}
+        
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplo da conjunção}
+
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+        
+            \begin{figure}
+
+                \caption{$f(x,y) \defeq x \cdot y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7] (0) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7, red] (1) at (4.5, 1.0) {$1$};
+
+                    \draw[dashed, thick] (x) to (0);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+                  
+                \end{tikzpicture}
+
+            \end{figure}
+
+            \vspace{-2em}
+            
+            \begin{figure}
+
+                \caption{$g(x,y) \defeq \overline{x} + y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node[blue] (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (0) at (4.5, 1.0) {$0$};
+
+                    \draw[dashed, thick] (x) to (1);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+                \end{tikzpicture}
+
+            \end{figure}
+            
+        \column{0.5\textwidth}            
+
+            \begin{figure}
+
+                \caption{$h(x,y) \defeq (x \cdot y) \cdot (\overline{x} + y)$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node (x1) at (3.0, 5.0) {$x$};
+                    \node (y1) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7] (0a) at (1.5, 1.0) {$0$};
+
+                    \node[blue] (x2) at (4.5, 1.0) {$x$};
+                    \node (y2) at (6.0, -1.0) {$y$};
+                    \node[rectangle, scale=0.7] (1) at (3.0, -3.0) {$1$};
+                    \node[rectangle, scale=0.7] (0b) at (6.0, -3.0) {$0$};
+                    
+                    \draw[dashed, thick] (x1) to (0a);
+                    \draw[thick] (x1) to (y1);
+                    \draw[dashed, thick] (y1) to (0a);
+                    \draw[thick] (y1) to (x2);
+
+                    \draw[dashed, thick] (x2) to (1);
+                    \draw[thick] (x2) to (y2);
+                    \draw[dashed, thick] (y2) to (0b);
+                    \draw[thick] (y2) to (1);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplo da disjunção}
+
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+        
+            \begin{figure}
+
+                \caption{$f(x,y) \defeq x \cdot y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7, red] (0) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (4.5, 1.0) {$1$};
+
+                    \draw[dashed, thick] (x) to (0);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+                  
+                \end{tikzpicture}
+
+            \end{figure}
+
+            \vspace{-2em}
+            
+            \begin{figure}
+
+                \caption{$g(x,y) \defeq \overline{x} + y$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node[blue] (x) at (3.0, 5.0) {$x$};
+                    \node (y) at (4.5, 3.0) {$y$};
+                    \node[rectangle, scale=0.7] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7] (0) at (4.5, 1.0) {$0$};
+
+                    \draw[dashed, thick] (x) to (1);
+                    \draw[thick] (x) to (y);
+                    \draw[dashed, thick] (y) to (0);
+                    \draw[thick] (y) to (1);
+                \end{tikzpicture}
+
+            \end{figure}
+            
+        \column{0.5\textwidth}            
+
+            \begin{figure}
+
+                \caption{$h(x,y) \defeq (x \cdot y) + (\overline{x} + y)$}
+            
+                \begin{tikzpicture}
+                    [scale=0.5,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    
+                    \node (x1) at (3.0, 5.0) {$x$};
+                    \node (y1) at (4.5, 3.0) {$y$};
+                    %\node[rectangle, scale=0.7] (0a) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1a) at (4.5, 1.0) {$1$};
+
+                    \node[blue] (x2) at (1.5, 1.0) {$x$};
+                    \node (y2) at (3.0, -1.0) {$y$};
+                    \node[rectangle, scale=0.7] (1b) at (0.0, -3.0) {$1$};
+                    \node[rectangle, scale=0.7] (0) at (3.0, -3.0) {$0$};
+                    
+                    \draw[dashed, thick] (x1) to (x2);
+                    \draw[thick] (x1) to (y1);
+                    \draw[thick] (y1) to (1a);
+                    \draw[dashed, thick] (y1) to (x2);
+
+                    \draw[dashed, thick] (x2) to (1b);
+                    \draw[thick] (x2) to (y2);
+                    \draw[dashed, thick] (y2) to (0);
+                    \draw[thick] (y2) to (1b);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Múltiplas ocorrências de mesma variável}
+
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node (x1) at (4.0, 6.0) {$x$};
+                    \node (y1) at (2.5, 4.5) {$y$};
+                    \node (z1) at (5.5, 4.5) {$z$};
+                    \node (x2) at (1.5, 3.0) {$x$};
+                    \node (x3) at (6.5, 3.0) {$x$};
+                    \node (y2) at (4.3, 3.0) {$y$};
+                    
+                    \node[rectangle, scale=0.7] (0) at (2.0, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (6.0, 1.0) {$1$};
+
+                    \draw[dashed, thick] (x1) to (y1);
+                    \draw[thick] (x1) to (z1);
+                    \draw[dashed, thick] (y1) to (x2);
+                    \draw[thick, bend right=15] (y1) to (1);
+                    \draw[thick, magenta] (x2) to (1);
+                    \draw[dashed, thick] (x2) to (0);
+                    \draw[thick] (x3) to (1);
+                    \draw[dashed, thick] (x3) to (0);
+                    \draw[dashed, thick] (z1) to (y2);
+                    \draw[thick] (z1) to (x3);
+                    \draw[dashed, thick] (y2) to (0);
+                    \draw[thick] (y2) to (1);
+
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.6\textwidth}
+            
+            \begin{outline}
+                \small
+                \1 A definição não impede uma variável de ocorrer mais de uma vez em um caminho
+                
+                \vspace{1em}
+                
+                \1 Mas tal representação pode incorrer em desperdícios
+                    \2[-] {\scriptsize linha sólida do $x$ à esquerda (colorida) jamais será percorrida}
+            \end{outline}
+            
+            \begin{center}
+                \ovalbox{
+                    \begin{minipage}[h]{0.9\columnwidth}
+                        \noindent\scriptsize\justifying
+                        Comum após as operações de conjunção e disjunção discutidas anteriormente (algoritmos melhores serão discutidos à frente)
+                    \end{minipage}
+                }
+            \end{center}            
+
     \end{columns}
     
 \end{frame}
