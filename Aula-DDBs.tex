@@ -15,6 +15,7 @@
 \usepackage{tikz-qtree} % For the graphs
 \usetikzlibrary{shapes.arrows,trees,positioning}
 
+\usepackage{stmaryrd} % For some logic symbols
 \usepackage{amsmath} % For math symbols
 \boldmath
 
@@ -36,6 +37,11 @@
 \graphicspath{{./images/}}
 
 \setbeamerfont{footnote}{size=\tiny}
+
+\definecolor{good}{rgb}{0.14,0.67,0.70} %blueish
+\definecolor{bad}{rgb}{0.92,0.30,0.36} % redish
+\definecolor{ok}{rgb}{0.97,0.61,0.12} % orangeish
+\definecolor{emphasis}{rgb}{0.92,0.00,0.70} % pinkish
 
 \begin{document}
 \maketitle
@@ -149,9 +155,9 @@
 
     \begin{outline}
         \1 \textbf{fórmulas proposicionais}:
-            \2[-] $\land$ denota $\cdot$
-            \2[-] $\lor$ denota $+$
-            \2[-] $\lnot$ denota $\bar{~}$
+            \2[-] $p \land q$ denota $p \cdot q$
+            \2[-] $p \lor q$ denota $p + q$
+            \2[-] $\lnot{p}$ denota $\overline{p}$
             \2[-] e $\top$ e $\bot$ denotam, respectivamente, $1$ e $0$
         
         \vspace{1em}
@@ -174,10 +180,10 @@
                     \begin{tabular}{cc|c}
                         $x$ & $y$ & $f(x,y)$\\
                         \hline
-                        $1$ & $1$ & $0$\\
+                        $0$ & $0$ & $1$\\
                         $0$ & $1$ & $0$\\
                         $1$ & $0$ & $0$\\
-                        $0$ & $0$ & $1$\\
+                        $1$ & $1$ & $0$\\
                     \end{tabular}
                 \end{table}
             \end{center}
@@ -190,15 +196,32 @@
                     \begin{tabular}{cc|c}
                         $p$ & $q$ & $\phi$\\
                         \hline
-                        $V$ & $V$ & $F$\\
+                        $F$ & $F$ & $V$\\
                         $F$ & $V$ & $F$\\
                         $V$ & $F$ & $F$\\
-                        $F$ & $F$ & $V$\\
+                        $V$ & $V$ & $F$\\
                     \end{tabular}
                 \end{table}
             \end{center}
     \end{columns}
             
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Sobre a notação utilizada...}
+
+    \small
+
+    \begin{outline}
+        \1 No contexto desta aula, tabelas-verdade, fórmulas proposicionais e BDDs (em estudo) são diferentes formas de representação computacional de funções booleanas
+        
+        \vspace{1em}
+        
+        \1 Uma vez que tais representações são facilmente traduzíveis entre si, os símbolos da lógica proposicional serão utilizados com o objetivo de facilitar o entendimento
+            \2[-] a única distinção será a utilização de $0$ e $1$ no lugar de $F$ e $V$ nas representações de tabelas-verdade e diagramas
+    \end{outline}
+
 \end{frame}
 %-------------------------------------------
 
@@ -240,30 +263,158 @@
 %-------------------------------------------
 \begin{frame}{Também nas operações booleanas}
 
-    As operações booleanas ($\cdot$, $+$, $\oplus$ e $\bar{~}$) entre duas funções $f$ e $g$ também são simples:
+    As operações booleanas ($\land$, $\lor$ e $\lnot$) entre duas funções $\phi$ e $\psi$ também são simples:
 
     \begin{outline}
         \1 Com tabelas-verdade
             \2[-] operação diretamente aplicada a cada linha
             \2[-] acrescentando variáveis inexistentes, se necessário
+            \2[-] mas computacionamente caro ($2^n$ linhas)
 
         \vspace{1em}
             
         \1 Com fórmulas proposicionais
             \2[-] manipulação sintática da Lógica Proposicional
+            \2[-] de realização imediata
     \end{outline}
-
-    \begin{center}
-        \ovalbox{
-            \begin{minipage}[h]{0.9\linewidth}
-                \noindent\scriptsize\justifying
-                Computacionalmente caro com tabelas-verdade ($2^n$ linhas) e imediata com fórmulas proposicionais (por exemplo, $f \cdot g$ e $f \oplus g$ são respectivamente $\phi \land \psi$ e $(\phi \land \lnot{\psi}) \lor (\lnot{\phi} \land \psi)$)
-            \end{minipage}
-        }
-    \end{center}
     
 \end{frame}
 %-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[t]{Por exemplo: disjunção}
+
+    \small
+
+    \newcolumntype{g}{>{\color{good}}c}
+    \newcolumntype{e}{>{\color{emphasis}}c}
+
+    \begin{columns}[t]
+        \column{0.33\textwidth}
+            {\small\centering $\phi \equiv \lnot{p} \land q$\par}
+
+            \only<1-2>{
+                \begin{table}
+                    \begin{tabular}{cc|c}
+                        $p$ & $q$ & $\phi$\\
+                        \hline
+                        $0$ & $0$ & $0$\\
+                        $0$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $0$\\
+                    \end{tabular}
+                \end{table}
+            }
+            
+            \only<3>{
+                \begin{table}
+                    \begin{tabular}{ccg|c}
+                        $p$ & $q$ & $r$ & $\phi$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$ & $0$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $0$\\
+                    \end{tabular}
+                \end{table}
+            }
+
+            \only<4>{
+                \begin{table}
+                    \begin{tabular}{ccc|e}
+                        $p$ & $q$ & $r$ & $\phi$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$ & $0$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $0$\\
+                    \end{tabular}
+                \end{table}
+            }
+            
+        \column{0.33\textwidth}
+            {\small\centering $\psi \equiv r$\par}
+            
+            \only<1-2>{
+                \begin{table}
+                    \begin{tabular}{c|c}
+                        $r$ & $\psi$\\
+                        \hline
+                        $0$ & $0$\\
+                        $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            }
+            
+            \only<3>{
+                \begin{table}
+                    \begin{tabular}{ggc|c}
+                        $p$ & $q$ & $r$ & $\psi$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $0$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $1$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            }
+            
+            \only<4>{
+                \begin{table}
+                    \begin{tabular}{ccc|e}
+                        $p$ & $q$ & $r$ & $\psi$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $0$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $1$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            }
+            
+        \column{0.33\textwidth}
+            \only<2-4>{
+                {\small\centering $\omega \equiv \phi \lor \psi$\par}
+            }
+    
+            \only<4>{
+                \begin{table}
+                    \begin{tabular}{ccc|e}
+                        $p$ & $q$ & $r$ & $\omega$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $0$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $1$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            }
+    
+    \end{columns}
+
+\end{frame}
+%-------------------------------------------
+
 
 %-------------------------------------------
 \begin{frame}{Utilizando formas normais}
@@ -285,7 +436,7 @@
     \begin{outline}
         \1 Facilita o teste de validade
             \2[-] cláusula disjuntiva sem preposições complementares
-            \2[-] teste de satisfação não é semelhante
+            \2[-] teste de satisfação não é igualmente fácil
         
         \vspace{1em}
         
@@ -324,11 +475,13 @@
                 & & \multicolumn{2}{c}{\textbf{teste de}} & \multicolumn{3}{c}{\textbf{operações booleanas}}\\[-3.5mm]
                 \textbf{Representação de funções booleanas} & \textbf{compacta?} & \textbf{satisfação} & \textbf{validade} & $\cdot$ & $+$ & $\bar{~}$\\
                 \hline
-                \textbf{fórmulas proposicionais} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} \\
-                \textbf{fórmulas CNF} & \textcolor{teal}{algumas vezes} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{fórmulas NDF} & \textcolor{teal}{algumas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{ForestGreen}{fácil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{tabelas-verdade ordenadas} & \textcolor{BrickRed}{nunca} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil} & \textcolor{BrickRed}{difícil}\\
-                \textbf{OBDDs\footnote{Diagramas de Decisão Binários Ordenados -- que serão explorados a seguir} reduzidos} & \textcolor{ForestGreen}{muitas vezes} & \textcolor{ForestGreen}{fácil} & \textcolor{ForestGreen}{fácil} & \textcolor{teal}{mais ou menos} & \textcolor{teal}{mais ou menos} & \textcolor{ForestGreen}{fácil}\\
+                \textbf{fórmulas proposicionais} & \textcolor{good}{muitas vezes} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{good}{fácil} & \textcolor{good}{fácil} & \textcolor{good}{fácil} \\
+                \textbf{fórmulas CNF} & \textcolor{ok}{algumas vezes} & \textcolor{bad}{difícil} & \textcolor{good}{fácil} & \textcolor{good}{fácil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil}\\
+                \textbf{fórmulas NDF} & \textcolor{ok}{algumas vezes} & \textcolor{good}{fácil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{good}{fácil} & \textcolor{bad}{difícil}\\
+                \textbf{tabelas-verdade ordenadas} & \textcolor{bad}{nunca} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil}\\
+                \only<2>{
+                \textbf{OBDDs\footnote{Diagramas de Decisão Binários Ordenados -- que serão explorados a seguir} reduzidos} & \textcolor{good}{muitas vezes} & \textcolor{good}{fácil} & \textcolor{good}{fácil} & \textcolor{ok}{mais ou menos} & \textcolor{ok}{mais ou menos} & \textcolor{good}{fácil}\\
+                }
             \end{tabular}
         \end{table}
     \end{center}
@@ -339,11 +492,12 @@
 \begin{frame}{Definição: Árvore de Decisão Binária Finita}
 
     \begin{block}{\textbf{Definição 6.3}}
-        Seja $T$ uma árvore de decisão binária finita. Então $T$ determina \textit{uma única} função booleana das variáveis nos nós não-terminais da seguinte maneira:
+        \small
+        Seja $T$ uma árvore binária cujos nós não-terminais (nós de teste) contêm variáveis booleanas e cujos nós termiais contêm os valores $0$ ou $1$. Então $T$ é uma árvore de decisão binária finita e determina \textit{uma única} função booleana $f$ da seguinte forma:
         
         \begin{quotation}
-        \noindent\small\justifying
-        Dada uma atribuição de $0$'s e $1$'s às variáveis booleanas que ocorrem em $T$, começamos pela raiz de $T$ e pegamos a \textit{linha tracejada} sempre que o valor da variável no nó atual é $0$; caso contrário, percorremos a \textit{linha sólida}. O valor da função é o valor do nó terminal atingido.
+        \noindent\justifying
+        Dada uma atribuição de $0$'s e $1$'s às variáveis booleanas que ocorrem em $f$, começamos pela raiz de $T$ e pegamos a \textit{linha tracejada} sempre que o valor da variável no nó atual é $0$; caso contrário, percorremos a \textit{linha sólida}. O valor da função é o valor do nó terminal atingido.
         \end{quotation}
     \end{block}
 
@@ -365,9 +519,9 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                   
-                    \node (x) at (3.0, 5.0)  {$x$};
-                    \node (y1) at (1.5, 3.0)  {$y$};
-                    \node (y2) at (4.5, 3.0)  {$y$};
+                    \node (x) at (3.0, 5.0)  {$p$};
+                    \node (y1) at (1.5, 3.0)  {$q$};
+                    \node (y2) at (4.5, 3.0)  {$q$};
                     \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
                     \node[rectangle, scale=0.7] (0a) at (2.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
@@ -382,17 +536,17 @@
 
                     % Animations
                     \uncover<3->{
-                        \node[magenta] at (3.0, 5.0)  {$x$};
+                        \node[emphasis] at (3.0, 5.0)  {$p$};
                     }
                     \uncover<4->{
-                        \draw[dashed, thick, magenta] (x) to (y1);
+                        \draw[dashed, thick, emphasis] (x) to (y1);
                     }
                     \uncover<5->{
-                        \node[magenta] at (1.5, 3.0)  {$y$};
-                        \draw[thick, magenta] (y1) to (0a);
+                        \node[emphasis] at (1.5, 3.0)  {$q$};
+                        \draw[thick, emphasis] (y1) to (0a);
                     }
                     \uncover<6->{
-                        \node[rectangle, scale=0.7, magenta] at (2.5, 1.0)  {$0$};
+                        \node[rectangle, scale=0.7, emphasis] at (2.5, 1.0)  {$0$};
                     }                  
                 \end{tikzpicture}
 
@@ -401,15 +555,15 @@
         \column{0.6\textwidth}
             \begin{outline}
                 \renewcommand{\outlineii}{enumerate}
-                \1 Árvore da função: $f(x,y) \defeq \overline{x + y}$
+                \1 Árvore da função: $\phi \equiv \lnot{(p \lor q)}$
                
                 \vspace{1em}
                
-                \uncover<2->{\1 Para encontrar $f(0,1)$:}
-                    \uncover<3->{\2 \textcolor<2>{red}{inicia-se pela raiz}}
-                    \uncover<4->{\2 \textcolor<3>{red}{como $x$ é $0$, segue-se pela linha pontilhada}}
-                    \uncover<5->{\2 \textcolor<4>{red}{como $y$ é $1$, segue-se pela linha sólida}}
-                    \uncover<6->{\2 \textcolor<5>{red}{chega-se à folha $0$; logo $f(0,1) = 0$}}
+                \uncover<2->{\1 Para encontrar $\llbracket\phi\rrbracket_{v_{(0,1)}}$:}
+                    \uncover<3->{\2 \textcolor<2>{ok}{inicia-se pela raiz}}
+                    \uncover<4->{\2 \textcolor<3>{ok}{como $p$ é $0$, segue-se pela linha pontilhada}}
+                    \uncover<5->{\2 \textcolor<4>{ok}{como $q$ é $1$, segue-se pela linha sólida}}
+                    \uncover<6->{\2 \textcolor<5>{ok}{chega-se à folha $0$; logo $\llbracket\phi\rrbracket_{v_{(0,1)}} = 0$}}
             \end{outline}
     
     \end{columns}
@@ -420,21 +574,7 @@
 %-------------------------------------------
 \begin{frame}{Comparando com a tabela-verdade}
 
-    Para a função booleana $f(x,y) \defeq \overline{x + y}$:
-
-    \vspace{-0.5em}
-    
-    \begin{center}
-        \scriptsize
-        \ovalbox{
-            \begin{minipage}[h]{0.8\linewidth}
-                \centering
-                equivalente à fórmula proposicional $\phi \equiv \lnot{(p \lor q)}$
-            \end{minipage}
-        }
-    \end{center}    
-    
-    \vspace{-1.0em}
+    Função booleana: $\phi \equiv \lnot{(p \lor q)}$:
     
     \begin{columns}[c]
         \column{0.6\textwidth}
@@ -448,9 +588,9 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                   
-                    \node (x) at (3.0, 5.0)  {$x$};
-                    \node (y1) at (1.5, 3.0)  {$y$};
-                    \node (y2) at (4.5, 3.0)  {$y$};
+                    \node (x) at (3.0, 5.0)  {$p$};
+                    \node (y1) at (1.5, 3.0)  {$q$};
+                    \node (y2) at (4.5, 3.0)  {$q$};
                     \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
                     \node[rectangle, scale=0.7] (0a) at (2.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
@@ -470,7 +610,7 @@
             \begin{center}
                 \begin{table}
                     \begin{tabular}{cc|c}
-                        $x$ & $y$ & $f(x,y)$\\
+                        $p$ & $q$ & $\phi$\\
                         \hline
                         $0$ & $0$ & $1$\\
                         $0$ & $1$ & $0$\\
@@ -488,21 +628,7 @@
 %-------------------------------------------
 \begin{frame}{Outro exemplo comparativo}
 
-    Para a função booleana $f(x,y,z) \defeq \overline{x} + (y \cdot z)$:
-    
-    \vspace{-0.5em}
-    
-    \begin{center}
-        \scriptsize
-        \ovalbox{
-            \begin{minipage}[h]{0.8\linewidth}
-                \centering
-                equivalente à fórmula proposicional $\phi \equiv p \to (q \land r)$
-            \end{minipage}
-        }
-    \end{center}
-   
-   \vspace{-1.0em}
+    Função booleana: $\psi \equiv p \to (q \land r)$:
    
     \begin{columns}[c]
         \column{0.6\textwidth}
@@ -516,13 +642,13 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (x) at (4.0, 6.0)  {$x$};
-                    \node (y1) at (2.0, 4.0)  {$y$};
-                    \node (y2) at (6.0, 4.0)  {$y$};
-                    \node (z1) at (1.0, 2.0)  {$z$};
-                    \node (z2) at (3.0, 2.0)  {$z$};
-                    \node (z3) at (5.0, 2.0)  {$z$};
-                    \node (z4) at (7.0, 2.0)  {$z$};
+                    \node (x) at (4.0, 6.0)  {$p$};
+                    \node (y1) at (2.0, 4.0)  {$q$};
+                    \node (y2) at (6.0, 4.0)  {$q$};
+                    \node (z1) at (1.0, 2.0)  {$r$};
+                    \node (z2) at (3.0, 2.0)  {$r$};
+                    \node (z3) at (5.0, 2.0)  {$r$};
+                    \node (z4) at (7.0, 2.0)  {$r$};
                     
                     \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
@@ -556,7 +682,7 @@
                 \small
                 \begin{table}
                     \begin{tabular}{ccc|c}
-                        $x$ & $y$ & $z$ & $f(x,y,z)$\\
+                        $p$ & $q$ & $r$ & $\psi$\\
                         \hline
                         $0$ & $0$ & $0$ & $1$\\
                         $0$ & $0$ & $1$ & $1$\\
@@ -603,9 +729,9 @@
             %\draw[help lines] (0,0) grid (12,6);
           
             % Leftmost graph
-            \node (x) at (3.0, 5.0)  {$x$};
-            \node (y1) at (1.5, 3.0)  {$y$};
-            \node (y2) at (4.5, 3.0)  {$y$};
+            \node (x) at (3.0, 5.0)  {$p$};
+            \node (y1) at (1.5, 3.0)  {$q$};
+            \node (y2) at (4.5, 3.0)  {$q$};
             \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
             \node[rectangle, scale=0.7] (0a) at (2.5, 1.0) {$0$};
             \node[rectangle, scale=0.7] (0b) at (3.5, 1.0) {$0$};
@@ -632,9 +758,9 @@
                 \node[fill=white, single arrow, draw=black] at (6.5,4.0) {\scriptsize Simplificação C1};
                 
                 % Rightmost graph
-                \node (x_) at (10.0, 5.0)  {$x$};
-                \node (y1_) at (8.5, 3.0)  {$y$};
-                \node (y2_) at (11.5, 3.0)  {$y$};
+                \node (x_) at (10.0, 5.0)  {$p$};
+                \node (y1_) at (8.5, 3.0)  {$q$};
+                \node (y2_) at (11.5, 3.0)  {$q$};
                 \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
                 \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
 
@@ -671,9 +797,9 @@
             %\draw[help lines] (0,0) grid (12,6);
           
             % Leftmost graph
-            \node (x) at (3.0, 5.0)  {$x$};
-            \node (y1) at (1.5, 3.0)  {$y$};
-            \node (y2) at (4.5, 3.0)  {$y$};
+            \node (x) at (3.0, 5.0)  {$p$};
+            \node (y1) at (1.5, 3.0)  {$q$};
+            \node (y2) at (4.5, 3.0)  {$q$};
             \node[rectangle, scale=0.7] (1) at (0.5, 1.0) {$1$};
             \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
 
@@ -685,7 +811,7 @@
             \draw[bend right, dashed, thick] (y2) to (0);
             
             \uncover<2->{
-                \node[red] (y2) at (4.5, 3.0)  {$y$};
+                \node[red] (y2) at (4.5, 3.0)  {$q$};
                 \node[rectangle, scale=0.7, blue] (0) at (2.5, 1.0) {$0$};
                 
                 \draw[thick, blue] (x) to (y2);
@@ -698,8 +824,8 @@
                 \node[fill=white, single arrow, draw=black] at (6.5,4.0) {\scriptsize Simplificação C2};
                 
                 % Rightmost graph
-                \node (x_) at (10.0, 5.0)  {$x$};
-                \node (y1_) at (8.5, 3.0)  {$y$};
+                \node (x_) at (10.0, 5.0)  {$p$};
+                \node (y1_) at (8.5, 3.0)  {$q$};
                 \node[rectangle, scale=0.7] (1_) at (7.5, 1.0) {$1$};
                 \node[rectangle, scale=0.7, blue] (0_) at (9.5, 1.0) {$0$};
 
@@ -734,14 +860,14 @@
             %\draw[help lines] (0,0) grid (12,6);
           
             % Leftmost graph
-            \node (z) at (3.0, 5.5)  {$z$};
-            \node (x1) at (1.5, 4.0)  {$x$};
-            \node (x2) at (4.5, 4.0)  {$x$};
+            \node (z) at (3.0, 5.5)  {$p$};
+            \node (x1) at (1.5, 4.0)  {$q$};
+            \node (x2) at (4.5, 4.0)  {$q$};
             
-            \node (y1) at (0.6, 2.5)  {$y$};
-            \node (y2) at (2.4, 2.5)  {$y$};
-            \node (y3) at (3.6, 2.5)  {$y$};
-            \node (y4) at (5.4, 2.5)  {$y$};
+            \node (y1) at (0.6, 2.5)  {$r$};
+            \node (y2) at (2.4, 2.5)  {$r$};
+            \node (y3) at (3.6, 2.5)  {$r$};
+            \node (y4) at (5.4, 2.5)  {$r$};
             
             \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
             \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
@@ -763,8 +889,8 @@
             \draw[dashed, thick] (y4) to (1);
             
             \uncover<2->{
-                \node[blue] (y2) at (2.4, 2.5)  {$y$};
-                \node[red] (y3) at (3.6, 2.5)  {$y$};
+                \node[blue] (y2) at (2.4, 2.5)  {$r$};
+                \node[red] (y3) at (3.6, 2.5)  {$r$};
                 
                 \draw[dashed, thick, blue] (x2) to (y3);
                 \draw[dashed, thick, blue] (y2) to (0);
@@ -778,13 +904,13 @@
                 \node[fill=white, single arrow, draw=black] at (6.7,4.0) {\scriptsize Simplificação C3};
                 
                 % Rightmost graph
-                \node (z_) at (10.5, 5.5)  {$z$};
-                \node (x1_) at (9.0, 4.0)  {$x$};
-                \node (x2_) at (12.0, 4.0)  {$x$};
+                \node (z_) at (10.5, 5.5)  {$p$};
+                \node (x1_) at (9.0, 4.0)  {$q$};
+                \node (x2_) at (12.0, 4.0) {$q$};
                 
-                \node (y1_) at (8.1, 2.5)  {$y$};
-                \node[blue] (y2_) at (9.9, 2.5)  {$y$};
-                \node (y4_) at (12.9, 2.5)  {$y$};
+                \node (y1_) at (8.1, 2.5)       {$r$};
+                \node[blue] (y2_) at (9.9, 2.5) {$r$};
+                \node (y4_) at (12.9, 2.5)      {$r$};
                 
                 \node[rectangle, scale=0.7] (0_) at (9.0, 0.5) {$0$};
                 \node[rectangle, scale=0.7] (1_) at (12.0, 0.5) {$1$};
@@ -829,13 +955,13 @@
             %\draw[help lines] (0,0) grid (12,6);
           
             % Leftmost graph
-            \node (z) at (3.0, 5.5)  {$z$};
-            \node (x1) at (1.5, 4.0)  {$x$};
-            \node (x2) at (4.5, 4.0)  {$x$};
+            \node (z) at (3.0, 5.5)  {$p$};
+            \node (x1) at (1.5, 4.0) {$q$};
+            \node (x2) at (4.5, 4.0) {$q$};
             
-            \node (y1) at (0.6, 2.5)  {$y$};
-            \node (y2) at (2.4, 2.5)  {$y$};
-            \node (y4) at (5.4, 2.5)  {$y$};
+            \node (y1) at (0.6, 2.5) {$r$};
+            \node (y2) at (2.4, 2.5) {$r$};
+            \node (y4) at (5.4, 2.5) {$r$};
             
             \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
             \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
@@ -855,8 +981,8 @@
             \draw[dashed, thick] (y4) to (1);
             
             \uncover<2->{
-                \node[red] (y1) at (0.6, 2.5)  {$y$};
-                \node[blue] (y2) at (2.4, 2.5)  {$y$};
+                \node[red] (y1) at (0.6, 2.5)  {$r$};
+                \node[blue] (y2) at (2.4, 2.5) {$r$};
                 
                 \draw[dashed, thick, blue] (x1) to (y1);
                 \draw[dashed, thick, red] (y1) to (0);
@@ -864,7 +990,7 @@
             }
             
             \uncover<3->{
-                \node[red] (x1) at (1.5, 4.0)  {$x$};
+                \node[red] (x1) at (1.5, 4.0)  {$q$};
                 \draw[dashed, thick, blue] (z) to (x1);
                 \draw[dashed, thick, red] (x1) to (y1);
                 \draw[thick, red] (x1) to (y2);
@@ -875,11 +1001,11 @@
                 \node[fill=white, single arrow, draw=black] at (6.7,4.0) {\small C3 + C2};
                 
                 % Rightmost graph
-                \node (z_) at (9.0, 5.5)  {$z$};
-                \node (x2_) at (10.5, 4.0)  {$x$};
+                \node (z_) at (9.0, 5.5)   {$p$};
+                \node (x2_) at (10.5, 4.0) {$q$};
                 
-                \node[blue] (y2_) at (8.4, 2.5)  {$y$};
-                \node (y4_) at (11.4, 2.5)  {$y$};
+                \node[blue] (y2_) at (8.4, 2.5) {$r$};
+                \node (y4_) at (11.4, 2.5)      {$r$};
                 
                 \node[rectangle, scale=0.7] (0_) at (7.5, 0.5) {$0$};
                 \node[rectangle, scale=0.7] (1_) at (10.5, 0.5) {$1$};
@@ -900,7 +1026,7 @@
     
     \begin{quotation}
     \noindent\footnotesize\justifying
-        As simplificações são encadeadas até não mais ser possível. O exemplo anterior é completamente reduzido após a eliminação de um dos nós $y$ duplicados (C3) seguida da eliminação de um ponto de decisão $x$ redundante (C2)
+        As simplificações são encadeadas até não mais ser possível. O exemplo anterior é completamente reduzido após a eliminação de um dos nós $r$ duplicados (C3) seguida da eliminação de um ponto de decisão $q$ redundante (C2)
     \end{quotation}
     
 \end{frame}
@@ -910,7 +1036,7 @@
 \begin{frame}{Exercício 1}
 
     {\small
-    Reduza a árvore de decisão binária da função $f(x,y,z) \defeq \overline{x} + (y \cdot z)$ apresentada anteriormente:}
+    Reduza a árvore de decisão binária da função $\psi \equiv p \to (q \land r)$ apresentada anteriormente:}
    
     \begin{columns}[c]
         \column{0.5\textwidth}
@@ -924,13 +1050,13 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (p) at (4.0, 6.0)  {$x$};
-                    \node (q1) at (2.0, 4.0)  {$y$};
-                    \node (q2) at (6.0, 4.0)  {$y$};
-                    \node (r1) at (1.0, 2.0)  {$z$};
-                    \node (r2) at (3.0, 2.0)  {$z$};
-                    \node (r3) at (5.0, 2.0)  {$z$};
-                    \node (r4) at (7.0, 2.0)  {$z$};
+                    \node (p) at (4.0, 6.0)  {$p$};
+                    \node (q1) at (2.0, 4.0) {$q$};
+                    \node (q2) at (6.0, 4.0) {$q$};
+                    \node (r1) at (1.0, 2.0) {$r$};
+                    \node (r2) at (3.0, 2.0) {$r$};
+                    \node (r3) at (5.0, 2.0) {$r$};
+                    \node (r4) at (7.0, 2.0) {$r$};
                     
                     \node[rectangle, scale=0.7] (1a) at (0.4, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (1b) at (1.6, 0.0) {$1$};
@@ -990,21 +1116,21 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p) at (4.0, 6.0)  {$x$};
-            \node (q1) at (2.0, 4.0)  {$y$};
-            \node (q2) at (6.0, 4.0)  {$y$};
-            \node (r1) at (1.0, 2.0)  {$z$};
-            \node (r2) at (3.0, 2.0)  {$z$};
-            \node (r3) at (5.0, 2.0)  {$z$};
-            \node (r4) at (7.0, 2.0)  {$z$};
+            \node (p) at (4.0, 6.0)  {$p$};
+            \node (q1) at (2.0, 4.0) {$q$};
+            \node (q2) at (6.0, 4.0) {$q$};
+            \node (r1) at (1.0, 2.0) {$r$};
+            \node (r2) at (3.0, 2.0) {$r$};
+            \node (r3) at (5.0, 2.0) {$r$};
+            \node (r4) at (7.0, 2.0) {$r$};
             
             \node[rectangle, scale=0.7, blue] (1a) at (0.4, 0.0) {$1$};
             \node[rectangle, scale=0.7, red] (1b) at (1.6, 0.0) {$1$};
             \node[rectangle, scale=0.7, red] (1c) at (2.4, 0.0) {$1$};
             \node[rectangle, scale=0.7, red] (1d) at (3.6, 0.0) {$1$};
-            \node[rectangle, scale=0.7, red] (0a) at (4.4, 0.0) {$0$};
+            \node[rectangle, scale=0.7, blue] (0a) at (4.4, 0.0) {$0$};
             \node[rectangle, scale=0.7, red] (0b) at (5.6, 0.0) {$0$};
-            \node[rectangle, scale=0.7, blue] (0c) at (6.4, 0.0) {$0$};
+            \node[rectangle, scale=0.7, red] (0c) at (6.4, 0.0) {$0$};
             \node[rectangle, scale=0.7, red] (1e) at (7.6, 0.0) {$1$};
 
             \draw[dashed, thick] (p) to (q1);
@@ -1026,13 +1152,13 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C1};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$x$};
-            \node (q1_) at (11.0, 4.0) {$y$};
-            \node (q2_) at (15.0, 4.0) {$y$};
-            \node (r1_) at (10.0, 2.0) {$z$};
-            \node (r2_) at (12.0, 2.0) {$z$};
-            \node (r3_) at (14.0, 2.0) {$z$};
-            \node (r4_) at (16.0, 2.0) {$z$};
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q1_) at (11.0, 4.0) {$q$};
+            \node (q2_) at (15.0, 4.0) {$q$};
+            \node (r1_) at (10.0, 2.0) {$r$};
+            \node (r2_) at (12.0, 2.0) {$r$};
+            \node (r3_) at (14.0, 2.0) {$r$};
+            \node (r4_) at (16.0, 2.0) {$r$};
             
             \node[rectangle, scale=0.7, blue] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7, blue] (0_) at (15.0, 0.0) {$0$};
@@ -1072,13 +1198,13 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p) at (4.0, 6.0)       {$x$};
-            \node (q1) at (2.0, 4.0)      {$y$};
-            \node (q2) at (6.0, 4.0)      {$y$};
-            \node[red] (r1) at (1.0, 2.0) {$z$};
-            \node[red] (r2) at (3.0, 2.0) {$z$};
-            \node[red] (r3) at (5.0, 2.0) {$z$};
-            \node (r4) at (7.0, 2.0)      {$z$};
+            \node (p) at (4.0, 6.0)       {$p$};
+            \node (q1) at (2.0, 4.0)      {$q$};
+            \node (q2) at (6.0, 4.0)      {$q$};
+            \node[red] (r1) at (1.0, 2.0) {$r$};
+            \node[red] (r2) at (3.0, 2.0) {$r$};
+            \node[red] (r3) at (5.0, 2.0) {$r$};
+            \node (r4) at (7.0, 2.0)      {$r$};
             
             \node[rectangle, scale=0.7] (1) at (2.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0) at (6.0, 0.0) {$0$};
@@ -1102,10 +1228,10 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$x$};
-            \node (q1_) at (11.0, 4.0) {$y$};
-            \node (q2_) at (15.0, 4.0) {$y$};
-            \node (r4_) at (16.0, 2.0) {$z$};
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q1_) at (11.0, 4.0) {$q$};
+            \node (q2_) at (15.0, 4.0) {$q$};
+            \node (r4_) at (16.0, 2.0) {$r$};
             
             \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
@@ -1139,10 +1265,10 @@
             %\draw[help lines] (0,0) grid (16,6);
           
             %Leftmost graph
-            \node (p_) at (4.0, 6.0)       {$x$};
-            \node[red] (q1_) at (2.0, 4.0) {$y$};
-            \node (q2_) at (6.0, 4.0)      {$y$};
-            \node (r4_) at (7.0, 2.0)      {$z$};
+            \node (p_) at (4.0, 6.0)       {$p$};
+            \node[red] (q1_) at (2.0, 4.0) {$q$};
+            \node (q2_) at (6.0, 4.0)      {$q$};
+            \node (r4_) at (7.0, 2.0)      {$r$};
             
             \node[rectangle, scale=0.7] (1_) at (2.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (6.0, 0.0) {$0$};
@@ -1160,9 +1286,9 @@
             \node[fill=white, single arrow, draw=black] at (8.5,4.0) {\small C2};
                 
             % Rightmost graph
-            \node (p_) at (13.0, 6.0)  {$x$};
-            \node (q2_) at (15.0, 4.0) {$y$};
-            \node (r4_) at (16.0, 2.0) {$z$};
+            \node (p_) at (13.0, 6.0)  {$p$};
+            \node (q2_) at (15.0, 4.0) {$q$};
+            \node (r4_) at (16.0, 2.0) {$r$};
             
             \node[rectangle, scale=0.7] (1_) at (11.0, 0.0) {$1$};
             \node[rectangle, scale=0.7] (0_) at (15.0, 0.0) {$0$};
@@ -1183,13 +1309,12 @@
 %-------------------------------------------
 \begin{frame}{Comparando com a tabela-verdade}
 
-    Função booleana: $f(x,y,z) \defeq \overline{x} + (y \cdot z)$:
+    Função booleana: $\psi \equiv p \to (q \land r)$:
   
     \begin{columns}[c]
-        \column{0.6\textwidth}
+        \column{0.5\textwidth}
 
             \begin{figure}
-
                 \begin{tikzpicture}
                     [scale=0.9,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
@@ -1197,42 +1322,94 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node[magenta] (p) at (3.0, 5.0) {$x$};
-                    \node[Maroon] (q) at (6.0, 4.0)  {$y$};
-                    \node[Maroon] (r) at (4.0, 2.0)  {$z$};
+                    \node (p) at (3.0, 5.0) {$p$};
+                    \node (q) at (6.0, 4.0) {$q$};
+                    \node (r) at (4.0, 2.0) {$r$};
                     
                     \node[rectangle, scale=0.7] (1) at (2.0, 1.0) {$1$};
                     \node[rectangle, scale=0.7] (0) at (6.0, 1.0) {$0$};
 
-                    \draw[dashed, thick, magenta] (p) to (1);
+                    \draw[dashed, thick] (p) to (1);
                     \draw[thick] (p) to (q);
                     \draw[dashed, thick] (q) to (0);
-                    \draw[thick, Maroon] (q) to (r);
+                    \draw[thick] (q) to (r);
                     \draw[dashed, thick] (r) to (0);
-                    \draw[thick, Maroon] (r) to (1);
+                    \draw[thick] (r) to (1);
+                    
+                    \only<2>{
+                        \node[emphasis] (p) at (3.0, 5.0) {$p$};
+                        \node[rectangle, scale=0.7, emphasis] (1) at (2.0, 1.0) {$1$};
+                        \draw[dashed, thick, emphasis] (p) to (1);
+                    }
+                    
+                    \only<3>{
+                        \node[ok] (p) at (3.0, 5.0) {$p$};
+                        \node[ok] (q) at (6.0, 4.0) {$q$};
+                        \node[ok] (r) at (4.0, 2.0) {$r$};
+                        \node[rectangle, scale=0.7, ok] (1) at (2.0, 1.0) {$1$};
+                        \draw[thick, ok] (p) to (q);
+                        \draw[thick, ok] (q) to (r);
+                        \draw[thick, ok] (r) to (1);
+                    }
+                    
                 \end{tikzpicture}
 
             \end{figure}
 
-        \column{0.4\textwidth}
-            \begin{center}
-                \small
+        \column{0.5\textwidth}
+            \small
+            
+            \only<1>{
                 \begin{table}
                     \begin{tabular}{ccc|c}
-                        \textcolor{magenta}{$x$} & $y$ & $z$ & $f(x,y,z)$\\
+                        $p$ & $q$ & $r$ & $\psi$\\
                         \hline
-                        \textcolor{magenta}{$0$} & $0$ & $0$ & \textcolor{magenta}{$1$}\\
-                        \textcolor{magenta}{$0$} & $0$ & $1$ & \textcolor{magenta}{$1$}\\
-                        \textcolor{magenta}{$0$} & $1$ & $0$ & \textcolor{magenta}{$1$}\\
-                        \textcolor{magenta}{$0$} & $1$ & $1$ & \textcolor{magenta}{$1$}\\
+                        $0$ & $0$ & $0$ & $1$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
                         $1$ & $0$ & $0$ & $0$\\
                         $1$ & $0$ & $1$ & $0$\\
                         $1$ & $1$ & $0$ & $0$\\
-                        $1$ & \textcolor{Maroon}{$1$} & \textcolor{Maroon}{$1$} & \textcolor{Maroon}{$1$}\\
+                        $1$ & $1$ & $1$ & $1$\\
                     \end{tabular}
                 \end{table}
-            \end{center}
-    
+            }
+
+            \only<2>{
+                \begin{table}
+                    \begin{tabular}{ccc|c}
+                        $p$ & $q$ & $r$ & $\psi$\\
+                        \hline
+                        \textcolor{emphasis}{$0$} & $0$ & $0$ & \textcolor{emphasis}{$1$}\\
+                        \textcolor{emphasis}{$0$} & $0$ & $1$ & \textcolor{emphasis}{$1$}\\
+                        \textcolor{emphasis}{$0$} & $1$ & $0$ & \textcolor{emphasis}{$1$}\\
+                        \textcolor{emphasis}{$0$} & $1$ & $1$ & \textcolor{emphasis}{$1$}\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        $1$ & $1$ & $1$ & $1$\\
+                    \end{tabular}
+                \end{table}
+            }
+
+            \only<3>{
+                \begin{table}
+                    \begin{tabular}{ccc|c}
+                        $p$ & $q$ & $r$ & $\psi$\\
+                        \hline
+                        $0$ & $0$ & $0$ & $1$\\
+                        $0$ & $0$ & $1$ & $1$\\
+                        $0$ & $1$ & $0$ & $1$\\
+                        $0$ & $1$ & $1$ & $1$\\
+                        $1$ & $0$ & $0$ & $0$\\
+                        $1$ & $0$ & $1$ & $0$\\
+                        $1$ & $1$ & $0$ & $0$\\
+                        \textcolor{ok}{$1$} & \textcolor{ok}{$1$} & \textcolor{ok}{$1$} & \textcolor{ok}{$1$}\\
+                    \end{tabular}
+                \end{table}
+            }
+            
     \end{columns}
     
 \end{frame}
@@ -1254,10 +1431,10 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: gda}
+\begin{frame}{Definição: dag}
 
     \begin{block}{\textbf{Definição 6.4}}
-        Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que começa e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (gda) é um grafo direcionado que não contém nenhum ciclo. Um nó em um gda é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
+        Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que começa e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (dag) é um grafo direcionado que não contém nenhum ciclo. Um nó em um dag é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
     \end{block}
 
 \end{frame}
@@ -1267,14 +1444,14 @@
 \begin{frame}{Definição: \uppercase{BDD}s}
 
     \begin{block}{\textbf{Definição 6.5}}
-        Um diagrama de decisão binário (BDD) é um gda finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
+        Um diagrama de decisão binário (BDD) é um dag finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
     \end{block}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD} como gda}
+\begin{frame}{\uppercase{BDD} como dag}
 
     \begin{outline}
         \1 Por convenção, as linhas sólidas ou pontilhadas de um BDD são sempre consideradas como indo para baixo
@@ -1282,7 +1459,7 @@
         
         \vspace{1em}
         
-        \1 Os BDDs são acíclicos (gda) e têm um único nó inicial
+        \1 Os BDDs são acíclicos (dag) e têm um único nó inicial
 
         \vspace{1em}
         
@@ -1296,30 +1473,39 @@
 %-------------------------------------------
 \begin{frame}{\uppercase{BDD}s elementares}
 
-    \begin{figure}
+    \small
+    \begin{outline}
+        \1 O BDD $B_0$ representa a função booleana constante $0$
+        \1 O BDD $B_1$ representa a função booleana constante $1$
+        \1 O BDD $B_p$ representa a variável booleana $p$
+    \end{outline}
 
-        \caption{O BDD $B_0$ representa a função booleana constante $0$; analogamente, o BDD $B_1$ representa a função booleana constante $1$; e, finalmente, o BDD $B_x$ representa a variável booleana $x$}
+    \vspace{-1em}
     
+    \begin{figure}
         \begin{tikzpicture}
-            [scale=1.0,auto=left,
+            [scale=1.2,auto=left,
                 every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                 every edge/.append style={draw=blue, thick}
             ]
-            %\draw[help lines] (0,0) grid (8,6);
+            %\draw[help lines] (0,0) grid (8,3);
 
-            \node[draw=none, scale=0.6] at (0.0, 2.8) {$B_0$};
+            \node[draw=none, scale=0.6] at (0.0, 3.0) {$B_0$};
+            \node[draw=none, scale=0.6] at (0.0, 2.7) {($\phi \equiv \bot$)};
             \node[rectangle, scale=0.7] at (0.0, 2.0) {$0$};
 
-            \node[draw=none, scale=0.6] at (3.0, 2.8) {$B_1$};
+            \node[draw=none, scale=0.6] at (3.0, 3.0) {$B_1$};
+            \node[draw=none, scale=0.6] at (3.0, 2.7) {($\phi \equiv \top$)};
             \node[rectangle, scale=0.7] at (3.0, 2.0) {$1$};
             
-            \node[draw=none, scale=0.6] at (6.0, 2.8) {$B_x$};
-            \node (x) at (6.0, 2.0) {$x$};
+            \node[draw=none, scale=0.6] at (6.0, 3.0) {$B_p$};
+            \node[draw=none, scale=0.6] at (6.0, 2.7) {($\phi \equiv p$)};
+            \node (p) at (6.0, 2.0) {$p$};
             \node[rectangle, scale=0.7] (0) at (5.0, 0.0) {$0$};
             \node[rectangle, scale=0.7] (1) at (7.0, 0.0) {$1$};
 
-            \draw[dashed, thick] (x) to (0);
-            \draw[thick] (x) to (1);
+            \draw[dashed, thick] (p) to (0);
+            \draw[thick] (p) to (1);
         \end{tikzpicture}
 
     \end{figure}
@@ -1350,7 +1536,7 @@
 
             \begin{figure}
 
-                \caption{$f(x,y) \defeq x \cdot y$}
+                \caption{$\phi \equiv p \land q$}
             
                 \begin{tikzpicture}
                     [scale=0.8,auto=left,
@@ -1359,8 +1545,8 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                   
-                    \node (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
+                    \node (x) at (3.0, 5.0) {$p$};
+                    \node (y) at (4.5, 3.0) {$q$};
                     \node[rectangle, scale=0.7] (0) at (1.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (4.5, 1.0) {$1$};
 
@@ -1376,7 +1562,7 @@
         \column{0.3\textwidth}
             \begin{figure}
 
-                \caption{$g(x) \defeq x + \overline{x}$}
+                \caption{$\psi \equiv p \lor \lnot{p}$}
             
                 \begin{tikzpicture}
                     [scale=0.8,auto=left,
@@ -1385,11 +1571,11 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
 
-                    \node[magenta] (x) at (3.0, 5.0) {$x$};
+                    \node[emphasis] (x) at (3.0, 5.0) {$p$};
                     \node[rectangle, scale=0.7] (1) at (3.0, 1.0) {$1$};
 
-                    \draw[dashed, thick, bend right, magenta] (x) to (1);
-                    \draw[thick, bend left, magenta] (x) to (1);
+                    \draw[dashed, thick, bend right, emphasis] (x) to (1);
+                    \draw[thick, bend left, emphasis] (x) to (1);
                     
                 \end{tikzpicture}
 
@@ -1398,7 +1584,7 @@
         \column{0.3\textwidth}
             \begin{figure}
 
-                \caption{$h(y) \defeq y \cdot \overline{y}$}
+                \caption{$\omega \equiv q \land \lnot{q}$}
             
                 \begin{tikzpicture}
                     [scale=0.8,auto=left,
@@ -1407,11 +1593,11 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
 
-                    \node[magenta] (y) at (3.0, 5.0) {$y$};
+                    \node[emphasis] (y) at (3.0, 5.0) {$q$};
                     \node[rectangle, scale=0.7] (0) at (3.0, 1.0) {$0$};
 
-                    \draw[dashed, thick, bend right, magenta] (y) to (0);
-                    \draw[thick, bend left, magenta] (y) to (0);
+                    \draw[dashed, thick, bend right, emphasis] (y) to (0);
+                    \draw[thick, bend left, emphasis] (y) to (0);
                     
                 \end{tikzpicture}
 
@@ -1427,15 +1613,15 @@
 
     \begin{outline}
         \small
-        \1 \textbf{Operação de negação ($\bar{~}$)}. Obtem-se um BDD que representa $\overline{f}$ substituindo todos os terminais $0$ em $B_f$ por terminais $1$ e vice-versa
+        \1 \textbf{Operação de negação ($\lnot$)}. Obtem-se um BDD que representa $\lnot{\phi}$ substituindo todos os terminais $0$ em $B_\phi$ por terminais $1$ e vice-versa
         
         \vspace{1em}
         
-        \1 \textbf{Operação de conjunção ($\cdot$)}. Obtem-se um BDD que representa $f \cdot g$ substituindo todos os nós terminais $1$ em $B_f$ diretamente por uma cópia de $B_g$
+        \1 \textbf{Operação de conjunção ($\land$)}. Obtem-se um BDD que representa $\phi \land \psi$ substituindo todos os nós terminais $1$ em $B_\phi$ diretamente por $B_\psi$
         
         \vspace{1em}
         
-        \1 \textbf{Operação de disjunção ($+$)}. Obtem-se um BDD que representa $f + g$ substituindo todos os nós terminais $0$ em $B_f$ diretamente por uma cópia de $B_g$
+        \1 \textbf{Operação de disjunção ($\lor$)}. Obtem-se um BDD que representa $\phi \lor \psi$ substituindo todos os nós terminais $0$ em $B_\phi$ diretamente por $B_\psi$
     \end{outline}
 
 \end{frame}
@@ -1449,7 +1635,7 @@
 
             \begin{figure}
 
-                \caption{$f(x,y) \defeq x \cdot y$}
+                \caption{$\phi \equiv p \land q$}
             
                 \begin{tikzpicture}
                     [scale=0.8,auto=left,
@@ -1458,10 +1644,10 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                   
-                    \node (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
-                    \node[rectangle, scale=0.7, magenta] (0) at (1.5, 1.0) {$0$};
-                    \node[rectangle, scale=0.7, Maroon] (1) at (4.5, 1.0) {$1$};
+                    \node (x) at (3.0, 5.0) {$p$};
+                    \node (y) at (4.5, 3.0) {$q$};
+                    \node[rectangle, scale=0.7, emphasis] (0) at (1.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7, ok] (1) at (4.5, 1.0) {$1$};
 
                     \draw[dashed, thick] (x) to (0);
                     \draw[thick] (x) to (y);
@@ -1475,7 +1661,7 @@
         \column{0.5\textwidth}
             \begin{figure}
 
-                \caption{$g(x,y) \defeq \overline{x \cdot y}$}
+                \caption{$\lnot{\phi} \equiv \lnot{(p \land q)}$}
             
                 \begin{tikzpicture}
                     [scale=0.8,auto=left,
@@ -1484,10 +1670,10 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                   
-                    \node (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
-                    \node[rectangle, scale=0.7, Maroon] (1) at (1.5, 1.0) {$1$};
-                    \node[rectangle, scale=0.7, magenta] (0) at (4.5, 1.0) {$0$};
+                    \node (x) at (3.0, 5.0) {$p$};
+                    \node (y) at (4.5, 3.0) {$q$};
+                    \node[rectangle, scale=0.7, ok] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7, emphasis] (0) at (4.5, 1.0) {$0$};
 
                     \draw[dashed, thick] (x) to (1);
                     \draw[thick] (x) to (y);
@@ -1513,7 +1699,7 @@
         
             \begin{figure}
 
-                \caption{$f(x,y) \defeq x \cdot y$}
+                \caption{$\phi \equiv p \land q$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1522,8 +1708,8 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
+                    \node (x) at (3.0, 5.0) {$p$};
+                    \node (y) at (4.5, 3.0) {$q$};
                     \node[rectangle, scale=0.7] (0) at (1.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7, red] (1) at (4.5, 1.0) {$1$};
 
@@ -1540,7 +1726,7 @@
             
             \begin{figure}
 
-                \caption{$g(x,y) \defeq \overline{x} + y$}
+                \caption{$\psi \equiv \lnot{p} \lor q$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1549,15 +1735,15 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node[blue] (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
-                    \node[rectangle, scale=0.7] (1) at (1.5, 1.0) {$1$};
-                    \node[rectangle, scale=0.7] (0) at (4.5, 1.0) {$0$};
+                    \node[blue] (x) at (3.0, 5.0) {$p$};
+                    \node[blue] (y) at (4.5, 3.0) {$q$};
+                    \node[rectangle, scale=0.7, blue] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7, blue] (0) at (4.5, 1.0) {$0$};
 
-                    \draw[dashed, thick] (x) to (1);
-                    \draw[thick] (x) to (y);
-                    \draw[dashed, thick] (y) to (0);
-                    \draw[thick] (y) to (1);
+                    \draw[dashed, thick, blue] (x) to (1);
+                    \draw[thick, blue] (x) to (y);
+                    \draw[dashed, thick, blue] (y) to (0);
+                    \draw[thick, blue] (y) to (1);
                 \end{tikzpicture}
 
             \end{figure}
@@ -1566,7 +1752,7 @@
 
             \begin{figure}
 
-                \caption{$h(x,y) \defeq (x \cdot y) \cdot (\overline{x} + y)$}
+                \caption{$\phi \land \psi \equiv (p \land q) \land (\lnot{p} \lor q)$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1575,24 +1761,24 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node (x1) at (3.0, 5.0) {$x$};
-                    \node (y1) at (4.5, 3.0) {$y$};
+                    \node (x1) at (3.0, 5.0) {$p$};
+                    \node (y1) at (4.5, 3.0) {$q$};
                     \node[rectangle, scale=0.7] (0a) at (1.5, 1.0) {$0$};
 
-                    \node[blue] (x2) at (4.5, 1.0) {$x$};
-                    \node (y2) at (6.0, -1.0) {$y$};
-                    \node[rectangle, scale=0.7] (1) at (3.0, -3.0) {$1$};
-                    \node[rectangle, scale=0.7] (0b) at (6.0, -3.0) {$0$};
+                    \node[blue] (x2) at (4.5, 1.0) {$p$};
+                    \node[blue] (y2) at (6.0, -1.0) {$q$};
+                    \node[rectangle, scale=0.7, blue] (1) at (3.0, -3.0) {$1$};
+                    \node[rectangle, scale=0.7, blue] (0b) at (6.0, -3.0) {$0$};
                     
                     \draw[dashed, thick] (x1) to (0a);
                     \draw[thick] (x1) to (y1);
                     \draw[dashed, thick] (y1) to (0a);
                     \draw[thick] (y1) to (x2);
 
-                    \draw[dashed, thick] (x2) to (1);
-                    \draw[thick] (x2) to (y2);
-                    \draw[dashed, thick] (y2) to (0b);
-                    \draw[thick] (y2) to (1);
+                    \draw[dashed, thick, blue] (x2) to (1);
+                    \draw[thick, blue] (x2) to (y2);
+                    \draw[dashed, thick, blue] (y2) to (0b);
+                    \draw[thick, blue] (y2) to (1);
                     
                 \end{tikzpicture}
 
@@ -1612,7 +1798,7 @@
         
             \begin{figure}
 
-                \caption{$f(x,y) \defeq x \cdot y$}
+                \caption{$\phi \equiv p \land q$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1621,8 +1807,8 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
+                    \node (x) at (3.0, 5.0) {$p$};
+                    \node (y) at (4.5, 3.0) {$q$};
                     \node[rectangle, scale=0.7, red] (0) at (1.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (4.5, 1.0) {$1$};
 
@@ -1639,7 +1825,7 @@
             
             \begin{figure}
 
-                \caption{$g(x,y) \defeq \overline{x} + y$}
+                \caption{$\psi \equiv \lnot{p} \lor q$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1648,15 +1834,15 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node[blue] (x) at (3.0, 5.0) {$x$};
-                    \node (y) at (4.5, 3.0) {$y$};
-                    \node[rectangle, scale=0.7] (1) at (1.5, 1.0) {$1$};
-                    \node[rectangle, scale=0.7] (0) at (4.5, 1.0) {$0$};
+                    \node[blue] (x) at (3.0, 5.0) {$p$};
+                    \node[blue] (y) at (4.5, 3.0) {$q$};
+                    \node[rectangle, scale=0.7, blue] (1) at (1.5, 1.0) {$1$};
+                    \node[rectangle, scale=0.7, blue] (0) at (4.5, 1.0) {$0$};
 
-                    \draw[dashed, thick] (x) to (1);
-                    \draw[thick] (x) to (y);
-                    \draw[dashed, thick] (y) to (0);
-                    \draw[thick] (y) to (1);
+                    \draw[dashed, thick, blue] (x) to (1);
+                    \draw[thick, blue] (x) to (y);
+                    \draw[dashed, thick, blue] (y) to (0);
+                    \draw[thick, blue] (y) to (1);
                 \end{tikzpicture}
 
             \end{figure}
@@ -1665,7 +1851,7 @@
 
             \begin{figure}
 
-                \caption{$h(x,y) \defeq (x \cdot y) + (\overline{x} + y)$}
+                \caption{$\phi \lor \psi \equiv (p \land q) \lor (\lnot{p} \lor q)$}
             
                 \begin{tikzpicture}
                     [scale=0.5,auto=left,
@@ -1674,25 +1860,25 @@
                     ]
                     %\draw[help lines] (0,0) grid (6,6);
                     
-                    \node (x1) at (3.0, 5.0) {$x$};
-                    \node (y1) at (4.5, 3.0) {$y$};
+                    \node (x1) at (3.0, 5.0) {$p$};
+                    \node (y1) at (4.5, 3.0) {$q$};
                     %\node[rectangle, scale=0.7] (0a) at (1.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1a) at (4.5, 1.0) {$1$};
 
-                    \node[blue] (x2) at (1.5, 1.0) {$x$};
-                    \node (y2) at (3.0, -1.0) {$y$};
-                    \node[rectangle, scale=0.7] (1b) at (0.0, -3.0) {$1$};
-                    \node[rectangle, scale=0.7] (0) at (3.0, -3.0) {$0$};
+                    \node[blue] (x2) at (1.5, 1.0) {$p$};
+                    \node[blue] (y2) at (3.0, -1.0) {$q$};
+                    \node[rectangle, scale=0.7, blue] (1b) at (0.0, -3.0) {$1$};
+                    \node[rectangle, scale=0.7, blue] (0) at (3.0, -3.0) {$0$};
                     
                     \draw[dashed, thick] (x1) to (x2);
                     \draw[thick] (x1) to (y1);
                     \draw[thick] (y1) to (1a);
                     \draw[dashed, thick] (y1) to (x2);
 
-                    \draw[dashed, thick] (x2) to (1b);
-                    \draw[thick] (x2) to (y2);
-                    \draw[dashed, thick] (y2) to (0);
-                    \draw[thick] (y2) to (1b);
+                    \draw[dashed, thick, blue] (x2) to (1b);
+                    \draw[thick, blue] (x2) to (y2);
+                    \draw[dashed, thick, blue] (y2) to (0);
+                    \draw[thick, blue] (y2) to (1b);
                     
                 \end{tikzpicture}
 
@@ -1706,11 +1892,11 @@
 \begin{frame}{Forma ``inocente'' de construir \uppercase{BDD}s}
 
     \begin{outline}[enumerate]
-        \1 Para cada variável booleana em uma função, um BDD de variável ($B_{x_i}$) é criado
+        \1 Para cada variável booleana em uma função, um BDD de variável ($B_{p_i}$) é criado
         
         \vspace{1em}
         
-        \1 Tais BDDs são então unidos conforme as operações booleanas constantes na função
+        \1 Tais BDDs são então unidos conforme as operações booleanas na função
         
         \vspace{1em}
         
@@ -1721,9 +1907,9 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
-    Passo 1: criação de $B_{x_i}$
+    Passo 1: criação de $B_{p_i}$
 
     \vspace{-1em}
     
@@ -1732,14 +1918,14 @@
         
             \begin{figure}
 
-                \caption{$B_x$}
+                \caption{$B_p$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (x) at (1.0, 2.0) {$x$};
+                    \node (x) at (1.0, 2.0) {$p$};
                     \node[rectangle, scale=0.7] (0) at (0, 0.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (2, 0.0) {$1$};
                     \draw[dashed, thick] (x) to (0);
@@ -1753,14 +1939,14 @@
             
             \begin{figure}
 
-                \caption{$B_{\overline{x}}$}
+                \caption{$B_{\lnot{p}}$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (x) at (1.0, 2.0) {$x$};
+                    \node (x) at (1.0, 2.0) {$p$};
                     \node[rectangle, scale=0.7] (1) at (0, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (0) at (2, 0.0) {$0$};
                     \draw[dashed, thick] (x) to (1);
@@ -1774,14 +1960,14 @@
 
             \begin{figure}
 
-                \caption{$B_{\overline{y}}$}
+                \caption{$B_{\lnot{q}}$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (y) at (1.0, 2.0) {$y$};
+                    \node (y) at (1.0, 2.0) {$q$};
                     \node[rectangle, scale=0.7] (1) at (0, 0.0) {$1$};
                     \node[rectangle, scale=0.7] (0) at (2, 0.0) {$0$};
                     \draw[dashed, thick] (y) to (1);
@@ -1795,14 +1981,14 @@
             
             \begin{figure}
 
-                \caption{$B_y$}
+                \caption{$B_q$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (y) at (1.0, 2.0) {$y$};
+                    \node (y) at (1.0, 2.0) {$q$};
                     \node[rectangle, scale=0.7] (0) at (0, 0.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (2, 0.0) {$1$};
                     \draw[dashed, thick] (y) to (0);
@@ -1817,7 +2003,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
     Passo 2a: união dos BDDs conforme as operações
     
@@ -1826,17 +2012,17 @@
         
             \begin{figure}
 
-                \caption{$B_x \cdot B_{\overline{y}}$}
+                \caption{$B_p \land B_{\lnot{q}}$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (x) at (1.0, 2.0) {$x$};
+                    \node (x) at (1.0, 2.0) {$p$};
                     \node[rectangle, scale=0.7] (0a) at (0, 0.0) {$0$};
 
-                    \node (y) at (2.0, 0.0) {$y$};
+                    \node (y) at (2.0, 0.0) {$q$};
                     \node[rectangle, scale=0.7] (1) at (1, -2.0) {$1$};
                     \node[rectangle, scale=0.7] (0b) at (3, -2.0) {$0$};
                     
@@ -1853,15 +2039,15 @@
 
             \begin{figure}
 
-                \caption{$B_{\overline{x}} \cdot B_y$}
+                \caption{$B_{\lnot{p}} \land B_q$}
             
                 \begin{tikzpicture}
                     [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
-                    \node (x) at (1.0, 2.0) {$x$};
-                    \node (y) at (0.0, 0.0) {$y$};
+                    \node (x) at (1.0, 2.0) {$p$};
+                    \node (y) at (0.0, 0.0) {$q$};
                     \node[rectangle, scale=0.7] (0b) at (-1, -2.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (1, -2.0) {$1$};
                     \node[rectangle, scale=0.7] (0a) at (2, 0.0) {$0$};
@@ -1881,7 +2067,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
     Passo 2b: união dos BDDs conforme as operações
     
@@ -1889,7 +2075,7 @@
     
     \begin{figure}
 
-        \caption{\textcolor{magenta}{$(B_x \cdot B_{\overline{y}})$} $+$ \textcolor{Maroon}{$(B_{\overline{x}} \cdot B_y)$}}
+        \caption{\textcolor{emphasis}{$(B_p \land B_{\lnot{q}})$} $\lor$ \textcolor{good}{$(B_{\lnot{p}} \land B_q)$}}
     
         \vspace{-1em}
     
@@ -1900,32 +2086,32 @@
             ]
             %\draw[help lines] (0,0) grid (12,8);
                     
-            \node[magenta] (x1) at (6.0, 8.0) {$x$};
-            \node[Maroon] (x2) at (4.0, 6.0) {$x$};
-            \node[magenta] (y1) at (8.0, 6.0) {$y$};
-            \node[Maroon] (y2) at (3.0, 4.0) {$y$};
-            \node[rectangle, scale=0.7, Maroon] (0a) at (5.0, 4.0) {$0$};
-            \node[rectangle, scale=0.7, magenta] (1a) at (7.0, 4.0) {$1$};
-            \node[Maroon] (x3) at (9.0, 4.0) {$x$};
-            \node[rectangle, scale=0.7, Maroon] (0b) at (2.0, 2.0) {$0$};
-            \node[rectangle, scale=0.7, Maroon] (1b) at (4.0, 2.0) {$1$};
-            \node[Maroon] (y3) at (8.0, 2.0) {$y$};
-            \node[rectangle, scale=0.7, Maroon] (0c) at (10.0, 2.0) {$0$};
-            \node[rectangle, scale=0.7, Maroon] (0d) at (7.0, 0.0) {$0$};
-            \node[rectangle, scale=0.7, Maroon] (1c) at (9.0, 0.0) {$1$};
+            \node[emphasis] (x1) at (6.0, 8.0) {$p$};
+            \node[good] (x2) at (4.0, 6.0) {$p$};
+            \node[emphasis] (y1) at (8.0, 6.0) {$q$};
+            \node[good] (y2) at (3.0, 4.0) {$q$};
+            \node[rectangle, scale=0.7, good] (0a) at (5.0, 4.0) {$0$};
+            \node[rectangle, scale=0.7, emphasis] (1a) at (7.0, 4.0) {$1$};
+            \node[good] (x3) at (9.0, 4.0) {$p$};
+            \node[rectangle, scale=0.7, good] (0b) at (2.0, 2.0) {$0$};
+            \node[rectangle, scale=0.7, good] (1b) at (4.0, 2.0) {$1$};
+            \node[good] (y3) at (8.0, 2.0) {$q$};
+            \node[rectangle, scale=0.7, good] (0c) at (10.0, 2.0) {$0$};
+            \node[rectangle, scale=0.7, good] (0d) at (7.0, 0.0) {$0$};
+            \node[rectangle, scale=0.7, good] (1c) at (9.0, 0.0) {$1$};
             
-            \draw[dashed, thick, magenta] (x1) to (x2);
-            \draw[thick, magenta] (x1) to (y1);
-            \draw[dashed, thick, Maroon] (x2) to (y2);
-            \draw[thick, Maroon] (x2) to (0a);
-            \draw[dashed, thick, magenta] (y1) to (1a);
-            \draw[thick, magenta] (y1) to (x3);
-            \draw[dashed, thick, Maroon] (y2) to (0b);
-            \draw[thick, Maroon] (y2) to (1b);
-            \draw[dashed, thick, Maroon] (x3) to (y3);
-            \draw[thick, Maroon] (x3) to (0c);
-            \draw[dashed, thick, Maroon] (y3) to (0d);
-            \draw[thick, Maroon] (y3) to (1c);
+            \draw[dashed, thick, emphasis] (x1) to (x2);
+            \draw[thick, emphasis] (x1) to (y1);
+            \draw[dashed, thick, good] (x2) to (y2);
+            \draw[thick, good] (x2) to (0a);
+            \draw[dashed, thick, emphasis] (y1) to (1a);
+            \draw[thick, emphasis] (y1) to (x3);
+            \draw[dashed, thick, good] (y2) to (0b);
+            \draw[thick, good] (y2) to (1b);
+            \draw[dashed, thick, good] (x3) to (y3);
+            \draw[thick, good] (x3) to (0c);
+            \draw[dashed, thick, good] (y3) to (0d);
+            \draw[thick, good] (y3) to (1c);
             
         \end{tikzpicture}
 
@@ -1935,7 +2121,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
     Passo 3a: redução do BDD gerado
     
@@ -1948,16 +2134,16 @@
             ]
             %\draw[help lines] (0,0) grid (19,8);
                     
-            \node (x1) at (4.0, 8.0) {$x$};
-            \node (x2) at (2.0, 6.0) {$x$};
-            \node (y1) at (6.0, 6.0) {$y$};
-            \node (y2) at (1.0, 4.0) {$y$};
+            \node (x1) at (4.0, 8.0) {$p$};
+            \node (x2) at (2.0, 6.0) {$p$};
+            \node (y1) at (6.0, 6.0) {$q$};
+            \node (y2) at (1.0, 4.0) {$q$};
             \node[rectangle, scale=0.7, blue] (0a) at (3.0, 4.0) {$0$};
             \node[rectangle, scale=0.7, blue] (1a) at (5.0, 4.0) {$1$};
-            \node (x3) at (7.0, 4.0) {$x$};
+            \node (x3) at (7.0, 4.0) {$p$};
             \node[rectangle, scale=0.7, red] (0b) at (0.0, 2.0) {$0$};
             \node[rectangle, scale=0.7, red] (1b) at (2.0, 2.0) {$1$};
-            \node (y3) at (6.0, 2.0) {$y$};
+            \node (y3) at (6.0, 2.0) {$q$};
             \node[rectangle, scale=0.7, red] (0c) at (8.0, 2.0) {$0$};
             \node[rectangle, scale=0.7, red] (0d) at (5.0, 0.0) {$0$};
             \node[rectangle, scale=0.7, red] (1c) at (7.0, 0.0) {$1$};
@@ -1979,12 +2165,12 @@
             \node[fill=white, single arrow, draw=black] at (9.0,6.0) {\scriptsize C1};
 
             % Rightmost graph
-            \node (x1_) at (14.0, 8.0) {$x$};
-            \node (x2_) at (12.0, 6.0) {$x$};
-            \node (y1_) at (16.0, 6.0) {$y$};
-            \node (y2_) at (11.0, 4.0) {$y$};
-            \node (x3_) at (17.0, 4.0) {$x$};
-            \node (y3_) at (16.0, 2.0) {$y$};
+            \node (x1_) at (14.0, 8.0) {$p$};
+            \node (x2_) at (12.0, 6.0) {$p$};
+            \node (y1_) at (16.0, 6.0) {$q$};
+            \node (y2_) at (11.0, 4.0) {$q$};
+            \node (x3_) at (17.0, 4.0) {$p$};
+            \node (y3_) at (16.0, 2.0) {$q$};
             \node[rectangle, scale=0.7, blue] (0_) at (12.5, 0.0) {$0$};
             \node[rectangle, scale=0.7, blue] (1_) at (15.5, 0.0) {$1$};
             
@@ -2009,7 +2195,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
     Passo 3b: redução do BDD gerado
     
@@ -2022,12 +2208,12 @@
             ]
             %\draw[help lines] (0,0) grid (19,8);
             
-            \node (x1) at (4.0, 8.0) {$x$};
-            \node (x2) at (2.0, 6.0) {$x$};
-            \node (y1) at (6.0, 6.0) {$y$};
-            \node[blue] (y2) at (1.0, 4.0) {$y$};
-            \node (x3) at (7.0, 4.0) {$x$};
-            \node[red] (y3) at (6.0, 2.0) {$y$};
+            \node (x1) at (4.0, 8.0) {$p$};
+            \node (x2) at (2.0, 6.0) {$p$};
+            \node (y1) at (6.0, 6.0) {$q$};
+            \node[blue] (y2) at (1.0, 4.0) {$q$};
+            \node (x3) at (7.0, 4.0) {$p$};
+            \node[red] (y3) at (6.0, 2.0) {$q$};
             \node[rectangle, scale=0.7] (0) at (2.5, 0.0) {$0$};
             \node[rectangle, scale=0.7] (1) at (5.5, 0.0) {$1$};
             
@@ -2048,11 +2234,11 @@
             \node[fill=white, single arrow, draw=black] at (9.0,6.0) {\scriptsize C3};
 
             % Rightmost graph
-            \node (x1_) at (14.0, 8.0) {$x$};
-            \node (x2_) at (12.0, 6.0) {$x$};
-            \node (y1_) at (16.0, 6.0) {$y$};
-            \node[blue] (y2_) at (11.0, 2.0) {$y$};
-            \node (x3_) at (17.0, 4.0) {$x$};
+            \node (x1_) at (14.0, 8.0) {$p$};
+            \node (x2_) at (12.0, 6.0) {$p$};
+            \node (y1_) at (16.0, 6.0) {$q$};
+            \node[blue] (y2_) at (11.0, 2.0) {$q$};
+            \node (x3_) at (17.0, 4.0) {$p$};
             \node[rectangle, scale=0.7] (0_) at (13.0, 0.0) {$0$};
             \node[rectangle, scale=0.7] (1_) at (16.0, 0.0) {$1$};
             
@@ -2075,7 +2261,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo: $(x \cdot \overline{y}) + (\overline{x} \cdot y)$}
+\begin{frame}{Exemplo: $(p \land \lnot{q}) \lor (\lnot{p} \land q)$}
 
     Passo 3c: redução do BDD gerado
     
@@ -2088,11 +2274,11 @@
             ]
             %\draw[help lines] (0,0) grid (19,8);
             
-            \node (x1) at (4.0, 8.0) {$x$};
-            \node[blue] (x2) at (2.0, 6.0) {$x$};
-            \node (y1) at (6.0, 6.0) {$y$};
-            \node (y2) at (1.0, 2.0) {$y$};
-            \node[red] (x3) at (7.0, 4.0) {$x$};
+            \node (x1) at (4.0, 8.0) {$p$};
+            \node[blue] (x2) at (2.0, 6.0) {$p$};
+            \node (y1) at (6.0, 6.0) {$q$};
+            \node (y2) at (1.0, 2.0) {$q$};
+            \node[red] (x3) at (7.0, 4.0) {$p$};
             \node[rectangle, scale=0.7] (0) at (3.0, 0.0) {$0$};
             \node[rectangle, scale=0.7] (1) at (6.0, 0.0) {$1$};
             
@@ -2111,10 +2297,10 @@
             \node[fill=white, single arrow, draw=black] at (9.0,6.0) {\scriptsize C3};
 
             % Rightmost graph
-            \node (x1_) at (14.0, 8.0) {$x$};
-            \node[blue] (x2_) at (12.0, 5.0) {$x$};
-            \node (y1_) at (16.0, 6.0) {$y$};
-            \node (y2_) at (11.0, 2.0) {$y$};
+            \node (x1_) at (14.0, 8.0) {$p$};
+            \node[blue] (x2_) at (12.0, 5.0) {$p$};
+            \node (y1_) at (16.0, 6.0) {$q$};
+            \node (y2_) at (11.0, 2.0) {$q$};
             \node[rectangle, scale=0.7] (0_) at (13.0, 0.0) {$0$};
             \node[rectangle, scale=0.7] (1_) at (16.0, 0.0) {$1$};
             
@@ -2136,7 +2322,7 @@
 %-------------------------------------------
 \begin{frame}{Comparação com a tabela-verdade}
     \centering
-    $f(x,y) \defeq (x \cdot \overline{y}) + (\overline{x} \cdot y)$
+    $\phi \equiv (p \land \lnot{q}) \lor (\lnot{p} \land q)$
 
     \begin{columns}[c]
         \column{0.4\textwidth}
@@ -2150,10 +2336,10 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
 
-                    \node (x1) at (4.0, 6.0) {$x$};
-                    \node (x2) at (2.0, 3.0) {$x$};
-                    \node (y1) at (6.0, 4.0) {$y$};
-                    \node (y2) at (4.0, 2.0) {$y$};
+                    \node (x1) at (4.0, 6.0) {$p$};
+                    \node (x2) at (2.0, 3.0) {$p$};
+                    \node (y1) at (6.0, 4.0) {$q$};
+                    \node (y2) at (4.0, 2.0) {$q$};
                     \node[rectangle, scale=0.7] (0) at (3.0, 0.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (6.0, 0.0) {$1$};
                     
@@ -2175,7 +2361,7 @@
             \begin{center}
                 \begin{table}
                     \begin{tabular}{cc|c}
-                        $x$ & $y$ & $f(x,y)$\\
+                        $p$ & $q$ & $\phi$\\
                         \hline
                         $0$ & $0$ & $0$\\
                         $0$ & $1$ & $1$\\
@@ -2206,12 +2392,12 @@
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
 
-                    \node (x1) at (4.0, 6.0) {$x$};
-                    \node (y1) at (2.5, 4.5) {$y$};
-                    \node (z1) at (5.5, 4.5) {$z$};
-                    \node (x2) at (1.5, 3.0) {$x$};
-                    \node (x3) at (6.5, 3.0) {$x$};
-                    \node (y2) at (4.3, 3.0) {$y$};
+                    \node (x1) at (4.0, 6.0) {$p$};
+                    \node (y1) at (2.5, 4.5) {$q$};
+                    \node (z1) at (5.5, 4.5) {$r$};
+                    \node (x2) at (1.5, 3.0) {$p$};
+                    \node (x3) at (6.5, 3.0) {$p$};
+                    \node (y2) at (4.3, 3.0) {$q$};
                     
                     \node[rectangle, scale=0.7] (0) at (2.0, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (6.0, 1.0) {$1$};
@@ -2220,7 +2406,7 @@
                     \draw[thick] (x1) to (z1);
                     \draw[dashed, thick] (y1) to (x2);
                     \draw[thick, bend right=15] (y1) to (1);
-                    \draw[thick, magenta] (x2) to (1);
+                    \draw[thick, emphasis] (x2) to (1);
                     \draw[dashed, thick] (x2) to (0);
                     \draw[thick] (x3) to (1);
                     \draw[dashed, thick] (x3) to (0);
@@ -2242,14 +2428,14 @@
                 \vspace{1em}
                 
                 \1 Mas tal representação pode incorrer em desperdícios
-                    \2[-] {\scriptsize linha sólida do $x$ à esquerda (colorida) jamais será percorrida}
+                    \2[-] {\scriptsize linha sólida do $p$ à esquerda (colorida) jamais será percorrida}
             \end{outline}
             
             \begin{center}
                 \ovalbox{
                     \begin{minipage}[h]{0.9\columnwidth}
                         \noindent\scriptsize\justifying
-                        Comum após as operações de conjunção e disjunção discutidas anteriormente (algoritmos melhores serão discutidos à frente)
+                        Esse é um resultado comum após as operações discutidas anteriormente -- algoritmos melhores serão discutidos mais à frente
                     \end{minipage}
                 }
             \end{center}            
@@ -2262,26 +2448,28 @@
 %-------------------------------------------
 \begin{frame}{Comparação de \uppercase{BDD}s}
 
-    {\small Além de tornar um BDD ineficiente, ocorrências múltiplas de uma variável também dificultam a comparação de BDDs}
+    {\small Além de tornar um BDD menos eficiente, ocorrências múltiplas de uma variável também dificultam a comparação de BDDs}
 
+    {\scriptsize \textbf{Exercício}: Os BDDs abaixo são equivalentes?}
+    
     \begin{columns}[c]
         \column{0.5\textwidth}
 
             \begin{figure}
             
                 \begin{tikzpicture}
-                    [scale=0.8,auto=left,
+                    [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (x1) at (4.0, 6.0) {$x$};
-                    \node (y1) at (2.5, 4.5) {$y$};
-                    \node (z1) at (5.5, 4.5) {$z$};
-                    \node (x2) at (1.5, 3.0) {$x$};
-                    \node (x3) at (6.5, 3.0) {$x$};
-                    \node (y2) at (4.3, 3.0) {$y$};
+                    \node (x1) at (4.0, 6.0) {$p$};
+                    \node (y1) at (2.5, 4.5) {$q$};
+                    \node (z1) at (5.5, 4.5) {$r$};
+                    \node (x2) at (1.5, 3.0) {$p$};
+                    \node (x3) at (6.5, 3.0) {$p$};
+                    \node (y2) at (4.3, 3.0) {$q$};
                     
                     \node[rectangle, scale=0.7] (0) at (2.0, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (6.0, 1.0) {$1$};
@@ -2308,16 +2496,16 @@
             \begin{figure}
             
                 \begin{tikzpicture}
-                    [scale=0.8,auto=left,
+                    [scale=0.7,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
                     %\draw[help lines] (0,0) grid (8,6);
                   
-                    \node (x) at (4.0, 6.0) {$x$};
-                    \node (y1) at (2.5, 4.5) {$y$};
-                    \node (y2) at (5.5, 4.5) {$y$};
-                    \node (z) at (4.0, 3.0) {$z$};
+                    \node (x) at (4.0, 6.0) {$p$};
+                    \node (y1) at (2.5, 4.5) {$q$};
+                    \node (y2) at (5.5, 4.5) {$q$};
+                    \node (z) at (4.0, 3.0) {$r$};
                     
                     \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
                     \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
