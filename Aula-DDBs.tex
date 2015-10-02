@@ -24,7 +24,7 @@
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
-\title{Diagramas de Decisão Binários (BDDs)}
+\title{Diagramas de Decisão Binária (BDDs)}
 \date{\today}
 \author{Luiz Carlos Vieira}
 \institute{Instituto de Matemática e Estatística da Universidade de São Paulo}
@@ -52,8 +52,8 @@
     \begin{outline}
         \1 Representação de Funções Booleanas
             \2[-] fórmulas proposicionais e tabelas-verdade
-            \2[-] diagramas de decisão binários (BDDs)
-            \2[-] diagramas de decisão binários ordenados (OBDDs)
+            \2[-] diagramas de decisão binária (BDDs)
+            \2[-] diagramas de decisão binária ordenados (OBDDs)
 
         \vspace{1em}
             
@@ -209,7 +209,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Sobre a notação utilizada...}
+\begin{frame}{Sobre o sistema utilizado...}
 
     \small
 
@@ -480,7 +480,7 @@
                 \textbf{fórmulas NDF} & \textcolor{ok}{algumas vezes} & \textcolor{good}{fácil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{good}{fácil} & \textcolor{bad}{difícil}\\
                 \textbf{tabelas-verdade ordenadas} & \textcolor{bad}{nunca} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil} & \textcolor{bad}{difícil}\\
                 \only<2>{
-                \textbf{OBDDs\footnote{Diagramas de Decisão Binários Ordenados -- que serão explorados a seguir} reduzidos} & \textcolor{good}{muitas vezes} & \textcolor{good}{fácil} & \textcolor{good}{fácil} & \textcolor{ok}{mais ou menos} & \textcolor{ok}{mais ou menos} & \textcolor{good}{fácil}\\
+                \textbf{OBDDs\footnote{Diagramas de Decisão Binária Ordenados -- que serão explorados a seguir} reduzidos} & \textcolor{good}{muitas vezes} & \textcolor{good}{fácil} & \textcolor{good}{fácil} & \textcolor{ok}{mais ou menos} & \textcolor{ok}{mais ou menos} & \textcolor{good}{fácil}\\
                 }
             \end{tabular}
         \end{table}
@@ -493,7 +493,7 @@
 
     \begin{block}{\textbf{Definição 6.3}}
         \small
-        Seja $T$ uma árvore binária cujos nós não-terminais (nós de teste) contêm variáveis booleanas e cujos nós termiais contêm os valores $0$ ou $1$. Então $T$ é uma árvore de decisão binária finita e determina \textit{uma única} função booleana $f$ da seguinte forma:
+        Seja $T$ uma árvore binária cujos nós não-terminais (nós de teste) contêm variáveis booleanas e cujos nós terminais contêm os valores $0$ ou $1$. Então $T$ é uma árvore de decisão binária finita e determina \textit{uma única} função booleana $f$ da seguinte forma:
         
         \begin{quotation}
         \noindent\justifying
@@ -1422,7 +1422,7 @@
         \shadowbox{
             \begin{minipage}[h]{0.9\linewidth}
                 \noindent
-                A redução faz com que as árvores se tornem grafos. Por isso, passam a ser chamados de \textbf{Diagramas de Decisão Binários (BDDs)}.
+                A redução faz com que as árvores se tornem grafos. Por isso, passam a ser chamados de \textbf{Diagramas de Decisão Binária (BDDs)}.
             \end{minipage}
         }
     \end{center}
@@ -1431,10 +1431,10 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: dag}
+\begin{frame}{Definição: \uppercase{DAG}}
 
     \begin{block}{\textbf{Definição 6.4}}
-        Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que começa e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (dag) é um grafo direcionado que não contém nenhum ciclo. Um nó em um dag é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
+        Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que começa e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (DAG) é um grafo direcionado que não contém nenhum ciclo. Um nó em um DAG é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
     \end{block}
 
 \end{frame}
@@ -1444,14 +1444,14 @@
 \begin{frame}{Definição: \uppercase{BDD}s}
 
     \begin{block}{\textbf{Definição 6.5}}
-        Um diagrama de decisão binário (BDD) é um dag finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
+        Um diagrama de decisão binário (BDD) é um DAG finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
     \end{block}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD} como dag}
+\begin{frame}{\uppercase{BDD} como \uppercase{DAG}}
 
     \begin{outline}
         \1 Por convenção, as linhas sólidas ou pontilhadas de um BDD são sempre consideradas como indo para baixo
@@ -1459,7 +1459,7 @@
         
         \vspace{1em}
         
-        \1 Os BDDs são acíclicos (dag) e têm um único nó inicial
+        \1 Os BDDs são acíclicos (DAG) e têm um único nó inicial
 
         \vspace{1em}
         
@@ -1525,6 +1525,15 @@
         \1 \textbf{Validade}. Um BDD representa uma função válida se nenhum ponto terminal $0$ é acessível por um caminho consistente
     \end{outline}
 
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.9\linewidth}
+                \noindent\scriptsize\justifying
+                Um caminho consistente é aquele que, iniciado no nó raiz, segue apenas por uma valoração possível para cada variável booleana e atinge um único nó-terminal com valor $0$ ou $1$
+            \end{minipage}
+        }
+    \end{center}
+    
 \end{frame}
 %-------------------------------------------
 
@@ -1603,6 +1612,155 @@
 
             \end{figure}
         
+    \end{columns}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Comparação das representações}
+
+    \small
+    Considere a função de paridade par $f_{par}(p_1, p_2, ..., p_n)$ que é definida como $1$ se existe um número par de variáveis $p_i$ com valor $1$, e como $0$ caso contrário.
+
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.7\linewidth}
+                \noindent\scriptsize\centering
+                Bit de paridade (par ou ímpar) é uma das formas mais simples de detecção de erros na comunicação de dados
+            \end{minipage}
+        }
+    \end{center}    
+    
+    \begin{outline}
+    
+        \1 Ela tem representação exponencial em outros sistemas (wffs ou tabelas-verdade, por exemplo)
+        
+        \vspace{1em}
+        
+        \1 Enquanto que um BDD precisa de apenas $2n + 1$ nós para representá-la
+    
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração da tabela-verdade para $n = 4$}
+    
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+    
+            \begin{table}
+                \scriptsize
+                \begin{tabular}{cccc|c}
+                    $p_1$ & $p_2$ & $p_3$ & $p_4$ & $\phi$\\
+                    \hline
+                    \rowcolor{LightCyan}
+                    $0$ & $0$ & $0$ & $0$ & $1$\\
+                    $0$ & $0$ & $0$ & $1$ & $0$\\
+                    $0$ & $0$ & $1$ & $0$ & $0$\\
+                    \rowcolor{LightCyan}
+                    $0$ & $0$ & $1$ & $1$ & $1$\\
+                    $0$ & $1$ & $0$ & $0$ & $0$\\
+                    \rowcolor{LightCyan}
+                    $0$ & $1$ & $0$ & $1$ & $1$\\
+                    \rowcolor{LightCyan}
+                    $0$ & $1$ & $1$ & $0$ & $1$\\
+                    $0$ & $1$ & $1$ & $1$ & $0$\\
+                    $1$ & $0$ & $0$ & $0$ & $0$\\
+                    \rowcolor{LightCyan}
+                    $1$ & $0$ & $0$ & $1$ & $1$\\
+                    \rowcolor{LightCyan}
+                    $1$ & $0$ & $1$ & $0$ & $1$\\
+                    $1$ & $0$ & $1$ & $1$ & $0$\\
+                    \rowcolor{LightCyan}
+                    $1$ & $1$ & $0$ & $0$ & $1$\\
+                    $1$ & $1$ & $0$ & $1$ & $0$\\
+                    $1$ & $1$ & $1$ & $0$ & $0$\\
+                    \rowcolor{LightCyan}
+                    $1$ & $1$ & $1$ & $1$ & $1$\\
+                \end{tabular}
+            \end{table}
+
+        \column{0.5\textwidth}
+        
+            \begin{outline}
+                \small
+                \1 Total de linhas: $2^n = 2^4 = 16$
+            \end{outline}
+
+    \end{columns}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração da wff para $n = 4$}
+
+    $\phi \equiv \lnot(((p_1 \oplus p_2) \oplus p_3) \oplus p_4)$
+    
+    \vspace{1em}
+    
+    \begin{outline}
+        \1 Lembrando do ou-exclusivo:
+            \2[-] $(p \oplus q) \equiv ((p \lor q) \land \lnot{(p \land q)})$
+        \1 Número de símbolos: $14(n-1) + 1 = 43$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração do \uppercase{OBDD} para $n = 4$}
+
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+
+                    \node[rectangle, scale=0.7] (1) at (0.0, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (0) at (3.0, 0.0) {$0$};
+                    \node (p4l) at (0.0, 1.5)  {$p_4$};
+                    \node (p4r) at (3.0, 1.5)  {$p_4$};
+                    \node (p3l) at (0.0, 3.0)  {$p_3$};
+                    \node (p3r) at (3.0, 3.0)  {$p_3$};
+                    \node (p2l) at (0.0, 4.5)  {$p_2$};
+                    \node (p2r) at (3.0, 4.5)  {$p_2$};
+                    \node (p1)  at (1.5, 6.0)  {$p_1$};
+                    
+                    \draw[dashed, thick] (p4l) to (1);
+                    \draw[thick] (p4l) to (0);
+                    \draw[dashed, thick] (p4r) to (0);
+                    \draw[thick] (p4r) to (1);
+                    \draw[dashed, thick] (p3l) to (p4l);
+                    \draw[thick] (p3l) to (p4r);
+                    \draw[dashed, thick] (p3r) to (p4r);
+                    \draw[thick] (p3r) to (p4l);
+                    \draw[dashed, thick] (p2l) to (p3l);
+                    \draw[thick] (p2l) to (p3r);
+                    \draw[dashed, thick] (p2r) to (p3r);
+                    \draw[thick] (p2r) to (p3l);
+                    \draw[dashed, thick] (p1) to (p2l);
+                    \draw[thick] (p1) to (p2r);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+        
+            \begin{outline}
+                \small
+                \1 Total de nós: $2n + 1 = 9$
+            \end{outline}
+
     \end{columns}
 
 \end{frame}
@@ -2435,7 +2593,7 @@
                 \ovalbox{
                     \begin{minipage}[h]{0.9\columnwidth}
                         \noindent\scriptsize\justifying
-                        Esse é um resultado comum após as operações discutidas anteriormente -- algoritmos melhores serão discutidos mais à frente
+                        Esse é um resultado comum após as operações discutidas anteriormente -- algoritmos melhores serão apresentados posteriormente
                     \end{minipage}
                 }
             \end{center}            
@@ -2529,25 +2687,182 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD}s ordenados}
+\begin{frame}{Ordenação de \uppercase{BDD}s}
 
     \begin{outline}
-        \1 Quando a ordem das variáveis de teste nos caminhos que levam da raiz até uma folha é sempre a mesma, o BDD é dito \textit{ordenado}
-            \2[-] e passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
-        
+        \1 Se a ordem das variáveis de teste nos caminhos que levam da raiz até as folhas fosse a mesma, a comparação seria trivial
+            \2[-] bastaria verificar se os BDDs têm a mesma estrutura
+
         \vspace{1em}
-        
-        \1 Esse compromisso com a ordem dá uma representação única de funções booleanas com OBDDs
+            
+        \1 Quando a ordem das variáveis de teste é sempre a mesma, o BDD é dito \textit{ordenado}
+            \2[-] e passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Teorema: OBDDs reduzidos são únicos}
+\begin{frame}{Definição: \uppercase{OBDD}s}
+
+    \begin{block}{\textbf{Definição 6.6}}
+        Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis sem duplicação e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ temos $i < j$.
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplo de \uppercase{BDD} ordenado}
+
+    \begin{figure}
+    
+        \caption{Ordem: $[p, q, r]$}
+    
+        \begin{tikzpicture}
+            [scale=1.0,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (8,6);
+
+            \node (p) at (3.0, 5.5)  {$p$};
+            \node (q1) at (1.5, 4.0)  {$q$};
+            \node (q2) at (4.5, 4.0)  {$q$};
+            
+            \node (r1) at (0.6, 2.5)  {$r$};
+            \node (r2) at (2.4, 2.5)  {$r$};
+            \node (r3) at (3.6, 2.5)  {$r$};
+            \node (r4) at (5.4, 2.5)  {$r$};
+            
+            \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
+            \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
+
+            \draw[dashed, thick] (p) to (q1);
+            \draw[thick] (p) to (q2);
+            \draw[dashed, thick] (q1) to (r1);
+            \draw[thick] (q1) to (r2);
+            \draw[dashed, thick] (q2) to (r3);
+            \draw[thick] (q2) to (r4);
+            
+            \draw[dashed, thick] (r1) to (0);
+            \draw[thick] (r1) to (1);
+            \draw[dashed, thick] (r2) to (0);
+            \draw[thick] (r2) to (1);
+            \draw[dashed, thick] (r3) to (0);
+            \draw[thick] (r3) to (1);
+            \draw[thick] (r4) to (0);
+            \draw[dashed, thick] (r4) to (1);            
+        \end{tikzpicture}
+
+    \end{figure}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Outro exemplo de \uppercase{BDD} ordenado}
+
+    \begin{figure}
+    
+        \caption{Ordem: $[p, q, r]$}
+    
+        \begin{tikzpicture}
+            [scale=1.0,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (8,6);
+          
+            \node (x) at (4.0, 6.0) {$p$};
+            \node (y1) at (2.5, 4.5) {$q$};
+            \node (y2) at (5.5, 4.5) {$q$};
+            \node (z) at (4.0, 3.0) {$r$};
+            
+            \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
+            \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
+
+            \draw[dashed, thick] (x) to (y1);
+            \draw[thick] (x) to (y2);
+            \draw[dashed, thick] (y1) to (0);
+            \draw[thick, bend right] (y1) to (1);
+            \draw[dashed, thick] (y2) to (z);
+            \draw[thick] (y2) to (1);
+            \draw[dashed, thick] (z) to (0);
+            \draw[thick] (z) to (1);
+            
+        \end{tikzpicture}
+
+    \end{figure}
+
+\end{frame}
+%-------------------------------------------
+    
+%-------------------------------------------
+\begin{frame}{Exemplo de \uppercase{BDD} não ordenado}
+
+    \begin{figure}
+    
+        \caption{Sem ordem definida ($[p, q, r]$ à esquerda e $[p, r, q]$ à direita)}
+    
+        \begin{tikzpicture}
+            [scale=1.0,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (8,6);
+
+            \node (p) at (3.0, 5.5)  {$p$};
+            \node (q1) at (1.5, 4.0)  {$q$};
+            \node (r1) at (4.5, 4.0)  {$r$};
+            
+            \node (r2) at (0.6, 2.5)  {$r$};
+            \node (q2) at (5.4, 2.5)  {$q$};
+            
+            \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
+            \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
+
+            \draw[dashed, thick] (p) to (q1);
+            \draw[thick] (p) to (r1);
+            \draw[dashed, thick] (q1) to (r2);
+            \draw[thick] (q1) to (1);
+            \draw[dashed, thick] (r1) to (1);
+            \draw[thick] (r1) to (q2);
+            \draw[dashed, thick] (r2) to (0);
+            \draw[thick] (r2) to (1);
+            \draw[dashed, thick] (q2) to (0);
+            \draw[thick] (q2) to (1);
+        \end{tikzpicture}
+
+    \end{figure}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Vantagens da ordenação de \uppercase{BDD}s}
+
+    \begin{outline}
+        \1 A comparação de dois BDDs de ordens compatíveis é imediata
+        
+        \vspace{1em}
+        
+        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm sua ordem original
+        
+        \vspace{1em}
+        
+        \1 Esse compromisso com a ordem produz uma representação única de funções booleanas com OBDDs reduzidos
+            \2[-] chamada de \textit{forma canônica}
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Teorema: \uppercase{OBDD}s reduzidos são únicos}
 
     \begin{block}{\textbf{Teorema 6.7}}
-        A representação em OBDD reduzido de uma função dada $f$ é unica. Isto é, sejam $B$ e $B^\prime$ dois OBDDs reduzidos com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
+        A representação em OBDD reduzido de uma função dada $\phi$ é unica. Isto é, sejam $B$ e $B^\prime$ dois OBDDs reduzidos com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
     \end{block}
 
 \end{frame}
@@ -2567,12 +2882,20 @@
             
         \vspace{1em}
         
-        \1 Por outro lado, as operações $\cdot$ e $+$ apresentadas anteriormente não funcionam
-            \2[-] pois podem introduzir ocorrÊncias múltiplas de uma mesma variável
+        \1 Por outro lado, as operações $\land$ e $\lor$ apresentadas anteriormente não funcionam
+            \2[-] pois podem introduzir ocorrências múltiplas de uma mesma variável
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Impacto da escolha da ordenação}
+
+
+\end{frame}
+%-------------------------------------------
+
 
 %-------------------------------------------
 \begin{frame}{Importância da representação canônica}
@@ -2580,54 +2903,61 @@
     \scriptsize
 
     \begin{outline}
-        \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ODDB reduzido que a represente contém tal variável;
+        \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum OBDD reduzido que a represente contém tal variável;
         
         \vspace{1em}
         
-        \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por ODDBs com ordem compatível, é possível decidir eficientemente se são equivalentes reduzindo seus ODDBs e comparando sua estrutura;
+        \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDD com ordem compatível, é possível decidir eficientemente se são equivalentes reduzindo seus OBDD e comparando sua estrutura;
             
         \vspace{1em}
         
-        \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu ODDB reduzido é igual a $B_1$;
+        \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu OBDD reduzido é igual a $B_1$;
         
         \vspace{1em}
         
-        \1 \textbf{Teste de implicação}. Pode-se testar se uma função $f$ implica em outra $g$ calculando o ODDB para $f \cdot g$ e verificando que ele é igual a $B_0$;
+        \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o OBDD para $\phi \land \psi$ e verificando que ele é igual a $B_0$;
         
         \vspace{1em}
         
-        \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ODDB reduzido não é igual a $B_0$.
+        \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu OBDD reduzido não é igual a $B_0$.
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo \texttt{reduzir}}
+%\begin{frame}{Expansão de Shannon}
 
 
-\end{frame}
+%\end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo \texttt{aplicar}}
+%\begin{frame}{Algoritmo \texttt{reduzir}}
 
 
-\end{frame}
+%\end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo \texttt{restringir}}
+%\begin{frame}{Algoritmo \texttt{aplicar}}
 
 
-\end{frame}
+%\end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo \texttt{existe}}
+%\begin{frame}{Algoritmo \texttt{restringir}}
 
 
-\end{frame}
+%\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+%\begin{frame}{Algoritmo \texttt{existe}}
+
+
+%\end{frame}
 %-------------------------------------------
 
 \end{document}
