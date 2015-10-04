@@ -1,7 +1,9 @@
-TEX=pdflatex
-FILE=Aula-DDBs
-OUTPUT_DIR=output
-TEXMFOUTPUT=$(OUTPUT_DIR)
+TEX         = pdflatex
+FILE1       = BDDs-Aula1
+FILE2       = BDDs-Aula2
+OUTPUT_DIR  = output
+TEXMFOUTPUT = $(OUTPUT_DIR)
+FORMAT     ?= full
 
 # Definition of basic commands according to the operating system.
 $(info Target platform: $(OS))
@@ -17,32 +19,41 @@ else
 	CP=cp
 endif
 
-all: wide
+ifeq ($(FORMAT),wide)
+    ASPECTRATIO1 = "\def\classopts{,aspectratio=169}\input{" $(FILE1) "}"
+    ASPECTRATIO2 = "\def\classopts{,aspectratio=169}\input{" $(FILE2) "}"
+    JOBNAME1 = $(FILE1)-wide
+    JOBNAME2 = $(FILE2)-wide
+else
+    ASPECTRATIO1 = ""
+    ASPECTRATIO2 = ""
+    JOBNAME1 = $(FILE1)-full
+    JOBNAME2 = $(FILE2)-full
+endif
 
-full: ASPECTRATIO = ""
-full: build
-	$(CP) $(OUTPUT_DIR)$(SEP)$(FILE).pdf $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf
-	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).pdf
-    
-wide: ASPECTRATIO = "\def\classopts{,aspectratio=169}\input{" $(FILE) "}"
-wide: build
-	$(CP) $(OUTPUT_DIR)$(SEP)$(FILE).pdf $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf
-	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).pdf
+all: aula1 aula2
 
-build: $(FILE).tex
+aula1: $(FILE1).tex
 ifeq ($(OS),Windows_NT)
 	if not exist $(OUTPUT_DIR) $(MD) $(OUTPUT_DIR)
 else
 	$(MD) $(OUTPUT_DIR)
 endif
-	$(TEX) $(ASPECTRATIO) -output-directory $(OUTPUT_DIR) $(FILE).tex
+	$(TEX) $(ASPECTRATIO1) -job-name=$(JOBNAME1) -output-directory $(OUTPUT_DIR) $(FILE1).tex
+	
+aula2: $(FILE2).tex
+ifeq ($(OS),Windows_NT)
+	if not exist $(OUTPUT_DIR) $(MD) $(OUTPUT_DIR)
+else
+	$(MD) $(OUTPUT_DIR)
+endif
+	$(TEX) $(ASPECTRATIO2) -job-name=$(JOBNAME2) -output-directory $(OUTPUT_DIR) $(FILE2).tex
 
 clean:
-	$(RM) $(OUTPUT_DIR)$(SEP)$(FILE).aux  $(OUTPUT_DIR)$(SEP)$(FILE).log\
-    $(OUTPUT_DIR)$(SEP)$(FILE).toc $(OUTPUT_DIR)$(SEP)$(FILE).out\
-    $(OUTPUT_DIR)$(SEP)$(FILE).blg $(OUTPUT_DIR)$(SEP)$(FILE).bbl\
-    $(OUTPUT_DIR)$(SEP)$(FILE).nav $(OUTPUT_DIR)$(SEP)$(FILE).snm
+	$(RM) $(OUTPUT_DIR)$(SEP)*.aux  $(OUTPUT_DIR)$(SEP)*.log\
+    $(OUTPUT_DIR)$(SEP)*.toc $(OUTPUT_DIR)$(SEP)*.out\
+    $(OUTPUT_DIR)$(SEP)*.blg $(OUTPUT_DIR)$(SEP)*.bbl\
+    $(OUTPUT_DIR)$(SEP)*.nav $(OUTPUT_DIR)$(SEP)*.snm
 
 clean_all: clean
-	if exist $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf $(RM) $(OUTPUT_DIR)$(SEP)$(FILE)_full.pdf
-	if exist $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf $(RM) $(OUTPUT_DIR)$(SEP)$(FILE)_wide.pdf
+	$(RM) $(OUTPUT_DIR)$(SEP)*.pdf
