@@ -1,7 +1,8 @@
 # Diagramas de Decisão Binários (BDDs)
 
 Material de aulas sobre Diagramas de Decisão Binários (BDDs, do inglês *Binary Decision Diagrams*).
-Criado por Luiz Carlos Vieira em setembro de 2015, para a disciplina MAC0239 (Introdução à Lógica e Verificação de Programas) do curso de Ciência da Computação do Instituto de Matemática e Estatística da Universidade de São Paulo.
+
+> Criado por [Luiz Carlos Vieira](http://www.luiz.vieira.nom.br) em setembro de 2015 para a disciplina MAC0239 (Introdução à Lógica e Verificação de Programas) do curso de Ciência da Computação do Instituto de Matemática e Estatística da Universidade de São Paulo.
 
 # Compilando com o LaTeX
 
