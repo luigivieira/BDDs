@@ -126,7 +126,7 @@
                         Esse é um resultado comum após as operações discutidas na aula anterior
                     \end{minipage}
                 }
-            \end{center}            
+            \end{center}
 
     \end{columns}
     
@@ -218,34 +218,30 @@
 \begin{frame}{Conceito de ordem de um caminho}
 
     \begin{columns}[c]
-        \column{0.5\textwidth}
+        \column{0.2\textwidth}
+        
+            \begin{outline}
+                \scriptsize
+                \uncover<2->{
+                    \1 $[p\uncover<3->{,q}\uncover<4->{,p}]$
+                }
+                \uncover<5->{
+                    \1 $[p\uncover<6->{,q}]$
+                }
+                \uncover<7->{
+                    \1 $[p\uncover<8->{,r}\uncover<9->{,q}]$
+                }
+                \uncover<10->{
+                    \1 $[p\uncover<11->{,r}\uncover<12->{,p}]$
+                }
+            \end{outline}
+                
+        \column{0.4\textwidth}
 
             \begin{figure}
             
-                \begin{minipage}[h]{0.5\columnwidth}
-                
-                    \begin{outline}
-                        \scriptsize
-                        \uncover<2->{
-                            \1 $[p\uncover<3->{,q}\uncover<4->{,p}]$
-                        }
-                        \uncover<5->{
-                            \1 $[p\uncover<6->{,q}]$
-                        }
-                        \uncover<7->{
-                            \1 $[p\uncover<8->{,r}\uncover<9->{,q}]$
-                        }
-                        \uncover<10->{
-                            \1 $[p\uncover<11->{,r}\uncover<12->{,p}]$
-                        }
-                    \end{outline}
-                    
-                \end{minipage}
-            
-                \vspace{1em}
-            
                 \begin{tikzpicture}
-                    [scale=0.5,auto=left,
+                    [scale=0.6,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
@@ -327,41 +323,28 @@
                 \end{tikzpicture}
 
             \end{figure}
-            
-            \only<20>{
-                \ovalbox{
-                    \begin{minipage}[h]{0.8\columnwidth}
-                        \noindent\scriptsize
-                        Ocorrem repetições e não há um padrão na ordenação
-                    \end{minipage}
-                }            
-            }
 
-        \column{0.5\textwidth}
+        \column{0.2\textwidth}
+        
+            \begin{outline}
+                \scriptsize
+                \uncover<13->{
+                    \1 $[p\uncover<14->{,q}]$
+                }
+                \uncover<15->{
+                    \1 $[p\uncover<16->{,q}\uncover<17->{,r}]$
+                }
+                \uncover<18->{
+                    \1 $[p\uncover<19->{,q}]$
+                }
+            \end{outline}
+            
+        \column{0.2\textwidth}
             
             \begin{figure}
             
-                \begin{minipage}[h]{0.5\columnwidth}
-                
-                    \begin{outline}
-                        \scriptsize
-                        \uncover<13->{
-                            \1 $[p\uncover<14->{,q}]$
-                        }
-                        \uncover<15->{
-                            \1 $[p\uncover<16->{,q}\uncover<17->{,r}]$
-                        }
-                        \uncover<18->{
-                            \1 $[p\uncover<19->{,q}]$
-                        }
-                    \end{outline}
-                    
-                \end{minipage}
-            
-                \vspace{1em}
-            
                 \begin{tikzpicture}
-                    [scale=0.5,auto=left,
+                    [scale=0.6,auto=left,
                         every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
                         every edge/.append style={draw=blue, thick}
                     ]
@@ -420,32 +403,44 @@
 
             \end{figure}
 
-            \only<20>{
+    \end{columns}
+
+    \vspace{1em}
+    
+    \only<20>{
+        \begin{columns}[c]
+            \column{0.6\textwidth}
+                \ovalbox{
+                    \begin{minipage}[h]{0.8\columnwidth}
+                        \noindent\scriptsize
+                        Ocorrem repetições e não há um padrão na ordenação
+                    \end{minipage}
+                }            
+            
+            \column{0.4\textwidth}
                 \ovalbox{
                     \begin{minipage}[h]{0.8\columnwidth}
                         \noindent\scriptsize
                         Não ocorrem repetições e há um padrão na ordenação
                     \end{minipage}
                 }            
-            }
-            
-    \end{columns}
+        \end{columns}
+    }
     
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ordenação de \uppercase{BDD}s}
+\begin{frame}{\uppercase{BDD}s ordenados}
 
-    \begin{outline}
-        \1 Se a ordem das variáveis em qualquer caminho for sempre a mesma, a comparação é trivial
-            \2[-] basta verificar se os BDDs têm a mesma estrutura
-
-        \vspace{1em}
-            
-        \1 Quando a ordem das variáveis de teste é sempre a mesma, o BDD é dito \textit{ordenado}
-            \2[-] e passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
-    \end{outline}
+    \begin{center}
+        \shadowbox{
+            \begin{minipage}[h]{1.0\columnwidth}
+                \noindent\justifying
+                Quando a ordem das variáveis em qualquer caminho é sempre a mesma, o BDD passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
+            \end{minipage}
+        }
+    \end{center}            
 
 \end{frame}
 %-------------------------------------------
@@ -507,51 +502,13 @@
 
 \end{frame}
 %-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Outro exemplo de \uppercase{BDD} ordenado}
-
-    \begin{figure}
-    
-        \caption{Ordem: $[p, q, r]$}
-    
-        \begin{tikzpicture}
-            [scale=1.0,auto=left,
-                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
-                every edge/.append style={draw=blue, thick}
-            ]
-            %\draw[help lines] (0,0) grid (8,6);
-          
-            \node (x) at (4.0, 6.0) {$p$};
-            \node (y1) at (2.5, 4.5) {$q$};
-            \node (y2) at (5.5, 4.5) {$q$};
-            \node (z) at (4.0, 3.0) {$r$};
-            
-            \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
-            \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
-
-            \draw[dashed, thick] (x) to (y1);
-            \draw[thick] (x) to (y2);
-            \draw[dashed, thick] (y1) to (0);
-            \draw[thick, bend right] (y1) to (1);
-            \draw[dashed, thick] (y2) to (z);
-            \draw[thick] (y2) to (1);
-            \draw[dashed, thick] (z) to (0);
-            \draw[thick] (z) to (1);
-            
-        \end{tikzpicture}
-
-    \end{figure}
-
-\end{frame}
-%-------------------------------------------
     
 %-------------------------------------------
 \begin{frame}{Exemplo de \uppercase{BDD} não ordenado}
 
     \begin{figure}
     
-        \caption{Sem ordem definida ($[p, q, r]$ à esquerda e $[p, r, q]$ à direita)}
+        \caption{Não ordenado ($[p, q, r]$ à esquerda e $[p, r, q]$ à direita)}
     
         \begin{tikzpicture}
             [scale=1.0,auto=left,
@@ -592,14 +549,15 @@
 
     \begin{outline}
         \1 A comparação de dois BDDs de ordens compatíveis é imediata
+            \2[-] basta verificar se suas estruturas são idênticas
         
         \vspace{1em}
         
-        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm sua ordem original
+        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm a ordem original
         
         \vspace{1em}
         
-        \1 Esse compromisso com a ordem produz uma representação única de funções booleanas com OBDDs reduzidos
+        \1 O compromisso com a ordem produz uma representação única de funções booleanas
             \2[-] chamada de \textit{forma canônica}
     \end{outline}
 
@@ -617,15 +575,10 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Características de \uppercase{OBDD}s}
+\begin{frame}{Características de \uppercase{OBDD}s reduzidos}
 
     \begin{outline}
-        \1 As simplificações C1-C3 em um OBDD produzem sempre o mesmo OBDD reduzido
-            \2[-] chamado então de \textit{forma canônica}
-        
-        \vspace{1em}
-        
-        \1 ODDBs permitem representações compactas de certas classes de funções booleanas
+        \1 ODDBs reduzidos permitem representações compactas de certas classes de funções booleanas
             \2[-] que seriam exponenciais em outros formatos/representações
             
         \vspace{1em}
@@ -640,10 +593,134 @@
 %-------------------------------------------
 \begin{frame}{Impacto da escolha da ordenação}
 
+    Considere a escolha da ordem de variáveis para a seguinte função booleana em CNF:
+    $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land ... \land (p_{2n-1} \lor p_{2n})$
+
+    \begin{outline}
+        \small
+        \1 Se a escolha for a ``\textit{ordem natural de ocorrência na fórmula}'' ($[p_1,p_2,p_3,...,,p_{2n-1},p_{2n}]$), o OBDD reduzido terá $2n+2$ nós
+        
+        \vspace{1em}
+        
+        \1 Se a escolha for ``\textit{índices impares antes de índices pares}'' ($[p_1,p_3,p_5,...,p_{2n-1},p_2,p_4,p_6,...,p{2n}]$), o OBDD reduzido terá $2^{n+1}$ nós
+    \end{outline}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ordem ``natural'' para $n=3$}
+    
+    \scriptsize
+    OBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_2,p_3,p_4,p_5,p_6]$
+    
+    \begin{figure}
+    
+        \begin{tikzpicture}
+            [scale=0.9,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines, step=0.5] (0,0) grid (5,6);
+
+            \node[rectangle, scale=0.7] (0) at (0.0, 0.0) {$0$};
+            \node[rectangle, scale=0.7] (1) at (5.0, 0.0) {$1$};
+            
+            \node (p6) at (2.5, 1.0) {$p_6$};
+            \node (p5) at (5.0, 2.0) {$p_5$};
+            \node (p4) at (2.5, 3.0) {$p_4$};
+            \node (p3) at (5.0, 4.0) {$p_3$};
+            \node (p2) at (2.5, 5.0) {$p_2$};
+            \node (p1) at (5.0, 6.0) {$p_1$};
+
+            \draw[dashed, thick] (p1) to (p2);
+            \draw[thick] (p1) to (p3);
+            \draw[dashed, thick] (p2) to (0);
+            \draw[thick] (p2) to (p3);
+            \draw[dashed, thick] (p3) to (p4);
+            \draw[thick] (p3) to (p5);
+            \draw[dashed, thick] (p4) to (0);
+            \draw[thick] (p4) to (p5);
+            \draw[dashed, thick] (p5) to (p6);
+            \draw[thick] (p5) to (1);
+            \draw[dashed, thick] (p6) to (0);
+            \draw[thick] (p6) to (1);
+        \end{tikzpicture}
+
+    \end{figure}
 
 \end{frame}
 %-------------------------------------------
 
+%-------------------------------------------
+\begin{frame}{Ordem ``ímpar/par'' para $n=3$}
+
+    \scriptsize
+    OBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_3,p_5,p_2,p_4,p_6]$
+    
+    \begin{figure}
+    
+        \begin{tikzpicture}
+            [scale=0.8,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines, step=0.5] (0,0) grid (6,7);
+
+            \node[rectangle, scale=0.7] (0) at (0.5, 0.0) {$0$};
+            \node[rectangle, scale=0.7] (1) at (6.0, 0.0) {$1$};
+            
+            \node (p1) at (3.25, 6.5) {$p_1$};
+            \node (p3a) at (1.5, 5.5) {$p_3$};
+            \node (p3b) at (5.0, 5.5) {$p_3$};
+            \node (p5a) at (0.5, 4.5) {$p_5$};
+            \node (p5b) at (2.5, 4.5) {$p_5$};
+            \node (p5c) at (4.0, 4.5) {$p_5$};
+            \node (p5d) at (6.0, 4.5) {$p_5$};
+            \node (p2a) at (0.0, 3.3) {$p_2$};
+            \node (p2b) at (1.0, 3.3) {$p_2$};
+            \node (p2c) at (2.0, 3.3) {$p_2$};
+            \node (p2d) at (3.0, 3.3) {$p_2$};
+            \node (p4a) at (2.85, 1.7) {$p_4$};
+            \node (p4b) at (5.25, 1.7) {$p_4$};
+            \node (p6) at (4.0, 0.7)  {$p_6$};
+            
+            \draw[dashed, thick] (p1) to (p3a);
+            \draw[thick] (p1) to (p3b);
+            \draw[dashed, thick] (p3a) to (p5a);
+            \draw[thick] (p3a) to (p5b);
+            \draw[dashed, thick] (p3b) to (p5c);
+            \draw[thick] (p3b) to (p5d);
+            \draw[dashed, thick] (p5a) to (p2a);
+            \draw[thick] (p4a) to (p6);
+            \draw[dashed, thick] (p4b) to (0);
+            \draw[thick] (p4b) to (1);
+            \draw[thick] (p5a) to (p2b);
+            \draw[dashed, thick] (p5b) to (p2c);
+            \draw[thick] (p5b) to (p2d);
+            \draw[dashed, thick, bend left=10] (p5c) to (p4a);
+            \draw[thick] (p5c) to (p4b);
+            \draw[dashed, thick, bend right=10] (p5d) to (p6);
+            \draw[thick] (p5d) to (1);
+            \draw[dashed, thick] (p4a) to (0);
+            \draw[dashed, thick] (p6) to (0);
+            \draw[thick] (p6) to (1);
+            
+            \draw[dashed, thick] (p2a) to (0);
+            \draw[thick] (p2a) to (p4a);
+            \draw[dashed, thick] (p2b) to (0);
+            \draw[thick, bend right=10] (p2b) to (p4b);
+            \draw[dashed, thick] (p2c) to (0);
+            \draw[thick, bend left=10] (p2c) to (p6);
+            \draw[dashed, thick] (p2d) to (0);
+            \draw[thick] (p2d) to (1);
+            
+        \end{tikzpicture}
+
+    \end{figure}
+
+\end{frame}
+%-------------------------------------------
 
 %-------------------------------------------
 \begin{frame}{Importância da representação canônica}
