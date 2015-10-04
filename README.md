@@ -1,32 +1,34 @@
 # Diagramas de Decisão Binários (BDDs)
 
-Aula sobre Diagramas de Decisão Binários (BDDs, do inglês *Binary Decision Diagrams*).
-Criado por Luiz Carlos Vieira em setembro de 2015.
+Material de aulas sobre Diagramas de Decisão Binários (BDDs, do inglês *Binary Decision Diagrams*).
+Criado por Luiz Carlos Vieira em setembro de 2015, para a disciplina MAC0239 (Introdução à Lógica e Verificação de Programas) do curso de Ciência da Computação do Instituto de Matemática e Estatística da Universidade de São Paulo.
 
 # Compilando com o LaTeX
 
-O Makefile é preparado para gerar os documentos PDF em diferentes formatos (razão de aspecto). Para tal, use o alvo (target) apropriado:
+Há dois alvos (targets) no Makefile: `aula1` e `aula2`. Se um alvo não for informado, o Makefile irá compilar as duas aulas.
 
-- O alvo *full* gera o PDF com a razão de aspecto 'full screen' (4:3).
-- O alvo *wide* gera o PDF com a razão de aspecto 'wide screen' (16:9).
-- O alvo *all* (padrão, se nenhum alvo for informado na linha de comando do `make`) utiliza a versão *wide*.
+O Makefile também é preparado (juntamente com o código de cada aula) para gerar os documentos PDF em diferentes formatos (razão de aspecto). Para tal, use a variável `FORMAT` como a seguir:
 
-Assim, por exemplo, se desejar produzir o PDF para apresentação em um projetor wide screen, compile da seguinte forma:
+- Utilizando o valor `full`, é gerado o PDF com a razão de aspecto *full screen* (4:3).
+- Utilizando o valor `wide`, é gerado o PDF com a razão de aspecto *wide screen* (16:9).
+- O valor padrão (default, caso não informada) da variável é `full`.
+
+Assim, por exemplo, se desejar produzir o PDF da aula 1 para apresentação em um projetor wide screen, compile da seguinte forma:
 
 ```
-make wide
+make aula1 FORMAT=wide
 ```
 
-ou simplesmente:
+Se desejar produzir *todos* os PDFs (de ambas as aulas) para apresentação em um projetor mais comum (isto é, mais antigo e que não seja *wide screen*), use:
+
+```
+make FORMAT=full
+```
+
+ou simplesmente (já que `full` é o padrão):
 
 ```
 make
-```
-
-Se desejar produzir o PDF para projetores comuns (mais antigos), compile da seguinte forma:
-
-```
-make full
 ```
 
 # Referências
