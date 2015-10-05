@@ -1,6 +1,6 @@
 \providecommand\classopts{}
 \expandafter\documentclass\expandafter[table, usenames, svgnames, dvipsnames,14pt, \classopts]{beamer}
-\usetheme[everytitleformat=regular,frametitleformat=lowercase,progressbar=frametitle,numbering=fraction]{m} % load the metropolis theme
+\usetheme[everytitleformat=regular,frametitleformat=regular,progressbar=frametitle,numbering=fraction]{m} % load the metropolis theme
 \usefonttheme[onlymath]{serif}
 
 \usepackage[portuguese]{babel} % For writing in Portuguese
@@ -18,6 +18,11 @@
 \usepackage{stmaryrd} % For some logic symbols
 \usepackage{amsmath} % For math symbols
 \boldmath
+
+\usepackage{algorithm} % For algorithms...
+\usepackage[noend]{algpseudocode} % ...in pseudocode
+\usepackage{fixltx2e}
+\MakeRobust{\Call} % For allowing nested uses of \Call
 
 \usepackage{tabularx} % For creating tables with data centered in cells
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -51,11 +56,11 @@
 \begin{frame}{Conteúdo}
 
     \begin{outline}
-        \1 BDDs ordenados (OBDDs)
+        \1 BDDs ordenados e reduzidos (ROBDDs)
 
         \vspace{1em}
             
-        \1 Algoritmos para OBDDs Reduzidos
+        \1 Algoritmos para ROBDDs
             \2[-] algoritmo \texttt{reduzir}
             \2[-] algoritmo \texttt{aplicar}
             \2[-] algoritmo \texttt{restringir}
@@ -134,7 +139,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Relembrando: comparação de \uppercase{BDD}s}
+\begin{frame}{Relembrando: comparação de BDDs}
 
     {\small Além de tornar um BDD menos eficiente, ocorrências múltiplas de uma variável também dificultam a comparação de BDDs}
     
@@ -431,7 +436,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD}s ordenados}
+\begin{frame}{BDDs ordenados}
 
     \begin{center}
         \shadowbox{
@@ -440,13 +445,13 @@
                 Quando a ordem das variáveis em qualquer caminho é sempre a mesma, o BDD passa a ser chamado Diagrama de Busca Binária Ordenado (OBDD)
             \end{minipage}
         }
-    \end{center}            
+    \end{center}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: \uppercase{OBDD}s}
+\begin{frame}{Definição: OBDDs}
 
     \begin{block}{\textbf{Definição 6.6}}
         Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis sem duplicação e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ temos $i < j$.
@@ -456,7 +461,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplo de \uppercase{BDD} ordenado}
+\begin{frame}{Exemplo de BDD ordenado}
 
     \begin{figure}
     
@@ -504,7 +509,7 @@
 %-------------------------------------------
     
 %-------------------------------------------
-\begin{frame}{Exemplo de \uppercase{BDD} não ordenado}
+\begin{frame}{Exemplo de BDD não ordenado}
 
     \begin{figure}
     
@@ -545,10 +550,10 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Vantagens da ordenação de \uppercase{BDD}s}
+\begin{frame}{Vantagens da ordenação de BDDs}
 
     \begin{outline}
-        \1 A comparação de dois BDDs de ordens compatíveis é imediata
+        \1 A comparação de dois OBDDs de ordens compatíveis é imediata
             \2[-] basta verificar se suas estruturas são idênticas
         
         \vspace{1em}
@@ -565,26 +570,41 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Teorema: \uppercase{OBDD}s reduzidos são únicos}
+\begin{frame}{OBDDs reduzidos}
+
+    \begin{center}
+        \shadowbox{
+            \begin{minipage}[h]{1.0\columnwidth}
+                \noindent\justifying
+                OBDDs reduzidos são, por sua vez, chamados de Diagramas de Busca Binária Ordenados Reduzidos (ROBDD)
+            \end{minipage}
+        }
+    \end{center}            
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Teorema: ROBDDs são únicos}
 
     \begin{block}{\textbf{Teorema 6.7}}
-        A representação em OBDD reduzido de uma função dada $\phi$ é unica. Isto é, sejam $B$ e $B^\prime$ dois OBDDs reduzidos com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
+        A representação em ROBDD de uma função dada $\phi$ é unica. Isto é, sejam $B$ e $B^\prime$ dois ROBDDs com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
     \end{block}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Características de \uppercase{OBDD}s reduzidos}
+\begin{frame}{Características de ROBDDs}
 
     \begin{outline}
-        \1 ODDBs reduzidos permitem representações compactas de certas classes de funções booleanas
+        \1 RODDBs permitem representações compactas de certas classes de funções booleanas
             \2[-] que seriam exponenciais em outros formatos/representações
             
         \vspace{1em}
         
         \1 Por outro lado, as operações $\land$ e $\lor$ apresentadas anteriormente não funcionam
-            \2[-] pois podem introduzir ocorrências múltiplas de uma mesma variável
+            \2[-] pois introduzem ocorrências múltiplas de uma mesma variável
     \end{outline}
 
 \end{frame}
@@ -598,11 +618,11 @@
 
     \begin{outline}
         \small
-        \1 Se a escolha for a ``\textit{ordem natural de ocorrência na fórmula}'' ($[p_1,p_2,p_3,...,,p_{2n-1},p_{2n}]$), o OBDD reduzido terá $2n+2$ nós
+        \1 Se a escolha for a ``\textit{ordem natural de ocorrência na fórmula}'' ($[p_1,p_2,p_3,...,,p_{2n-1},p_{2n}]$), o ROBDD terá $2n+2$ nós
         
         \vspace{1em}
         
-        \1 Se a escolha for ``\textit{índices impares antes de índices pares}'' ($[p_1,p_3,p_5,...,p_{2n-1},p_2,p_4,p_6,...,p{2n}]$), o OBDD reduzido terá $2^{n+1}$ nós
+        \1 Se a escolha for ``\textit{índices impares antes de índices pares}'' ($[p_1,p_3,p_5,...,p_{2n-1},p_2,p_4,p_6,...,p{2n}]$), o ROBDD terá $2^{n+1}$ nós
     \end{outline}
     
 \end{frame}
@@ -612,7 +632,7 @@
 \begin{frame}{Ordem ``natural'' para $n=3$}
     
     \scriptsize
-    OBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_2,p_3,p_4,p_5,p_6]$
+    ROBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_2,p_3,p_4,p_5,p_6]$
     
     \begin{figure}
     
@@ -656,7 +676,7 @@
 \begin{frame}{Ordem ``ímpar/par'' para $n=3$}
 
     \scriptsize
-    OBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_3,p_5,p_2,p_4,p_6]$
+    ROBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_3,p_5,p_2,p_4,p_6]$
     
     \begin{figure}
     
@@ -723,28 +743,53 @@
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}{Escolha da ordenação}
+
+    \begin{outline}
+        \1 A sensibilidade do tamanho de um ROBDD à ordem escolhida é um preço que se paga pelas vantagens obtidas
+        
+        \vspace{1em}
+        
+        \1 Encontrar a ordem ótima também é um problema computacional caro
+            \2[-] mas há heurísticas que produzem ordens razoavelmente boas
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}{Importância da representação canônica}
 
     \scriptsize
 
     \begin{outline}
-        \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum OBDD reduzido que a represente contém tal variável;
+        \uncover<1->{
+            \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ROBDD que a represente contém tal variável;
+        }
         
-        \vspace{1em}
-        
-        \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDD com ordem compatível, é possível decidir eficientemente se são equivalentes reduzindo seus OBDD e comparando sua estrutura;
+        \uncover<2->{
+            \vspace{1em}
             
-        \vspace{1em}
+            \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDDs com ordens compatíveis, é possível decidir eficientemente se são equivalentes reduzindo seus OBDDs e comparando sua estrutura;
+        }
         
-        \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu OBDD reduzido é igual a $B_1$;
+        \uncover<3->{
+            \vspace{1em}
+            
+            \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu ROBDD é igual a $B_1$;
+        }
         
-        \vspace{1em}
+        \uncover<4->{
+            \vspace{1em}
+            
+            \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ROBDD não é igual a $B_0$.
+        }
         
-        \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o OBDD para $\phi \land \psi$ e verificando que ele é igual a $B_0$;
-        
-        \vspace{1em}
-        
-        \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu OBDD reduzido não é igual a $B_0$.
+        \uncover<5->{
+            \vspace{1em}
+
+            \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o ROBDD para $\phi \land \psi$ -- a implicação é verdadeira se e somente este ROBDD é igual a $B_0$;
+        }
     \end{outline}
 
 \end{frame}
@@ -755,6 +800,267 @@
 
 
 %\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Estrutura de dados}
+
+    A estrutura de dados para representar um ROBDD é composta de:
+
+    \begin{outline}
+        \1 Uma tabela $T: n \mapsto \langle v,t,f \rangle$
+            \2[-] que associa a cada identificador $n$ um nó com variável de teste $v$, filho esquerdo $t$ e filho direito $f$
+        
+        \vspace{1em}
+        
+        \1 Uma tabela inversa $T^{-1}: \langle v,t,f \rangle \mapsto n$
+            \2[-] que associa nós em identificadores
+            \2[-] devido ao compartilhamento de sub-grafos
+            \2[-] usada para garantir que os diagramas sejam reduzidos
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração dessa estrutura de dados}
+
+    \setlength{\tabcolsep}{2pt}
+    \renewcommand{\arraystretch}{1.5}        
+
+    \begin{columns}[c]
+
+        \column{0.2\textwidth}
+            
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=0.7,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node (p) at (4.0, 6.0) {$p$};
+                    \node (q1) at (2.5, 4.5) {$q$};
+                    \node (q2) at (5.5, 4.5) {$q$};
+                    \node (r) at (4.0, 3.0) {$r$};
+                    
+                    \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
+
+                    \draw[dashed, thick] (p) to (q1);
+                    \draw[thick] (p) to (q2);
+                    \draw[dashed, thick] (q1) to (0);
+                    \draw[thick, bend right] (q1) to (1);
+                    \draw[dashed, thick] (q2) to (r);
+                    \draw[thick] (q2) to (1);
+                    \draw[dashed, thick] (r) to (0);
+                    \draw[thick] (r) to (1);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.35\textwidth}
+        
+            \begin{table}
+                \scriptsize
+                \caption{\scriptsize Tabela $T: n \mapsto \langle v,t,f \rangle$}
+                \begin{tabular}{c|c}
+                    $n$ & $T(n)$\\
+                    \hline
+                    $0$ & $\langle p_{6},\textproc{null},\textproc{null} \rangle$\\
+                    $1$ & $\langle p_{6},\textproc{null},\textproc{null} \rangle$\\
+                    $2$ & $\langle p,3,4 \rangle$\\
+                    $3$ & $\langle q,0,1 \rangle$\\
+                    $4$ & $\langle q,5,1 \rangle$\\
+                    $5$ & $\langle r,0,1 \rangle$\\
+                \end{tabular}
+            \end{table}
+
+        \column{0.45\textwidth}
+        
+            \begin{table}
+                \scriptsize
+                \caption{\scriptsize Tabela $T^{-1}: \langle v,t,f \rangle \mapsto n$}
+                \begin{tabular}{c|c}
+                    $\langle v,t,f \rangle$ & $T^{-1}(\langle v,t,f \rangle)$\\
+                    \hline
+                    $\langle p_{6},\textproc{null},\textproc{null} \rangle$ & $0$\\
+                    $\langle p_{6},\textproc{null},\textproc{null} \rangle$ & $1$\\
+                    $\langle p,3,4 \rangle$                               & $2$\\
+                    $\langle q,0,1 \rangle$                               & $3$\\
+                    $\langle q,5,1 \rangle$                               & $4$\\
+                    $\langle r,0,1 \rangle$                               & $5$\\
+                \end{tabular}
+            \end{table}
+            
+    \end{columns}
+
+    \vspace{-1em}
+    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{\columnwidth}
+                \noindent\scriptsize\justifying
+                $p_6$: variável auxiliar usada nos nós terminais para manter a uniformidade da tabela
+            \end{minipage}
+        }
+    \end{center}    
+    
+\end{frame}
+%-------------------------------------------
+    
+%-------------------------------------------
+\begin{frame}{Observações}
+
+    Nos algoritmos estudados a seguir, assume-se que:
+
+    \begin{outline}
+        \1 $T(n) = T^{-1}(\langle v,t,f \rangle) = \textproc{null}$ sempre que $(n, \langle v,t,f \rangle) \notin T$
+        
+        \vspace{1em}
+        
+        \1 A tabela $T$ é uma variável global e $|T|$ é o número de entradas existentes nessa tabela
+    \end{outline}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo de inicialização}
+
+    Cria a tabela $T$ de um ROBDD. Funciona assim:
+
+    \small
+    \begin{outline}
+        \1 Recebe uma entrada $m$ indicando o número máximo de variáveis existentes na expressão booleana
+        
+        \vspace{1em}
+        
+        \1 Inicia a tabela $T$ com duas tuplas especiais
+            \2[-] representando os nós terminais $0$ e $1$
+            \2[-] para garantir uniformidade, associa os nós terminais à uma variável auxiliar $p_{m+1}$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \textproc{INIT}}
+    %\scriptsize
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Procedure{INIT}{$T,m$}
+                \State $T \gets \{(0, \langle m+1, \textproc{null},\textproc{null} \rangle\}),$\par
+                \hskip\algorithmicindent $\{(1, \langle m+1, \textproc{null}, \textproc{null} \rangle\})$
+            \EndProcedure
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo de inserção de nós}
+
+    Insere um nó em um ROBDD, mantendo-o reduzido e ordenado. Funciona assim:
+
+    \small
+    \begin{outline}
+        \1 Recebe como entrada uma variável $v$ e os identificadores de seus filhos $t$ e $f$
+
+        \vspace{0.5em}
+
+        \1 Se o nó $v$ for redundante ($t = f$), devolve imediatamente o identificador do nó filho ($t$)
+
+        \vspace{0.5em}
+        
+        \1 Caso o nó $v$ já tenha sido criado, devolve seu identificador
+        
+        \vspace{0.5em}
+        
+        \1 Caso o nó $v$ seja novo, cria-o e devolve o identificador
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \texttt{INS}}
+    \scriptsize
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Function{INS}{$T,v,t,f$}
+                \If{$t = f$}
+                    \State \Return $t$
+                \EndIf
+                \State $n \gets T^{-1}(\langle v,t,f \rangle)$
+                \If{$n = \textproc{null}$}
+                    \State $n \gets |T|$
+                    \State $T \gets T \cup \{(n, \langle v, t, f \rangle)\}$
+                \EndIf
+                \State \Return $n$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Expansão de Shannon}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo de construção de ROBDDs}
+
+    Constrói um ROBDD a partir de uma expressão booleana em CNF. Funciona assim:
+
+    \small
+    \begin{outline}
+        \1 Recebe como entrada uma variável $v$ e os identificadores de seus filhos $t$ e $f$
+
+        \vspace{0.5em}
+
+        \1 Se o nó $v$ for redundante ($t = f$), devolve imediatamente o identificador do nó filho ($t$)
+
+        \vspace{0.5em}
+        
+        \1 Caso o nó $v$ já tenha sido criado, devolve seu identificador
+        
+        \vspace{0.5em}
+        
+        \1 Caso o nó $v$ seja novo, cria-o e devolve o identificador
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \texttt{BUILD}}
+    \scriptsize
+    \begin{algorithm}[H]
+        \begin{algorithmic}[1]
+            \Function{BUILD}{$v,\varepsilon_{t},\varepsilon_{f}$}
+                \If{$\varepsilon_{t},\varepsilon_{f} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\varepsilon_{t},\varepsilon_{f}}$
+                \EndIf
+                \If{$\varepsilon_{f} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\Call{BUILD}{\varepsilon_{t}},\varepsilon_{f}}$
+                \EndIf
+                \If{$\varepsilon_{t} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\varepsilon_{t},\Call{BUILD}{\varepsilon_{f}}}$
+                \EndIf
+                \State \Return $\Call{INS}{v,\Call{BUILD}{\varepsilon_{t}},\Call{BUILD}{\varepsilon_{f}}}$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
 %-------------------------------------------
 
 %-------------------------------------------

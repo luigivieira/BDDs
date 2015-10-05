@@ -1,6 +1,6 @@
 \providecommand\classopts{}
 \expandafter\documentclass\expandafter[table, usenames, svgnames, dvipsnames,14pt, \classopts]{beamer}
-\usetheme[everytitleformat=regular,frametitleformat=lowercase,progressbar=frametitle,numbering=fraction]{m} % load the metropolis theme
+\usetheme[everytitleformat=regular,frametitleformat=regular,progressbar=frametitle,numbering=fraction]{m} % load the metropolis theme
 \usefonttheme[onlymath]{serif}
 
 \usepackage[portuguese]{babel} % For writing in Portuguese
@@ -427,7 +427,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Forma Normal Conjuntiva (\uppercase{CNF})}
+\begin{frame}{Forma Normal Conjuntiva (CNF)}
 
     \begin{outline}
         \1 Facilita o teste de validade
@@ -485,7 +485,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: Árvore de Decisão Binária Finita}
+\begin{frame}{Definição: Árvore de Decisão Binária}
 
     \begin{block}{\textbf{Definição 6.3}}
         \small
@@ -1412,7 +1412,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD}s}
+\begin{frame}{BDDs}
 
     \begin{center}
         \shadowbox{
@@ -1427,7 +1427,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: \uppercase{DAG}}
+\begin{frame}{Definição: DAG}
 
     \begin{block}{\textbf{Definição 6.4}}
         Um grafo direcionado é um conjunto $\mathit{G}$ e uma relação binária $\rightarrow$ em $\mathit{G}:~\rightarrow \subseteq \mathit{G} \times \mathit{G}$. Um ciclo em um grafo direcionado é um caminho finito no grafo que começa e termina no mesmo nó, isto é, um caminho da forma $v_1 \rightarrow v_2 \rightarrow ... \rightarrow v_n \rightarrow v_1$. Um grafo direcionado acíclico (DAG) é um grafo direcionado que não contém nenhum ciclo. Um nó em um DAG é dito inicial se não há arestas apontando para ele. Um nó é dito terminal se não há arestas saindo dele.
@@ -1437,7 +1437,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Definição: \uppercase{BDD}s}
+\begin{frame}{Definição: BDDs}
 
     \begin{block}{\textbf{Definição 6.5}}
         Um diagrama de decisão binário (BDD) é um DAG finito com um único nó inicial, onde todos os nós terminais são marcados com $0$ ou $1$ e todos os nós não-terminais são marcados com uma variável booleana. Cada nó não-terminal tem exatamente duas arestas saindo dele, uma marcada com $0$ e outra com $1$ (representadas como uma linha pontilhada e uma linha sólida, respectivamente).
@@ -1447,7 +1447,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD} como \uppercase{DAG}}
+\begin{frame}{BDD como DAG}
 
     \begin{outline}
         \1 Por convenção, as linhas sólidas ou pontilhadas de um BDD são sempre consideradas como indo para baixo
@@ -1467,7 +1467,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{\uppercase{BDD}s elementares}
+\begin{frame}{BDDs elementares}
 
     \small
     \begin{outline}
@@ -1511,7 +1511,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Verificações sobre \uppercase{BDD}s}
+\begin{frame}{Verificações sobre BDDs}
 
     \begin{outline}
         \1 \textbf{Satisfação}. Um BDD representa uma função que pode ser satisfeita se um nó terminal $1$ pode ser acessado da raiz por meio de um caminho consistente
@@ -1642,7 +1642,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ilustração da tabela-verdade para $n = 4$}
+\begin{frame}{Ilustração: tabela-verdade para $n = 4$}
     
     \begin{columns}[c]
         \column{0.5\textwidth}
@@ -1691,7 +1691,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ilustração da wff para $n = 4$}
+\begin{frame}{Ilustração: wff para $n = 4$}
 
     $\phi \equiv \lnot(((p_1 \oplus p_2) \oplus p_3) \oplus p_4)$
     
@@ -1707,7 +1707,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ilustração do \uppercase{OBDD} para $n = 4$}
+\begin{frame}{Ilustração: BDD para $n = 4$}
 
     \begin{columns}[c]
         \column{0.5\textwidth}
@@ -1763,7 +1763,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Operações sobre \uppercase{BDD}s}
+\begin{frame}{Operações sobre BDDs}
 
     \begin{outline}
         \small
@@ -2043,7 +2043,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Forma ``inocente'' de construir \uppercase{BDD}s}
+\begin{frame}{Forma ``inocente'' de construir BDDs}
 
     \begin{outline}[enumerate]
         \1 Para cada variável booleana em uma função, um BDD de variável ($B_{p_i}$) é criado
@@ -2600,7 +2600,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Comparação de \uppercase{BDD}s}
+\begin{frame}{Comparação de BDDs}
 
     {\small Além de tornar um BDD menos eficiente, ocorrências múltiplas de uma variável também dificultam a comparação de BDDs}
 
