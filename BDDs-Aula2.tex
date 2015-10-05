@@ -409,28 +409,8 @@
             \end{figure}
 
     \end{columns}
-
-    \vspace{1em}
     
-    \only<20>{
-        \begin{columns}[c]
-            \column{0.6\textwidth}
-                \ovalbox{
-                    \begin{minipage}[h]{0.8\columnwidth}
-                        \noindent\scriptsize
-                        Ocorrem repetições e não há um padrão na ordenação
-                    \end{minipage}
-                }            
-            
-            \column{0.4\textwidth}
-                \ovalbox{
-                    \begin{minipage}[h]{0.8\columnwidth}
-                        \noindent\scriptsize
-                        Não ocorrem repetições e há um padrão na ordenação
-                    \end{minipage}
-                }            
-        \end{columns}
-    }
+    \only<20>{} % Só pra ter um slide a mais no final da animação, sem as cores
     
 \end{frame}
 %-------------------------------------------
@@ -454,7 +434,7 @@
 \begin{frame}{Definição: OBDDs}
 
     \begin{block}{\textbf{Definição 6.6}}
-        Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis sem duplicação e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ temos $i < j$.
+        Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis \underline{sem duplicação} e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ temos $i < j$.
     \end{block}
 
 \end{frame}
@@ -550,33 +530,13 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Vantagens da ordenação de BDDs}
-
-    \begin{outline}
-        \1 A comparação de dois OBDDs de ordens compatíveis é imediata
-            \2[-] basta verificar se suas estruturas são idênticas
-        
-        \vspace{1em}
-        
-        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm a ordem original
-        
-        \vspace{1em}
-        
-        \1 O compromisso com a ordem produz uma representação única de funções booleanas
-            \2[-] chamada de \textit{forma canônica}
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
 \begin{frame}{OBDDs reduzidos}
 
     \begin{center}
         \shadowbox{
             \begin{minipage}[h]{1.0\columnwidth}
                 \noindent\justifying
-                OBDDs reduzidos são, por sua vez, chamados de Diagramas de Busca Binária Ordenados Reduzidos (ROBDD)
+                Quando são reduzidos, OBDDs passam a ser chamados de Diagramas de Busca Binária Ordenados Reduzidos (ROBDD)
             \end{minipage}
         }
     \end{center}            
@@ -585,10 +545,30 @@
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}{Vantagens da ordenação de BDDs}
+
+    \begin{outline}
+        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm a ordem original
+        
+        \vspace{1em}
+        
+        \1 O compromisso com a ordem e o processo de redução produzem uma representação única de funções booleanas
+            \2[-] chamada de \textit{forma canônica}
+
+            \vspace{1em}
+            
+        \1 A comparação de dois ROBDDs de ordens compatíveis é imediata
+            \2[-] basta verificar se suas estruturas são idênticas
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}{Teorema: ROBDDs são únicos}
 
     \begin{block}{\textbf{Teorema 6.7}}
-        A representação em ROBDD de uma função dada $\phi$ é unica. Isto é, sejam $B$ e $B^\prime$ dois ROBDDs com ordens compatíveis. Se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
+        A representação em ROBDD de uma função dada $\phi$ é unica. Isto é, sejam $B$ e $B^\prime$ dois ROBDDs com ordens compatíveis; se $B$ e $B^\prime$ representam a mesma função booleana, então eles têm estruturas idênticas.
     \end{block}
 
 \end{frame}
@@ -603,7 +583,7 @@
             
         \vspace{1em}
         
-        \1 Por outro lado, as operações $\land$ e $\lor$ apresentadas anteriormente não funcionam
+        \1 Por outro lado, não se pode realizar as operações $\land$ e $\lor$ da forma anteriormente estudada
             \2[-] pois introduzem ocorrências múltiplas de uma mesma variável
     \end{outline}
 
@@ -622,7 +602,7 @@
         
         \vspace{1em}
         
-        \1 Se a escolha for ``\textit{índices impares antes de índices pares}'' ($[p_1,p_3,p_5,...,p_{2n-1},p_2,p_4,p_6,...,p{2n}]$), o ROBDD terá $2^{n+1}$ nós
+        \1 Se a escolha for ``\textit{índices impares antes de índices pares}'' ($[p_1,p_3,p_5,...,p_{2n-1},p_2,p_4,p_6,...,p_{2n}]$), o ROBDD terá $2^{n+1}$ nós
     \end{outline}
     
 \end{frame}
@@ -751,26 +731,35 @@
         \vspace{1em}
         
         \1 Encontrar a ordem ótima também é um problema computacional caro
-            \2[-] mas há heurísticas que produzem ordens razoavelmente boas
+            \2[-] mas há heurísticas$^*$ que produzem ordens razoavelmente boas
     \end{outline}
+    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.6\columnwidth}
+                \noindent\scriptsize\centering
+                $^*$ tipicamente agrupando as variáveis com interações mais fortes
+            \end{minipage}
+        }
+    \end{center}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Importância da representação canônica}
+\begin{frame}{Consequências da forma canônica}
 
     \scriptsize
 
     \begin{outline}
         \uncover<1->{
-            \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ROBDD que a represente contém tal variável;
+            \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDDs com ordens compatíveis, é possível decidir eficientemente se são equivalentes reduzindo seus OBDDs e comparando sua estrutura;
         }
         
         \uncover<2->{
             \vspace{1em}
             
-            \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDDs com ordens compatíveis, é possível decidir eficientemente se são equivalentes reduzindo seus OBDDs e comparando sua estrutura;
+            \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ROBDD que a represente contém tal variável;
         }
         
         \uncover<3->{
@@ -782,13 +771,13 @@
         \uncover<4->{
             \vspace{1em}
             
-            \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ROBDD não é igual a $B_0$.
+            \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ROBDD não é igual a $B_0$;
         }
         
         \uncover<5->{
             \vspace{1em}
 
-            \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o ROBDD para $\phi \land \psi$ -- a implicação é verdadeira se e somente este ROBDD é igual a $B_0$;
+            \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o ROBDD para $\phi \land \lnot{\psi}$; a implicação é verdadeira se e somente este ROBDD é igual a $B_0$.
         }
     \end{outline}
 
@@ -805,10 +794,10 @@
 
 
 %-------------------------------------------
-\begin{frame}{Definição: restrições de Shannon}
+\begin{frame}{Definição: restrições}
 
     \begin{block}{\textbf{Definição 6.9}}
-        Sejam $\phi$ uma expressão booleana e $p$ uma variável. Denotamos por $\phi[0/p]$ a expressão booleana obtida substituindo-se todas as ocorrências de $p$ em $\phi$ por $0$. A expressão $\phi[1/p]$ é definida de maneira semelhante. As expressões $\phi[0/p]$ e $\phi[1/p]$ são chamadas de restrições de Shannon em $\phi$ com relação à variável $p$.
+        Sejam $\phi$ uma expressão booleana e $p$ uma variável. Denotamos por $\phi[0/p]$ a expressão booleana obtida substituindo-se todas as ocorrências de $p$ em $\phi$ por $0$. A expressão $\phi[1/p]$ é definida de maneira semelhante. As expressões $\phi[0/p]$ e $\phi[1/p]$ são chamadas de \underline{restrições} em $\phi$ com relação à variável $p$.
     \end{block}
 
 \end{frame}
@@ -863,7 +852,7 @@
 \begin{frame}{Lema: expansão de Shannon}
 
     \begin{block}{\textbf{Lema 6.10}}
-        Para todas as expressões booleanas $\phi$ e todas as variáveis $p$ (mesmo as que não ocorrem em $\phi$), tem-se a chamada \textit{expansão de Shannon}:\\[1em]
+        Para todas as expressões booleanas $\phi$ e todas as variáveis $p$ (mesmo as que não ocorrem em $\phi$), tem-se a chamada \underline{expansão de Shannon}:\\[1em]
         $\phi \equiv \lnot{p} \land \phi[0/p] \lor p \land \phi[1/p]$
     \end{block}
 
