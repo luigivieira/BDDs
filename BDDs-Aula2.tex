@@ -796,10 +796,261 @@
 %-------------------------------------------
 
 %-------------------------------------------
-%\begin{frame}{Expansão de Shannon}
+\begin{frame}{Antes de prosseguir...}
+
+    Antes de estudarmos as operações sobre ROBDDs, é necessário estudar um conceito importantíssimo: a \textit{expansão de Shannon}
+
+\end{frame}
+%-------------------------------------------
 
 
-%\end{frame}
+%-------------------------------------------
+\begin{frame}{Definição: restrições de Shannon}
+
+    \begin{block}{\textbf{Definição 6.9}}
+        Sejam $\phi$ uma expressão booleana e $p$ uma variável. Denotamos por $\phi[0/p]$ a expressão booleana obtida substituindo-se todas as ocorrências de $p$ em $\phi$ por $0$. A expressão $\phi[1/p]$ é definida de maneira semelhante. As expressões $\phi[0/p]$ e $\phi[1/p]$ são chamadas de restrições de Shannon em $\phi$ com relação à variável $p$.
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplos de restrições}
+
+    Para $\phi \equiv p \land (q \lor \lnot{p})$ tem-se:
+
+    \begin{outline}
+        \1 $\phi[0/p]$ é igual a $0 \land (q \lor \lnot{0})$
+            \2[-] que é semanticamente equivalente a $0$
+            
+        \vspace{1em}
+        
+        \1 $\phi[1/p]$ é igual a $1 \land (q \lor \lnot{1})$
+            \2[-] que é semanticamente equivalente a $q$
+            
+        \vspace{1em}
+        
+        \1 $\phi[0/q]$ é igual a $p \land (0 \lor \lnot{p})$
+            \2[-] que é semanticamente equivalente a $\bot$
+            
+        \vspace{1em}
+        
+        \1 $\phi[1/q]$ é igual a $p \land (1 \lor \lnot{p})$
+            \2[-] que é semanticamente equivalente a $p$
+    \end{outline}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Uso das restrições}
+
+    \begin{outline}
+        \1 As restrições permitem executar recorrências em expressões booleanas decompondo-as em expressões mais simples
+        
+        \vspace{1em}
+        
+        \1 Se $p$ é uma variável em $\phi$, então $\phi$ é equivalente a $\lnot{p} \land \phi[0/p] \lor p \land \phi[1/p]$
+            \2[-] facilmente verificável
+            \2[-] fazendo $p = 0$ resulta em $\phi[0/p]$
+            \2[-] fazendo $p = 1$ resulta em $\phi[1/p]$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Lema: expansão de Shannon}
+
+    \begin{block}{\textbf{Lema 6.10}}
+        Para todas as expressões booleanas $\phi$ e todas as variáveis $p$ (mesmo as que não ocorrem em $\phi$), tem-se a chamada \textit{expansão de Shannon}:\\[1em]
+        $\phi \equiv \lnot{p} \land \phi[0/p] \lor p \land \phi[1/p]$
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{operador \textproc{ite}}
+
+    \begin{block}{\textbf{Definição auxiliar\footnote{não consta do livro}}}
+        Com base nessa equivalência, definimos o operador \textproc{ite} (de \textit{if-then-else}) como:\\[1em]
+        $\textproc{ite}(p,\phi,\phi^{\prime}) = (p \land \phi) \lor (\lnot{p} \land \phi^{\prime})$
+        \\[1em]
+        Dessa forma, \textproc{ite} é verdadeiro se a variável $p$ e a expressão $\phi$ são verdadeiros, ou se a variável $p$ é falsa e a expressão $\phi^{\prime}$ é verdadeira.
+    \end{block}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Uso do operador \textproc{ite}}
+
+    O operador $\textproc{ite}(p,\phi,\phi^{\prime}) = (p \land \phi) \lor (\lnot{p} \land \phi^{\prime})$ permite expressar qualquer operador da gramática da Lógica Proposicional:
+
+    \small
+    \begin{outline}
+        \1 $\lnot{p} = \textproc{ite}(\textcolor{emphasis}{p},\lnot{\textcolor{emphasis}{1}},\lnot{\textcolor{emphasis}{0}}) = \textproc{ite}(p,0,1)$
+        
+        \1 $p \land q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \land q,\textcolor{emphasis}{0} \land q) = \textproc{ite}(p,q,0) = \textproc{ite}(p,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}),0)$
+        
+        \1 $p \lor q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \lor q,\textcolor{emphasis}{0} \lor q) = \textproc{ite}(p,1,q) = \textproc{ite}(p,1,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}))$
+        
+        \1 $p \to q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \to q,\textcolor{emphasis}{0} \to q) = \textproc{ite}(p,q,1) = \textproc{ite}(p,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}),1)$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Forma normal condicional}
+
+    \begin{center}
+        \shadowbox{
+            \begin{minipage}[h]{1.0\columnwidth}
+                \noindent\justifying
+                Uma expressão booleana está na forma normal condicional se e somente se ela contém apenas constantes, o operador condicional \textproc{ite} e variáveis sendo testadas por esse operador
+            \end{minipage}
+        }
+    \end{center}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Exemplos na forma e fora dela}
+
+    \small
+    \begin{outline}
+        \1 A expressão $\textproc{ite}(p, \textproc{ite}(q, 1, \textcolor{emphasis}{r}), \textproc{ite}(q, 1, 0))$ \underline{não está} na forma normal condicional
+            \2[-] a variável $\textcolor{emphasis}{r}$ ainda não está sendo testada condicionalmente
+
+        \vspace{1em}
+            
+        \1 A expressão $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$ \underline{está} na forma normal condicional        
+            \2[-] todas as variáveis estão sendo testadas condicionalmente
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Conversão para a forma condicional}
+
+    Toda expressão booleana pode ser convertida indutivamente para a forma normal condicional da seguinte maneira:
+
+    \begin{outline}
+        \1 Se $\phi$ só contém variáveis de teste, ela já está na forma normal condicional
+        
+        \vspace{1em}
+        
+        \1 Senão, enquanto houver uma variável $p \in \phi$ que não seja teste, reescreva $\phi$ como $\textproc{ite}(p, \phi[1/p], \phi[0/p])$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Por exemplo}
+
+    \begin{outline}
+        \0 Conversão de $(p \lor q) \land (q \lor r)$ para a forma normal conditional
+        \1[=] $\textproc{ite}(\textcolor{emphasis}{p}, (\textcolor{emphasis}{1} \lor q) \land (q \lor r), (\textcolor{emphasis}{0} \lor q) \land (q \lor r))$
+        \1[=] $\textproc{ite}(p, q \lor r, q)$
+        \1[=] $\textproc{ite}(p, \textproc{ite}(\textcolor{emphasis}{q}, \textcolor{emphasis}{1} \lor r, \textcolor{emphasis}{0} \lor r), \textproc{ite}(\textcolor{emphasis}{q}, \textcolor{emphasis}{1}, \textcolor{emphasis}{0}))$
+        \1[=] $\textproc{ite}(p, \textproc{ite}(q, 1, r), \textproc{ite}(q, 1, 0))$
+        \1[=] $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(\textcolor{emphasis}{r}, \textcolor{emphasis}{1}, \textcolor{emphasis}{0})), \textproc{ite}(q, 1, 0))$
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Forma condicional e árvore de decisão}
+
+    A estrutura de recorrência da forma normal condicional:
+    $$\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$$
+    da expressão booleana $(p \lor q) \land (q \lor r)$ é a mesma da sua arvore de decisão binária
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração do argumento anterior}
+    
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+
+            \begin{figure}
+            
+                \caption{\scriptsize Árvore de Decisão Binária da expressão: $(p \lor q) \land (q \lor r)$}
+                
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+
+                    \node (p) at (4.25, 6.0) {$p$};
+                    \node (q1) at (2.5, 4.5) {$q$};
+                    \node (q2) at (6.0, 4.5) {$q$};
+                    \node[rectangle, scale=0.7] (1a) at (1.5, 3.0) {$1$};
+                    \node (r) at (3.5, 2.0) {$r$};
+                    \node[rectangle, scale=0.7] (1b) at (5.0, 3.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (7.0, 3.0) {$0$};
+                    \node[rectangle, scale=0.7] (1c) at (2.5, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (0b) at (4.5, 0.0) {$0$};
+
+                    \draw[thick] (p) to (q1);
+                    \draw[dashed, thick] (p) to (q2);
+                    \draw[thick] (q1) to (1a);
+                    \draw[dashed, thick] (q1) to (r);
+                    \draw[thick] (q2) to (1b);
+                    \draw[dashed, thick] (q2) to (0a);
+                    \draw[thick] (r) to (1c);
+                    \draw[dashed, thick] (r) to (0b);
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+        
+            \begin{figure}
+            
+                \caption{\scriptsize Estrutura recorrente da forma condicional: $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$}
+            
+                \begin{tikzpicture}
+                    [scale=0.8,auto=left,
+                        every node/.style={minimum height=4mm, draw=none, align=center, text depth = 0pt, transform shape}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+
+                    \node (p) at (4.25, 6.0) {$\textproc{ite}(p,\phi,\phi^{\prime})$};
+                    \node (q1) at (2.5, 4.5) {$\textproc{ite}(q,\phi,\phi^{\prime})$};
+                    \node (q2) at (6.0, 4.5) {$\textproc{ite}(q,\phi,\phi^{\prime})$};
+                    \node[rectangle, scale=0.7] (1a) at (1.5, 3.0) {$1$};
+                    \node (r) at (3.5, 2.0) {$\textproc{ite}(r,\phi,\phi^{\prime})$};
+                    \node[rectangle, scale=0.7] (1b) at (5.0, 3.0) {$1$};
+                    \node[rectangle, scale=0.7] (0a) at (7.0, 3.0) {$0$};
+                    \node[rectangle, scale=0.7] (1c) at (2.5, 0.0) {$1$};
+                    \node[rectangle, scale=0.7] (0b) at (4.5, 0.0) {$0$};
+
+                    \draw[dotted, thick] (p) -- (q1) node[midway, scale=0.5] {$\phi$};
+                    \draw[dotted, thick] (p) -- (q2) node[midway, scale=0.5] {$\phi^{\prime}$};
+                    \draw[dotted, thick] (q1) -- (1a) node[midway, scale=0.5] {$\phi$};
+                    \draw[dotted, thick] (q1) -- (r) node[midway, scale=0.5] {$\phi^{\prime}$};
+                    \draw[dotted, thick] (q2) -- (1b) node[midway, scale=0.5] {$\phi$};
+                    \draw[dotted, thick] (q2) -- (0a) node[midway, scale=0.5] {$\phi^{\prime}$};
+                    \draw[dotted, thick] (r) -- (1c) node[midway, scale=0.5] {$\phi$};
+                    \draw[dotted, thick] (r) -- (0b) node[midway, scale=0.5] {$\phi^{\prime}$};
+                \end{tikzpicture}
+
+            \end{figure}        
+        
+    \end{columns}
+
+\end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
@@ -1009,15 +1260,9 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Expansão de Shannon}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
 \begin{frame}{Algoritmo de construção de ROBDDs}
 
-    Constrói um ROBDD a partir de uma expressão booleana em CNF. Funciona assim:
+    Constrói um ROBDD a partir de uma expressão em forma normal condicional. Funciona assim:
 
     \small
     \begin{outline}
@@ -1039,23 +1284,22 @@
 \end{frame}
 %-------------------------------------------
 
-
 %-------------------------------------------
 \begin{frame}{Pseudocódigo de \texttt{BUILD}}
     \scriptsize
     \begin{algorithm}[H]
         \begin{algorithmic}[1]
-            \Function{BUILD}{$v,\varepsilon_{t},\varepsilon_{f}$}
-                \If{$\varepsilon_{t},\varepsilon_{f} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\varepsilon_{t},\varepsilon_{f}}$
+            \Function{BUILD}{$\textproc{ite}(v,\phi_{t},\phi_{f})$}
+                \If{$\phi_{t},\phi_{f} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\phi_{t},\phi_{f}}$
                 \EndIf
-                \If{$\varepsilon_{f} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\Call{BUILD}{\varepsilon_{t}},\varepsilon_{f}}$
+                \If{$\phi_{f} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\Call{BUILD}{\phi_{t}},\phi_{f}}$
                 \EndIf
-                \If{$\varepsilon_{t} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\varepsilon_{t},\Call{BUILD}{\varepsilon_{f}}}$
+                \If{$\phi_{t} \in \{0,1\}$}
+                    \State \Return $\Call{INS}{v,\phi_{t},\Call{BUILD}{\phi_{f}}}$
                 \EndIf
-                \State \Return $\Call{INS}{v,\Call{BUILD}{\varepsilon_{t}},\Call{BUILD}{\varepsilon_{f}}}$
+                \State \Return $\Call{INS}{v,\Call{BUILD}{\phi_{t}},\Call{BUILD}{\phi_{f}}}$
             \EndFunction
         \end{algorithmic}
     \end{algorithm}
