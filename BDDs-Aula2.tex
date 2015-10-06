@@ -20,7 +20,7 @@
 \boldmath
 
 \usepackage{algorithm} % For algorithms...
-\usepackage[noend]{algpseudocode} % ...in pseudocode
+\usepackage{algpseudocode} % ...in pseudocode
 \usepackage{fixltx2e}
 \MakeRobust{\Call} % For allowing nested uses of \Call
 
@@ -48,6 +48,18 @@
 \definecolor{bad}{rgb}{0.92,0.30,0.36} % redish
 \definecolor{ok}{rgb}{0.97,0.61,0.12} % orangeish
 \definecolor{emphasis}{rgb}{0.92,0.00,0.70} % pinkish
+
+% Tradução dos comandos de algoritmos
+\algrenewcommand\algorithmicfunction{\textbf{função}}
+\algrenewcommand\algorithmicprocedure{\textbf{procedimento}}
+\algrenewcommand\algorithmicend{\textbf{fim}}
+\algrenewcommand\algorithmicif{\textbf{se}}
+\algrenewcommand\algorithmicthen{\textbf{então}}
+\algrenewcommand\algorithmicreturn{\textbf{devolva}}
+\algrenewcommand\algorithmicrequire{\textbf{precondição:}}
+\algrenewcommand\algorithmicensure{\textbf{pós-condição:}}
+
+\algrenewcommand\alglinenumber[1]{\tiny #1:}
 
 \begin{document}
 \maketitle
@@ -434,7 +446,7 @@
 \begin{frame}{Definição: OBDDs}
 
     \begin{block}{\textbf{Definição 6.6}}
-        Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis \underline{sem duplicação} e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ temos $i < j$.
+        Seja $[p_1,p_2,...,p_n]$ uma lista ordenada de variáveis \underline{sem duplicação} e seja $B$ um BDD tal que todas as suas variáveis aparecem em algum lugar da lista. Dizemos que $B$ tem a ordem $[p_1,p_2,...,p_n]$ se todos os nós de variáveis de $B$ ocorrem na lista, e, para toda ocorrência de $p_i$ seguido de $p_j$ ao longo de qualquer caminho em $B$ (ou seja, $p_i \prec p_j$), temos $i < j$.
     \end{block}
 
 \end{frame}
@@ -445,7 +457,7 @@
 
     \begin{figure}
     
-        \caption{Ordem: $[p, q, r]$}
+        \caption{Ordem: $[p, q, r]$ (em qualquer caminho)}
     
         \begin{tikzpicture}
             [scale=1.0,auto=left,
@@ -454,33 +466,19 @@
             ]
             %\draw[help lines] (0,0) grid (8,6);
 
-            \node (p) at (3.0, 5.5)  {$p$};
-            \node (q1) at (1.5, 4.0)  {$q$};
-            \node (q2) at (4.5, 4.0)  {$q$};
+            \node (p) at (3.0, 5.0) {$p$};
+            \node (q) at (6.0, 4.0) {$q$};
+            \node (r) at (4.0, 2.5) {$r$};
             
-            \node (r1) at (0.6, 2.5)  {$r$};
-            \node (r2) at (2.4, 2.5)  {$r$};
-            \node (r3) at (3.6, 2.5)  {$r$};
-            \node (r4) at (5.4, 2.5)  {$r$};
-            
-            \node[rectangle, scale=0.7] (0) at (1.5, 0.5) {$0$};
-            \node[rectangle, scale=0.7] (1) at (4.5, 0.5) {$1$};
+            \node[rectangle, scale=0.7] (1) at (2.0, 1.0) {$1$};
+            \node[rectangle, scale=0.7] (0) at (6.0, 1.0) {$0$};
 
-            \draw[dashed, thick] (p) to (q1);
-            \draw[thick] (p) to (q2);
-            \draw[dashed, thick] (q1) to (r1);
-            \draw[thick] (q1) to (r2);
-            \draw[dashed, thick] (q2) to (r3);
-            \draw[thick] (q2) to (r4);
-            
-            \draw[dashed, thick] (r1) to (0);
-            \draw[thick] (r1) to (1);
-            \draw[dashed, thick] (r2) to (0);
-            \draw[thick] (r2) to (1);
-            \draw[dashed, thick] (r3) to (0);
-            \draw[thick] (r3) to (1);
-            \draw[thick] (r4) to (0);
-            \draw[dashed, thick] (r4) to (1);            
+            \draw[dashed, thick] (p) to (1);
+            \draw[thick] (p) to (q);
+            \draw[dashed, thick] (q) to (0);
+            \draw[thick] (q) to (r);
+            \draw[dashed, thick] (r) to (0);
+            \draw[thick] (r) to (1);            
         \end{tikzpicture}
 
     \end{figure}
@@ -493,7 +491,7 @@
 
     \begin{figure}
     
-        \caption{Não ordenado ($[p, q, r]$ à esquerda e $[p, r, q]$ à direita)}
+        \caption{Sem ordem única ($[p, q, r]$ à esquerda e $[p, r, q]$ à direita)}
     
         \begin{tikzpicture}
             [scale=1.0,auto=left,
@@ -548,16 +546,19 @@
 \begin{frame}{Vantagens da ordenação de BDDs}
 
     \begin{outline}
-        \1 Aplicações das reduções C1-C3 em um OBDD garantidamente mantêm a ordem original
+        \1 Reduções em um OBDDs mantêm ordem original
+            \2[-] C1: compartilha nós terminais
+            \2[-] C2: elimina nós não-terminais redundantes
+            \2[-] C2: compartilha sub-diagramas idênticos
         
         \vspace{1em}
         
-        \1 O compromisso com a ordem e o processo de redução produzem uma representação única de funções booleanas
+        \1 Compromisso com ordem e redução produzem representação única de funções booleanas
             \2[-] chamada de \textit{forma canônica}
 
             \vspace{1em}
             
-        \1 A comparação de dois ROBDDs de ordens compatíveis é imediata
+        \1 Comparação de ROBDDs de ordens compatíveis é imediata
             \2[-] basta verificar se suas estruturas são idênticas
     \end{outline}
 
@@ -575,16 +576,38 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Características de ROBDDs}
+\begin{frame}{Consequências da forma canônica}
+
+    \scriptsize
 
     \begin{outline}
-        \1 RODDBs permitem representações compactas de certas classes de funções booleanas
-            \2[-] que seriam exponenciais em outros formatos/representações
-            
-        \vspace{1em}
+        \uncover<1->{
+            \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDDs com ordens compatíveis, é possível decidir eficientemente se são equivalentes reduzindo-os e comparando sua estrutura;
+        }
         
-        \1 Por outro lado, não se pode realizar as operações $\land$ e $\lor$ da forma anteriormente estudada
-            \2[-] pois introduzem ocorrências múltiplas de uma mesma variável
+        \uncover<2->{
+            \vspace{1em}
+            
+            \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então o ROBDD que a representa não contém tal variável;
+        }
+        
+        \uncover<3->{
+            \vspace{1em}
+            
+            \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu ROBDD \underline{é igual} a $B_1$;
+        }
+        
+        \uncover<4->{
+            \vspace{1em}
+            
+            \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ROBDD \underline{não é igual} a $B_0$;
+        }
+        
+        \uncover<5->{
+            \vspace{1em}
+
+            \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o ROBDD para $\phi \land \lnot{\psi}$; a implicação é verdadeira se e somente se este ROBDD é igual a $B_0$.
+        }
     \end{outline}
 
 \end{frame}
@@ -653,7 +676,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ordem ``ímpar/par'' para $n=3$}
+\begin{frame}{Ordem ``ímpares $\prec$ pares'' para $n=3$}
 
     \scriptsize
     ROBDD para $\phi \equiv (p_1 \lor p_2) \land (p_3 \lor p_4) \land (p_5 \land p_6)$ com a ordem de variáveis $[p_1,p_3,p_5,p_2,p_4,p_6]$
@@ -726,72 +749,348 @@
 \begin{frame}{Escolha da ordenação}
 
     \begin{outline}
-        \1 A sensibilidade do tamanho de um ROBDD à ordem escolhida é um preço que se paga pelas vantagens obtidas
+        \1 A sensibilidade do tamanho de um ROBDD à ordem escolhida é o preço pago pelas facilidades obtidas
         
         \vspace{1em}
         
         \1 Encontrar a ordem ótima também é um problema computacional caro
-            \2[-] mas há heurísticas$^*$ que produzem ordens razoavelmente boas
+            \2[-] mas há heurísticas para ordens razoavelmente boas
+            \2[-] tipicamente, agrupa-se as variáveis com interações mais fortes
+            
     \end{outline}
-    
-    \begin{center}
-        \ovalbox{
-            \begin{minipage}[h]{0.6\columnwidth}
-                \noindent\scriptsize\centering
-                $^*$ tipicamente agrupando as variáveis com interações mais fortes
-            \end{minipage}
-        }
-    \end{center}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Consequências da forma canônica}
-
-    \scriptsize
+\begin{frame}{ROBDDs como representação}
 
     \begin{outline}
-        \uncover<1->{
-            \1 \textbf{Teste de equivalência semântica}. Se duas funções são representadas por OBDDs com ordens compatíveis, é possível decidir eficientemente se são equivalentes reduzindo seus OBDDs e comparando sua estrutura;
-        }
-        
-        \uncover<2->{
-            \vspace{1em}
+        \1 RODDBs permitem representações compactas de certas classes de funções booleanas
+            \2[-] que seriam exponenciais em outros formatos/representações
             
-            \1 \textbf{Ausência de variáveis redundantes}. Se o valor de uma função booleana não depende de uma variável, então nenhum ROBDD que a represente contém tal variável;
-        }
+        \vspace{1em}
         
-        \uncover<3->{
-            \vspace{1em}
-            
-            \1 \textbf{Teste de validade}. Se uma função booleana é válida, seu ROBDD é igual a $B_1$;
-        }
-        
-        \uncover<4->{
-            \vspace{1em}
-            
-            \1 \textbf{Teste de satisfação}. Se uma função booleana é satisfeita, então seu ROBDD não é igual a $B_0$;
-        }
-        
-        \uncover<5->{
-            \vspace{1em}
+        \1 Por outro lado, não se pode realizar as operações $\land$ e $\lor$ da forma anteriormente estudada
+            \2[-] elas podem introduzir ocorrências múltiplas de variáveis
+    \end{outline}
 
-            \1 \textbf{Teste de implicação}. Pode-se testar se uma função $\phi$ implica em outra $\psi$ calculando o ROBDD para $\phi \land \lnot{\psi}$; a implicação é verdadeira se e somente este ROBDD é igual a $B_0$.
-        }
+\end{frame}
+%-------------------------------------------
+
+
+%-------------------------------------------
+\begin{frame}{Operações eficientes com ROBDDs}
+
+    Utilizando ROBDDs, é possível fazer operações de forma eficiente:
+    
+    \begin{outline}
+        \1 \textbf{Redução}. A redução é o cerne da utilização séria de ROBDDs
+            \2[-] consistindo da aplicação eficiente das simplificações C1-C3
+            
+        \1 \textbf{Aplicação}. A aplicação permite realizar as operações lógicas $\land$, $\lor$, $\oplus$ e $\lnot$ (via $\phi \oplus 1$)
+            \2[-] mantendo o BDD ordenado e reduzido
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Antes de prosseguir...}
+\begin{frame}{Estrutura de dados}
 
-    Antes de estudarmos as operações sobre ROBDDs, é necessário estudar um conceito importantíssimo: a \textit{expansão de Shannon}
+    Os algoritmos das operações com ROBDDs utilizam como estrutura de dados uma tabela $T: \langle v,i_l,i_h \rangle \mapsto i_v$, tal que:
+
+    \small
+    \begin{outline}
+        \1 $\langle v,i_l,i_r \rangle$ representa um nó qualquer no ROBDD
+            \2[-] {\small com uma variável $v$}
+            \2[-] {\small e identificadores de seus nós-filhos $i_{l}$ (\textit{low}, pela linha pontilhada) e $i_{h}$ (\textit{high}, pela linha sólida)}
+            
+        \vspace{1em}
+            
+        \1 $i_v$ representa um inteiro positivo que serve como identificador único do nó da variável $v$
+    \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
+%-------------------------------------------
+\begin{frame}{Ilustração dessa estrutura de dados}
+
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+            
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=1.0,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (8,6);
+                  
+                    \node (p) at (4.0, 6.0) {$p$};
+                    \node (q1) at (2.5, 4.5) {$q$};
+                    \node (q2) at (5.5, 4.5) {$q$};
+                    \node (r) at (4.0, 3.0) {$r$};
+                    \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
+
+                    % Índices
+                    \node[draw=none, scale=0.5, emphasis, left=0 of 0] {$\#0$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of 1] {$\#1$};
+                    \node[draw=none, scale=0.5, emphasis, left=0 of q1] {$\#2$};
+                    \node[draw=none, scale=0.5, emphasis, above left=0 of r] {$\#3$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of q2] {$\#4$};
+                    \node[draw=none, scale=0.5, emphasis, above=0 of p] {$\#5$};
+                    
+                    \draw[dashed, thick] (p) to (q1);
+                    \draw[thick] (p) to (q2);
+                    \draw[dashed, thick] (q1) to (0);
+                    \draw[thick, bend right] (q1) to (1);
+                    \draw[dashed, thick] (q2) to (r);
+                    \draw[thick] (q2) to (1);
+                    \draw[dashed, thick] (r) to (0);
+                    \draw[thick] (r) to (1);
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+        
+            \renewcommand{\arraystretch}{1.5}        
+            \begin{table}
+                \scriptsize
+                \caption{Tabela $T: \langle v,i_l,i_h \rangle \mapsto i_v$}
+                \begin{tabular}{c|c}
+                    $n$ & $T(n)$\\
+                    \hline
+                    $\langle 0,\textproc{null},\textproc{null} \rangle$ & $0$\\
+                    $\langle 1,\textproc{null},\textproc{null} \rangle$ & $1$\\
+                    $\langle q,0,1 \rangle$                             & $2$\\
+                    $\langle r,0,1 \rangle$                             & $3$\\
+                    $\langle q,3,1 \rangle$                             & $4$\\
+                    $\langle p,2,4 \rangle$                             & $5$\\
+                \end{tabular}
+            \end{table}
+            
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Observações}
+
+    Nos algoritmos apresentados a seguir, assume-se que:
+
+    \begin{outline}
+        \small
+        \1 A tabela $T$ é uma variável global e $|T|$ é o número de linhas existentes nessa tabela
+
+        \1 $T(\langle v,i_l,i_h \rangle) = \textproc{null}$ quando $(i_v, \langle v,i_l,i_h \rangle) \notin T$
+        
+        \1 $\textproc{lo}$ e $\textproc{hi}$ acessam os nós-filhos de um nó
+
+        \1 $\textproc{id}$ acessa o identificador de um nó
+            
+    \end{outline}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Algoritmo de redução}
+
+    \small
+    \begin{outline}
+        \1 Percorre os níveis de $B$ de baixo para cima
+            \2[-] {\small isto é, com  busca em profundidade}
+            
+        \1 Atribui o mesmo identificador a nós que denotam a mesma função
+            \2[-] {\small compartilhando subdiagramas (simplificações C1/C3)}
+        
+        \1 Atribui o identificador dos filhos um nó se eles forem os mesmos
+            \2[-] {\small ignorando nós redundantes (simplificação C2)}
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \textproc{getnode}}
+    \begin{algorithm}[H]
+        \scriptsize
+        \begin{algorithmic}[1]
+            \Require $v,i_l,i_h$ \Comment recebe uma variável e os IDs de seus filhos
+            \Ensure $i$ \Comment devolve o ID único do nó da variável
+            \Function{getnode}{$v,i_l,i_h$}
+                \If{$v \neq 0 \land v \neq 1$}
+                    \If{$i_l = i_h$} \Comment simplificação C2
+                        \State \Return $i_l$
+                    \EndIf
+                \EndIf
+            
+                \State $i \gets T(\langle v,i_l,i_h \rangle)$
+                \If{$i = \textproc{NULL}$} \Comment simplificações C1/C3
+                    \State $i = |T|$
+                    \State $T \gets T \cup \{(i, \langle v,i_l,i_h \rangle)\}$
+                \EndIf
+                \State \Return $i$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \textproc{reduce}}
+    \begin{algorithm}[H]
+        \scriptsize
+        \begin{algorithmic}[1]
+            \Require $n$ \Comment recebe o nó a ser reduzido
+            \Ensure $i_n$ \Comment devolve o ID do nó canônico (reduzido)
+            \Function{reduce}{$n$}
+                \If{$n = 0 \lor n = 1$} \Comment simplificação C1
+                    \State \Return \Call{getnode}{n,\textproc{null},\textproc{null}}
+                \EndIf
+
+                \State $i_n \gets T(\langle n,\Call{id}{\Call{lo}{n}},\Call{id}{\Call{hi}{n}} \rangle)$
+                \If{$i_n = \textproc{NULL}$}
+                    \State $i_l \gets \Call{reduce}{\Call{lo}{n}}$
+                    \State $i_h \gets \Call{reduce}{\Call{hi}{n}}$                
+
+                    \State $i_n = \Call{getnode}{n,i_l,i_h}$ \Comment simplificação C3
+                \EndIf
+
+                \State \Return $i_n$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Ilustração do algoritmo de redução}
+
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+            
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=1.0,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (6,6);
+                    \only<-21>{\node (p) at (3.0, 4.0) {$p$};}
+                    \node (q1) at (1.5, 2.0) {$q$};
+                    \only<-19>{\node (q2) at (4.5, 2.0) {$q$};}
+                    \node[rectangle, scale=0.7] (0a) at (0.5, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (1a) at (2.5, 0.0) {$1$};
+                    \only<-14>{\node[rectangle, scale=0.7] (0b) at (3.5, 0.0) {$0$};}
+                    \only<-17>{\node[rectangle, scale=0.7] (1b) at (5.5, 0.0) {$1$};}
+                    
+                    \only<-21>{\draw[dashed, thick] (p) to (q1);}
+                    \only<-19>{\draw[thick] (p) to (q2);}
+                    \draw[dashed, thick] (q1) to (0a);
+                    \draw[thick] (q1) to (1a);
+                    \only<-14>{\draw[dashed, thick] (q2) to (0b);}
+                    \only<-17>{\draw[thick] (q2) to (1b);}
+                    
+                    \uncover<2-21>{
+                        \node[emphasis] (p) at (3.0, 4.0) {$p$};
+                    }
+                    \uncover<3-10>{
+                        \node[emphasis] (q1) at (1.5, 2.0) {$q$};
+                        \draw[dashed, thick, emphasis] (p) to (q1);
+                    }
+                    \uncover<4-5>{
+                        \node[rectangle, scale=0.7, emphasis] (0a) at (0.5, 0.0) {$0$};
+                        \draw[dashed, thick, emphasis] (q1) to (0a);
+                    }
+                    \uncover<5->{
+                        \node[draw=none, scale=0.5, emphasis, left=0 of 0a] {$\#0$};
+                    }
+                    \uncover<7-8>{
+                        \node[rectangle, scale=0.7, emphasis] (1a) at (2.5, 0.0) {$1$};
+                        \draw[thick, emphasis] (q1) to (1a);
+                    }
+                    \uncover<8->{
+                        \node[draw=none, scale=0.5, emphasis, left=0 of 1a] {$\#1$};
+                    }
+                    \uncover<10->{
+                        \node[draw=none, scale=0.5, emphasis, left=0 of q1] {$\#2$};
+                    }
+                    \uncover<12-19>{
+                        \node[emphasis] (q2) at (4.5, 2.0) {$q$};
+                        \draw[thick, emphasis] (p) to (q2);
+                    }
+                    \uncover<13-14>{
+                        \node[rectangle, scale=0.7, emphasis] (0b) at (3.5, 0.0) {$0$};
+                        \draw[dashed, thick, emphasis] (q2) to (0b);
+                    }
+                    \uncover<14>{
+                        \node[draw=none, scale=0.5, emphasis, right=0 of 0b] {$\#0$};
+                    }
+                    \uncover<15-19>{
+                        \draw[dashed, thick] (q2) to (0a);
+                    }
+                    \uncover<16-17>{
+                        \node[rectangle, scale=0.7, emphasis] (1b) at (5.5, 0.0) {$1$};
+                        \draw[thick, emphasis] (q2) to (1b);
+                    }
+                    \uncover<17-17>{
+                        \node[draw=none, scale=0.5, emphasis, right=0 of 1b] {$\#1$};
+                    }
+                    \uncover<18-19>{
+                        \draw[thick] (q2) to (1a);
+                    }
+                    \uncover<19-19>{
+                        \node[draw=none, scale=0.5, emphasis, right=0 of q2] {$\#2$};
+                    }
+                    \uncover<20-21>{
+                        \draw[thick, bend left] (p) to (q1);
+                    }
+                    \uncover<21-21>{
+                        \node[draw=none, scale=0.5, emphasis, left=0 of p] {redundante};
+                    }
+                    \only<22>{}
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+        
+            \renewcommand{\arraystretch}{1.5}        
+            \begin{table}
+                \scriptsize
+                \caption{Tabela $T: \langle v,i_l,i_h \rangle \mapsto i_v$}
+                \begin{tabular}{c|c}
+                    $n$ & $T(n)$\\
+                    \hline
+                    \uncover<5->{
+                        $\langle 0,\textproc{null},\textproc{null} \rangle$ & $0$
+                    }\\
+                    \uncover<8->{
+                        $\langle 1,\textproc{null},\textproc{null} \rangle$ & $1$
+                    }\\
+                    \uncover<10->{
+                        $\langle q,0,1 \rangle$ & $2$
+                    }\\
+                \end{tabular}
+            \end{table}
+            
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
 
 %-------------------------------------------
 \begin{frame}{Definição: restrições}
@@ -849,16 +1148,56 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Lema: expansão de Shannon}
+\begin{frame}{Lema: Expansão de Shannon}
 
     \begin{block}{\textbf{Lema 6.10}}
-        Para todas as expressões booleanas $\phi$ e todas as variáveis $p$ (mesmo as que não ocorrem em $\phi$), tem-se a chamada \underline{expansão de Shannon}:\\[1em]
+        Para todas as expressões booleanas $\phi$ e todas as variáveis $p$ (mesmo as que não ocorrem em $\phi$), tem-se a chamada \underline{Expansão de Shannon}:\\[1em]
         $\phi \equiv \lnot{p} \land \phi[0/p] \lor p \land \phi[1/p]$
     \end{block}
 
 \end{frame}
 %-------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%
+%=======================================================================
+% Slides removidos/escondidos
+%=======================================================================
+%
+\iffalse
 %-------------------------------------------
 \begin{frame}{operador \textproc{ite}}
 
@@ -1295,33 +1634,6 @@
 
 \end{frame}
 %-------------------------------------------
-
-%-------------------------------------------
-%\begin{frame}{Algoritmo \texttt{reduzir}}
-
-
-%\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-%\begin{frame}{Algoritmo \texttt{aplicar}}
-
-
-%\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-%\begin{frame}{Algoritmo \texttt{restringir}}
-
-
-%\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-%\begin{frame}{Algoritmo \texttt{existe}}
-
-
-%\end{frame}
-%-------------------------------------------
+\fi
 
 \end{document}
