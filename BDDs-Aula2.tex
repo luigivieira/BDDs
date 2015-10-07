@@ -20,7 +20,7 @@
 \boldmath
 
 \usepackage{algorithm} % For algorithms...
-\usepackage{algpseudocode} % ...in pseudocode
+\usepackage[noend]{algpseudocode} % ...in pseudocode
 \usepackage{fixltx2e}
 \MakeRobust{\Call} % For allowing nested uses of \Call
 
@@ -779,15 +779,15 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Operações eficientes com ROBDDs}
+\begin{frame}{Principais algoritmos para ROBDDs}
 
-    Utilizando ROBDDs, é possível fazer operações de forma eficiente:
+    As seguintes operações estão no cerne do uso sério de ROBDDs:
     
     \begin{outline}
-        \1 \textbf{Redução}. A redução é o cerne da utilização séria de ROBDDs
-            \2[-] consistindo da aplicação eficiente das simplificações C1-C3
+        \1 \textbf{Redução}. Permite reduzir OBDDs de forma eficiente
+            \2[-] consiste basicamente da aplicação das simplificações C1-C3
             
-        \1 \textbf{Aplicação}. A aplicação permite realizar as operações lógicas $\land$, $\lor$ e $\lnot$ (via $\phi \oplus 1$)
+        \1 \textbf{Aplicação}. Permite realizar as operações lógicas $\land$, $\lor$ e $\lnot$ (via $\phi \oplus 1$)
             \2[-] mantendo o BDD ordenado e reduzido
     \end{outline}
 
@@ -1098,6 +1098,97 @@
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}{O compartilhamento é grande vantagem}
+
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+            
+            \begin{figure}
+            
+                \begin{tikzpicture}
+                    [scale=0.6,auto=left,
+                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                        every edge/.append style={draw=blue, thick}
+                    ]
+                    %\draw[help lines] (0,0) grid (12,6);
+                    
+                    \node (p) at (3.0, 6.0) {$p$};
+                    \node (q) at (1.5, 4.5) {$q$};
+                    \node (r) at (4.5, 3.5) {$r$};
+                    \node (s) at (1.5, 2.0) {$s$};
+                    
+                    \node[rectangle, scale=0.7] (0) at (1.5, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (1) at (4.5, 0.0) {$1$};
+                    
+                    \draw[dashed, thick] (p) to (q);
+                    \draw[thick] (p) to (r);
+                    \draw[dashed, thick] (q) to (s);
+                    \draw[thick] (q) to (r);
+                    \draw[dashed, thick] (r) to (s);
+                    \draw[thick] (r) to (1);
+                    \draw[dashed, thick] (s) to (0);
+                    \draw[thick] (s) to (1);
+                    
+                    \node (p_) at (9.0, 6.0) {$p$};
+                    \node (r_) at (10.5, 3.5) {$r$};
+                    \node (s_) at (7.5, 2.0) {$s$};
+                    
+                    \node[rectangle, scale=0.7] (0_) at (7.5, 0.0) {$0$};
+                    \node[rectangle, scale=0.7] (1_) at (10.5, 0.0) {$1$};
+                    
+                    \draw[dashed, thick] (p_) to (s_);
+                    \draw[thick] (p_) to (r_);
+                    \draw[dashed, thick] (r_) to (s_);
+                    \draw[thick] (r_) to (1_);
+                    \draw[dashed, thick] (s_) to (0_);
+                    \draw[thick] (s_) to (1_);
+                    
+                    \node[draw=none, scale=1.0, above=of p] (op)  {$B_\phi$};
+                    \node[draw=none, scale=1.0, above=of p_] (op) {$B_\psi$};
+                    
+                    \node[draw=none, scale=0.5, emphasis, left=0 of 0]  {$\#0$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of 1] {$\#1$};
+                    \node[draw=none, scale=0.5, emphasis, left=0 of s]  {$\#2$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of r] {$\#3$};
+                    \node[draw=none, scale=0.5, emphasis, left=0 of q]  {$\#4$};
+                    \node[draw=none, scale=0.5, emphasis, above=0 of p] {$\#5$};
+                    
+                    \node[draw=none, scale=0.5, emphasis, left=0 of 0_]  {$\#0$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of 1_] {$\#1$};
+                    \node[draw=none, scale=0.5, emphasis, left=0 of s_]  {$\#2$};
+                    \node[draw=none, scale=0.5, emphasis, right=0 of r_] {$\#3$};
+                    \node[draw=none, scale=0.5, emphasis, above=0 of p_] {$\#6$};
+                    
+                \end{tikzpicture}
+
+            \end{figure}
+
+        \column{0.5\textwidth}
+        
+            \renewcommand{\arraystretch}{1.5}        
+            \begin{table}
+                \scriptsize
+                \caption{Tabela $T: \langle v,i_l,i_h \rangle \mapsto i_v$}
+                \begin{tabular}{c|c}
+                    $n$ & $T(n)$\\
+                    \hline
+                    $\langle 0,\textproc{null},\textproc{null} \rangle$ & $0$\\
+                    $\langle 1,\textproc{null},\textproc{null} \rangle$ & $1$\\
+                    $\langle s,0,1 \rangle$ & $2$\\
+                    $\langle r,2,1 \rangle$ & $3$\\
+                    $\langle q,2,3 \rangle$ & $4$\\
+                    $\langle p,4,3 \rangle$ & $5$\\
+                    $\langle p,2,3 \rangle$ & $6$\\
+                \end{tabular}
+            \end{table}
+            
+    \end{columns}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}{Algoritmo de aplicação}
 
     \small
@@ -1187,8 +1278,46 @@
 \end{frame}
 %-------------------------------------------
 
+%-------------------------------------------
+\begin{frame}{Uso no algoritmo de aplicação}
 
+    \small
+    A Expansão de Shannon permite expressar qualquer operador da gramática da Lógica Proposicional:
 
+    \scriptsize
+    $$\phi~op~\psi \equiv \lnot{p_i} \land (\phi[0/p_i]~op~\psi[0/p_i]) \lor p_i \land (\phi[1/p_i]~op~\psi[1/p_i])$$
+    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.9\columnwidth}
+                \noindent\scriptsize
+                E, no algoritmo de aplicação, é usada para eliminar as variáveis com a aplicação das restrições
+            \end{minipage}
+        }
+    \end{center}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Programação dinâmica}
+
+    \begin{outline}
+        \1 O algoritmo de aplicação também utiliza programação dinâmica para melhorar a eficiência
+            \2[-] recursão com tabela para armazenar valores já calculados
+    \end{outline}
+    
+    \begin{center}
+        \ovalbox{
+            \begin{minipage}[h]{0.7\columnwidth}
+                \noindent\scriptsize\centering
+                No pseudocódigo do algoritmo, a seguir, essa tabela é referenciada como $C$ (de \textit{cache})
+            \end{minipage}
+        }
+    \end{center}    
+    
+\end{frame}
+%-------------------------------------------
 
 %-------------------------------------------
 \begin{frame}{Pseudocódigo de \textproc{apply}}
@@ -1206,22 +1335,27 @@
                     \State \Return $\Call{getnode}{r,\textproc{null},\textproc{null}}$
                 \EndIf
                 
-                \If{$v_\phi = v_\psi$} \Comment se têm a mesma variável
-                    \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},\Call{lo}{n_\psi}}$
-                    \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},\Call{hi}{n_\psi}}$
-                    \State \Return $\Call{getnode}{v_\phi,i_l,i_h}$
-                \Else
-                    \If{$v_\phi \prec v_\psi$} \Comment se $v_\phi$ ocorre antes de $v_\psi$
-                        \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},n_\psi}$
-                        \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},n_\psi}$
-                        \State \Return $\Call{getnode}{v_\phi,i_l,i_h}$
-                    \Else \Comment se $v_\phi$ ocorre após $v_\psi$
-                        \State $i_l \gets \Call{apply}{op,n_\phi,\Call{lo}{n_\psi}}$
-                        \State $i_h \gets \Call{apply}{op,n_\phi,\Call{hi}{n_\psi}}$
-                        \State \Return $\Call{getnode}{v_\psi,i_l,i_h}$
-                    \EndIf
-                \EndIf
+                \State $r \gets C(op,n_\phi,n_\psi)$ \Comment verificação da programação dinâmica
                 
+                \If{r = \textproc{null}}
+                    \If{$v_\phi = v_\psi$} \Comment se têm a mesma variável
+                        \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},\Call{lo}{n_\psi}}$
+                        \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},\Call{hi}{n_\psi}}$
+                        \State $r \gets \Call{getnode}{v_\phi,i_l,i_h}$
+                    \Else
+                        \If{$v_\phi \prec v_\psi$} \Comment se $v_\phi$ ocorre antes de $v_\psi$
+                            \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},n_\psi}$
+                            \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},n_\psi}$
+                            \State $ r \gets \Call{getnode}{v_\phi,i_l,i_h}$
+                        \Else \Comment se $v_\phi$ ocorre após $v_\psi$
+                            \State $i_l \gets \Call{apply}{op,n_\phi,\Call{lo}{n_\psi}}$
+                            \State $i_h \gets \Call{apply}{op,n_\phi,\Call{hi}{n_\psi}}$
+                            \State $r \gets \Call{getnode}{v_\psi,i_l,i_h}$
+                        \EndIf
+                    \EndIf
+                    \State $C \gets C \cup \{(\langle op,n_\phi,n_\psi \rangle, r)\}$ \Comment atualização da tabela da progamação dinâmica
+                \EndIf
+                \State \Return $r$
             \EndFunction
         \end{algorithmic}
     \end{algorithm}
@@ -1229,81 +1363,253 @@
 \end{frame}
 %-------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%
-%=======================================================================
-% Slides removidos/escondidos
-%=======================================================================
-%
-\iffalse
 %-------------------------------------------
-\begin{frame}{operador \textproc{ite}}
+\begin{frame}{Ilustração do algoritmo de aplicação}
 
-    \begin{block}{\textbf{Definição auxiliar\footnote{não consta do livro}}}
-        Com base nessa equivalência, definimos o operador \textproc{ite} (de \textit{if-then-else}) como:\\[1em]
-        $\textproc{ite}(p,\phi,\phi^{\prime}) = (p \land \phi) \lor (\lnot{p} \land \phi^{\prime})$
-        \\[1em]
-        Dessa forma, \textproc{ite} é verdadeiro se a variável $p$ e a expressão $\phi$ são verdadeiros, ou se a variável $p$ é falsa e a expressão $\phi^{\prime}$ é verdadeira.
-    \end{block}
+    \centering
+    Ordem: $[p,q,r,s]$
 
+    \vspace{-1em}
+    
+    \begin{figure}
+        \begin{tikzpicture}
+            [scale=0.7,auto=left,
+                every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
+                every edge/.append style={draw=blue, thick}
+            ]
+            %\draw[help lines] (0,0) grid (20,6);
+            
+            \node (p) at (3.0, 6.0) {$p$};
+            \node (q) at (1.5, 4.5) {$q$};
+            \node (r) at (4.5, 3.5) {$r$};
+            \node (s) at (1.5, 2.0) {$s$};
+            
+            \node[rectangle, scale=0.7] (0) at (1.5, 0.0) {$0$};
+            \node[rectangle, scale=0.7] (1) at (4.5, 0.0) {$1$};
+            
+            \draw[dashed, thick] (p) to (q);
+            \draw[thick] (p) to (r);
+            \draw[dashed, thick] (q) to (s);
+            \draw[thick] (q) to (r);
+            \draw[dashed, thick] (r) to (s);
+            \draw[thick] (r) to (1);
+            \draw[dashed, thick] (s) to (0);
+            \draw[thick] (s) to (1);
+            
+            \node[draw=none, scale=1.5] (op) at (6.0, 3.0) {$\lor$};
+
+            \node (p_) at (9.0, 6.0) {$p$};
+            \node (r_) at (10.5, 3.5) {$r$};
+            \node (s_) at (7.5, 2.0) {$s$};
+            
+            \node[rectangle, scale=0.7] (0_) at (7.5, 0.0) {$0$};
+            \node[rectangle, scale=0.7] (1_) at (10.5, 0.0) {$1$};
+            
+            \draw[dashed, thick] (p_) to (s_);
+            \draw[thick] (p_) to (r_);
+            \draw[dashed, thick] (r_) to (s_);
+            \draw[thick] (r_) to (1_);
+            \draw[dashed, thick] (s_) to (0_);
+            \draw[thick] (s_) to (1_);
+            
+            \node[draw=none, scale=1.5] (op) at (12.0, 3.0) {$=$};
+
+            \uncover<32->{\node (p__) at (15.0, 6.0) {$p$};}
+            \uncover<24->{\node (q__) at (13.5, 4.5) {$q$};}
+            \uncover<22->{\node (r__) at (16.5, 3.5) {$r$};}
+            \uncover<11->{\node (s__) at (13.5, 2.0) {$s$};}
+            
+            \uncover<6->{\node[rectangle, scale=0.7] (0__) at (13.5, 0.0) {$0$};}
+            \uncover<9->{\node[rectangle, scale=0.7] (1__) at (16.5, 0.0) {$1$};}
+            
+            \uncover<32->{\draw[dashed, thick] (p__) to (q__);}
+            \uncover<32->{\draw[thick] (p__) to (r__);}
+            \uncover<24->{\draw[dashed, thick] (q__) to (s__);}
+            \uncover<24->{\draw[thick] (q__) to (r__);}
+            \uncover<22->{\draw[dashed, thick] (r__) to (s__);}
+            \uncover<22->{\draw[thick] (r__) to (1__);}
+            \uncover<11->{\draw[dashed, thick] (s__) to (0__);}
+            \uncover<11->{\draw[thick] (s__) to (1__);}
+            
+            \uncover<2-31>{
+                \node[emphasis] (p) at (3.0, 6.0) {$p$};
+                \node[emphasis] (p_) at (9.0, 6.0) {$p$};
+            }
+            \uncover<3-24>{
+                \node[emphasis] (q) at (1.5, 4.5) {$q$};
+                \draw[dashed, thick, emphasis] (p) to (q);
+                \node[emphasis] (s_) at (7.5, 2.0) {$s$};
+                \draw[dashed, thick, emphasis] (p_) to (s_);
+            }
+            \uncover<4-11>{
+                \node[emphasis] (s) at (1.5, 2.0) {$s$};
+                \draw[dashed, thick, emphasis] (q) to (s);
+            }
+            \uncover<5-6>{
+                \node[rectangle, scale=0.7, emphasis] (0) at (1.5, 0.0) {$0$};
+                \draw[dashed, thick, emphasis] (s) to (0);
+                \node[rectangle, scale=0.7, emphasis] (0_) at (7.5, 0.0) {$0$};
+                \draw[dashed, thick, emphasis] (s_) to (0_);
+            }
+            \uncover<8-9>{
+                \node[rectangle, scale=0.7, emphasis] (1) at (4.5, 0.0) {$1$};
+                \draw[thick, emphasis] (s) to (1);
+                \node[rectangle, scale=0.7, emphasis] (1_) at (10.5, 0.0) {$1$};
+                \draw[thick, emphasis] (s_) to (1_);
+            }
+            \uncover<13-22>{
+                \node[emphasis] (r) at (4.5, 3.5) {$r$};
+                \draw[thick, emphasis] (q) to (r);
+            }
+            \uncover<14-14>{
+                \node[emphasis] (s) at (1.5, 2.0) {$s$};
+                \draw[dashed, thick, emphasis] (r) to (s);
+            }
+            \uncover<16-20>{
+                \node[rectangle, scale=0.7, emphasis] (1) at (4.5, 0.0) {$1$};
+                \draw[thick, emphasis] (r) to (1);
+            }
+            \uncover<17-17>{
+                \node[rectangle, scale=0.7, emphasis] (0_) at (7.5, 0.0) {$0$};
+                \draw[dashed, thick, emphasis] (s_) to (0_);
+            }
+            \uncover<19-19>{
+                \node[rectangle, scale=0.7, emphasis] (1_) at (10.5, 0.0) {$1$};
+                \draw[thick, emphasis] (s_) to (1_);
+            }
+            \uncover<26-30>{
+                \node[emphasis] (r) at (4.5, 3.5) {$r$};
+                \draw[thick, emphasis] (p) to (r);
+                \node[emphasis] (r_) at (10.5, 3.5) {$r$};
+                \draw[thick, emphasis] (p_) to (r_);
+            }
+            \uncover<27-27>{
+                \node[emphasis] (s) at (1.5, 2.0) {$s$};
+                \draw[dashed, thick, emphasis] (r) to (s);
+                \node[emphasis] (s_) at (7.5, 2.0) {$s$};
+                \draw[dashed, thick, emphasis] (r_) to (s_);
+            }
+            \uncover<29-29>{
+                \node[rectangle, scale=0.7, emphasis] (1) at (4.5, 0.0) {$1$};
+                \draw[thick, emphasis] (r) to (1);
+                \node[rectangle, scale=0.7, emphasis] (1_) at (10.5, 0.0) {$1$};
+                \draw[thick, emphasis] (r_) to (1_);
+            }
+            
+        \end{tikzpicture}
+
+    \end{figure}
+
+    {\scriptsize
+        \only<1>{\hfill}
+        \only<2>{mesma variável: recorrência em ambos diagramas}
+        \only<3>{$q \prec s$: recorrência no diagrama da esquerda}
+        \only<4>{mesma variável: recorrência em ambos diagramas}
+        \only<5>{nós terminais: aplica operação ($0 \lor 0 = 0$)}
+        \only<6-7>{\hfill}
+        \only<8>{nós terminais: aplica operação ($1 \lor 1 = 1$)}
+        \only<9>{\hfill}
+        \only<10>{Conclusão parcial: cria/compartilha subdiagrama}
+        \only<11-12>{\hfill}
+        \only<13>{$r \prec s$: recorrência no diagrama da esquerda}
+        \only<14>{programação dinâmica: operação entre subdiagramas já calculada}
+        \only<15>{\hfill}
+        \only<16>{$1 \succ s$: recorrência no diagrama da direita}
+        \only<17>{nós terminais: aplica operação ($1 \lor 0 = 1$)}
+        \only<18>{\hfill}
+        \only<19>{nós terminais: aplica operação ($1 \lor 1 = 1$)}
+        \only<20>{simplificação: nó $s$ que sempre chega a $1$ ignorado}
+        \only<21>{Conclusão parcial: cria/compartilha subdiagrama}
+        \only<22>{\hfill}
+        \only<23>{Conclusão parcial: cria/compartilha subdiagrama}
+        \only<24-25>{\hfill}
+        \only<26>{mesma variável: recorrência em ambos diagramas}
+        \only<27>{programação dinâmica: operação entre subdiagramas já calculada}
+        \only<28>{\hfill}
+        \only<29>{programação dinâmica: operação entre subdiagramas já calculada}
+        \only<30>{\hfill}
+        \only<31>{Conclusão parcial: cria/compartilha subdiagrama}
+    }
+    
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Uso do operador \textproc{ite}}
+\begin{frame}{Outros algoritmos para ROBDDs}
 
-    O operador $\textproc{ite}(p,\phi,\phi^{\prime}) = (p \land \phi) \lor (\lnot{p} \land \phi^{\prime})$ permite expressar qualquer operador da gramática da Lógica Proposicional:
-
-    \small
+    Há também esses outros dois algoritmos importantes:
+    
     \begin{outline}
-        \1 $\lnot{p} = \textproc{ite}(\textcolor{emphasis}{p},\lnot{\textcolor{emphasis}{1}},\lnot{\textcolor{emphasis}{0}}) = \textproc{ite}(p,0,1)$
-        
-        \1 $p \land q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \land q,\textcolor{emphasis}{0} \land q) = \textproc{ite}(p,q,0) = \textproc{ite}(p,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}),0)$
-        
-        \1 $p \lor q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \lor q,\textcolor{emphasis}{0} \lor q) = \textproc{ite}(p,1,q) = \textproc{ite}(p,1,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}))$
-        
-        \1 $p \to q = \textproc{ite}(\textcolor{emphasis}{p},\textcolor{emphasis}{1} \to q,\textcolor{emphasis}{0} \to q) = \textproc{ite}(p,q,1) = \textproc{ite}(p,\textproc{ite}(\textcolor{emphasis}{q},\textcolor{emphasis}{1},\textcolor{emphasis}{0}),1)$
+        \1 \textbf{Restrição}. Permite eliminar variáveis em diagramas
+            
+        \1 \textbf{Existência}. Permite utilizar quantificadores em expressões
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Forma normal condicional}
+\begin{frame}{O algoritmo de restrição}
 
+    \small
+    O algoritmo de restrição (\textproc{restrict}) calcula o RODDB que representem $\phi[0/p]$ ou $\phi[1/p]$. É bem simples, e funciona assim:
+
+    \begin{outline}
+        \1 Para cada nó $n$ marcado com a variável $p$, as arestas que entram são redirecionadas
+            \2[-] para $\Call{lo}{n}$ se o valor de restrição é $0$
+            \2[-] para $\Call{hi}{n}$ se o valor de restrição é $1$
+            
+        \vspace{1em}
+            
+        \1 Então, o algoritmo de redução é chamado para reduzir o OBDD resultante
+        
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{O algoritmo de existência}
+
+    \small
+    O algoritmo de existência (\textproc{exists}) representa expressões em termos de subconjuntos de restrições. Funciona assim:
+
+    \begin{outline}
+        \1 Seja uma expressão $p \lor (\lnot{q} \land r)$. Ela só é verdadeira se $p = 1$ ou se $y = 0$ e $r = 1$
+            \2[-] ou seja, tratam-se de restrições sobre $p$, $q$ e $r$
+            
+        \vspace{1em}
+            
+        \1 Pode-se expressar o relaxamento em um subconjunto de variáveis
+            \2[-] escrevendo $\exists{p.\phi}$ para a função booleana $\phi$ com restrição sobre $p$ relaxada
+            \2[-] formalmente $\exists{p.\phi} \defeq \phi[0/p] \lor \phi[1/p]$
+        
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{O que significa}
+
+    \centering
+    Essencialmente, $\exists{p.\phi}$ significa que $\phi$ é verdadeira se puder ser feita verdadeira para $p = 0$ ou para $p = 1$
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Analogamente}
+
+    \centering
+    Analogamente, $\forall{p.\phi}$ significa que $\phi$ é verdadeira se puder ser feita verdadeira tanto para $p = 0$ como para $p = 1$
+    
     \begin{center}
-        \shadowbox{
-            \begin{minipage}[h]{1.0\columnwidth}
-                \noindent\justifying
-                Uma expressão booleana está na forma normal condicional se e somente se ela contém apenas constantes, o operador condicional \textproc{ite} e variáveis sendo testadas por esse operador
+        \ovalbox{
+            \begin{minipage}[h]{0.9\columnwidth}
+                \noindent\scriptsize\justifying
+                E por isso o quantificador booleano $\forall$ é o dual de $\exists$:\\
+                $$\forall{p.\phi} \defeq \phi[0/p] \land \phi[1/p]$$
             \end{minipage}
         }
     \end{center}
@@ -1312,394 +1618,129 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Exemplos na forma e fora dela}
+\begin{frame}{O algoritmo \textproc{exists}}
 
-    \small
-    \begin{outline}
-        \1 A expressão $\textproc{ite}(p, \textproc{ite}(q, 1, \textcolor{emphasis}{r}), \textproc{ite}(q, 1, 0))$ \underline{não está} na forma normal condicional
-            \2[-] a variável $\textcolor{emphasis}{r}$ ainda não está sendo testada condicionalmente
-
-        \vspace{1em}
-            
-        \1 A expressão $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$ \underline{está} na forma normal condicional        
-            \2[-] todas as variáveis estão sendo testadas condicionalmente
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Conversão para a forma condicional}
-
-    Toda expressão booleana pode ser convertida indutivamente para a forma normal condicional da seguinte maneira:
-
-    \begin{outline}
-        \1 Se $\phi$ só contém variáveis de teste, ela já está na forma normal condicional
-        
-        \vspace{1em}
-        
-        \1 Senão, enquanto houver uma variável $p \in \phi$ que não seja teste, reescreva $\phi$ como $\textproc{ite}(p, \phi[1/p], \phi[0/p])$
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Por exemplo}
-
-    \begin{outline}
-        \0 Conversão de $(p \lor q) \land (q \lor r)$ para a forma normal conditional
-        \1[=] $\textproc{ite}(\textcolor{emphasis}{p}, (\textcolor{emphasis}{1} \lor q) \land (q \lor r), (\textcolor{emphasis}{0} \lor q) \land (q \lor r))$
-        \1[=] $\textproc{ite}(p, q \lor r, q)$
-        \1[=] $\textproc{ite}(p, \textproc{ite}(\textcolor{emphasis}{q}, \textcolor{emphasis}{1} \lor r, \textcolor{emphasis}{0} \lor r), \textproc{ite}(\textcolor{emphasis}{q}, \textcolor{emphasis}{1}, \textcolor{emphasis}{0}))$
-        \1[=] $\textproc{ite}(p, \textproc{ite}(q, 1, r), \textproc{ite}(q, 1, 0))$
-        \1[=] $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(\textcolor{emphasis}{r}, \textcolor{emphasis}{1}, \textcolor{emphasis}{0})), \textproc{ite}(q, 1, 0))$
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Forma condicional e árvore de decisão}
-
-    A estrutura de recorrência da forma normal condicional:
-    $$\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$$
-    da expressão booleana $(p \lor q) \land (q \lor r)$ é a mesma da sua arvore de decisão binária
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Ilustração do argumento anterior}
-    
-    \begin{columns}[c]
-        \column{0.5\textwidth}
-
-            \begin{figure}
-            
-                \caption{\scriptsize Árvore de Decisão Binária da expressão: $(p \lor q) \land (q \lor r)$}
-                
-                \begin{tikzpicture}
-                    [scale=0.8,auto=left,
-                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
-                        every edge/.append style={draw=blue, thick}
-                    ]
-                    %\draw[help lines] (0,0) grid (8,6);
-
-                    \node (p) at (4.25, 6.0) {$p$};
-                    \node (q1) at (2.5, 4.5) {$q$};
-                    \node (q2) at (6.0, 4.5) {$q$};
-                    \node[rectangle, scale=0.7] (1a) at (1.5, 3.0) {$1$};
-                    \node (r) at (3.5, 2.0) {$r$};
-                    \node[rectangle, scale=0.7] (1b) at (5.0, 3.0) {$1$};
-                    \node[rectangle, scale=0.7] (0a) at (7.0, 3.0) {$0$};
-                    \node[rectangle, scale=0.7] (1c) at (2.5, 0.0) {$1$};
-                    \node[rectangle, scale=0.7] (0b) at (4.5, 0.0) {$0$};
-
-                    \draw[thick] (p) to (q1);
-                    \draw[dashed, thick] (p) to (q2);
-                    \draw[thick] (q1) to (1a);
-                    \draw[dashed, thick] (q1) to (r);
-                    \draw[thick] (q2) to (1b);
-                    \draw[dashed, thick] (q2) to (0a);
-                    \draw[thick] (r) to (1c);
-                    \draw[dashed, thick] (r) to (0b);
-                \end{tikzpicture}
-
-            \end{figure}
-
-        \column{0.5\textwidth}
-        
-            \begin{figure}
-            
-                \caption{\scriptsize Estrutura recorrente da forma condicional: $\textproc{ite}(p, \textproc{ite}(q, 1, \textproc{ite}(r, 1, 0)), \textproc{ite}(q, 1, 0))$}
-            
-                \begin{tikzpicture}
-                    [scale=0.8,auto=left,
-                        every node/.style={minimum height=4mm, draw=none, align=center, text depth = 0pt, transform shape}
-                    ]
-                    %\draw[help lines] (0,0) grid (8,6);
-
-                    \node (p) at (4.25, 6.0) {$\textproc{ite}(p,\phi,\phi^{\prime})$};
-                    \node (q1) at (2.5, 4.5) {$\textproc{ite}(q,\phi,\phi^{\prime})$};
-                    \node (q2) at (6.0, 4.5) {$\textproc{ite}(q,\phi,\phi^{\prime})$};
-                    \node[rectangle, scale=0.7] (1a) at (1.5, 3.0) {$1$};
-                    \node (r) at (3.5, 2.0) {$\textproc{ite}(r,\phi,\phi^{\prime})$};
-                    \node[rectangle, scale=0.7] (1b) at (5.0, 3.0) {$1$};
-                    \node[rectangle, scale=0.7] (0a) at (7.0, 3.0) {$0$};
-                    \node[rectangle, scale=0.7] (1c) at (2.5, 0.0) {$1$};
-                    \node[rectangle, scale=0.7] (0b) at (4.5, 0.0) {$0$};
-
-                    \draw[dotted, thick] (p) -- (q1) node[midway, scale=0.5] {$\phi$};
-                    \draw[dotted, thick] (p) -- (q2) node[midway, scale=0.5] {$\phi^{\prime}$};
-                    \draw[dotted, thick] (q1) -- (1a) node[midway, scale=0.5] {$\phi$};
-                    \draw[dotted, thick] (q1) -- (r) node[midway, scale=0.5] {$\phi^{\prime}$};
-                    \draw[dotted, thick] (q2) -- (1b) node[midway, scale=0.5] {$\phi$};
-                    \draw[dotted, thick] (q2) -- (0a) node[midway, scale=0.5] {$\phi^{\prime}$};
-                    \draw[dotted, thick] (r) -- (1c) node[midway, scale=0.5] {$\phi$};
-                    \draw[dotted, thick] (r) -- (0b) node[midway, scale=0.5] {$\phi^{\prime}$};
-                \end{tikzpicture}
-
-            \end{figure}        
-        
-    \end{columns}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Estrutura de dados}
-
-    A estrutura de dados para representar um ROBDD é composta de:
-
-    \begin{outline}
-        \1 Uma tabela $T: n \mapsto \langle v,t,f \rangle$
-            \2[-] que associa a cada identificador $n$ um nó com variável de teste $v$, filho esquerdo $t$ e filho direito $f$
-        
-        \vspace{1em}
-        
-        \1 Uma tabela inversa $T^{-1}: \langle v,t,f \rangle \mapsto n$
-            \2[-] que associa nós em identificadores
-            \2[-] devido ao compartilhamento de sub-grafos
-            \2[-] usada para garantir que os diagramas sejam reduzidos
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Ilustração dessa estrutura de dados}
-
-    \setlength{\tabcolsep}{2pt}
-    \renewcommand{\arraystretch}{1.5}        
-
-    \begin{columns}[c]
-
-        \column{0.2\textwidth}
-            
-            \begin{figure}
-            
-                \begin{tikzpicture}
-                    [scale=0.7,auto=left,
-                        every node/.style={circle, minimum height=4mm, draw=black, thick, align=center, text depth = 0pt, transform shape},
-                        every edge/.append style={draw=blue, thick}
-                    ]
-                    %\draw[help lines] (0,0) grid (8,6);
-                  
-                    \node (p) at (4.0, 6.0) {$p$};
-                    \node (q1) at (2.5, 4.5) {$q$};
-                    \node (q2) at (5.5, 4.5) {$q$};
-                    \node (r) at (4.0, 3.0) {$r$};
-                    
-                    \node[rectangle, scale=0.7] (0) at (2.5, 1.0) {$0$};
-                    \node[rectangle, scale=0.7] (1) at (5.5, 1.0) {$1$};
-
-                    \draw[dashed, thick] (p) to (q1);
-                    \draw[thick] (p) to (q2);
-                    \draw[dashed, thick] (q1) to (0);
-                    \draw[thick, bend right] (q1) to (1);
-                    \draw[dashed, thick] (q2) to (r);
-                    \draw[thick] (q2) to (1);
-                    \draw[dashed, thick] (r) to (0);
-                    \draw[thick] (r) to (1);
-                    
-                \end{tikzpicture}
-
-            \end{figure}
-
-        \column{0.35\textwidth}
-        
-            \begin{table}
-                \scriptsize
-                \caption{\scriptsize Tabela $T: n \mapsto \langle v,t,f \rangle$}
-                \begin{tabular}{c|c}
-                    $n$ & $T(n)$\\
-                    \hline
-                    $0$ & $\langle p_{6},\textproc{null},\textproc{null} \rangle$\\
-                    $1$ & $\langle p_{6},\textproc{null},\textproc{null} \rangle$\\
-                    $2$ & $\langle p,3,4 \rangle$\\
-                    $3$ & $\langle q,0,1 \rangle$\\
-                    $4$ & $\langle q,5,1 \rangle$\\
-                    $5$ & $\langle r,0,1 \rangle$\\
-                \end{tabular}
-            \end{table}
-
-        \column{0.45\textwidth}
-        
-            \begin{table}
-                \scriptsize
-                \caption{\scriptsize Tabela $T^{-1}: \langle v,t,f \rangle \mapsto n$}
-                \begin{tabular}{c|c}
-                    $\langle v,t,f \rangle$ & $T^{-1}(\langle v,t,f \rangle)$\\
-                    \hline
-                    $\langle p_{6},\textproc{null},\textproc{null} \rangle$ & $0$\\
-                    $\langle p_{6},\textproc{null},\textproc{null} \rangle$ & $1$\\
-                    $\langle p,3,4 \rangle$                               & $2$\\
-                    $\langle q,0,1 \rangle$                               & $3$\\
-                    $\langle q,5,1 \rangle$                               & $4$\\
-                    $\langle r,0,1 \rangle$                               & $5$\\
-                \end{tabular}
-            \end{table}
-            
-    \end{columns}
-
-    \vspace{-1em}
-    
-    \begin{center}
-        \ovalbox{
-            \begin{minipage}[h]{\columnwidth}
-                \noindent\scriptsize\justifying
-                $p_6$: variável auxiliar usada nos nós terminais para manter a uniformidade da tabela
-            \end{minipage}
-        }
-    \end{center}    
-    
-\end{frame}
-%-------------------------------------------
-    
-%-------------------------------------------
-\begin{frame}{Observações}
-
-    Nos algoritmos estudados a seguir, assume-se que:
-
-    \begin{outline}
-        \1 $T(n) = T^{-1}(\langle v,t,f \rangle) = \textproc{null}$ sempre que $(n, \langle v,t,f \rangle) \notin T$
-        
-        \vspace{1em}
-        
-        \1 A tabela $T$ é uma variável global e $|T|$ é o número de entradas existentes nessa tabela
-    \end{outline}
-    
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Algoritmo de inicialização}
-
-    Cria a tabela $T$ de um ROBDD. Funciona assim:
-
-    \small
-    \begin{outline}
-        \1 Recebe uma entrada $m$ indicando o número máximo de variáveis existentes na expressão booleana
-        
-        \vspace{1em}
-        
-        \1 Inicia a tabela $T$ com duas tuplas especiais
-            \2[-] representando os nós terminais $0$ e $1$
-            \2[-] para garantir uniformidade, associa os nós terminais à uma variável auxiliar $p_{m+1}$
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Pseudocódigo de \textproc{INIT}}
-    %\scriptsize
-    \begin{algorithm}[H]
-        \begin{algorithmic}[1]
-            \Procedure{INIT}{$T,m$}
-                \State $T \gets \{(0, \langle m+1, \textproc{null},\textproc{null} \rangle\}),$\par
-                \hskip\algorithmicindent $\{(1, \langle m+1, \textproc{null}, \textproc{null} \rangle\})$
-            \EndProcedure
-        \end{algorithmic}
-    \end{algorithm}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Algoritmo de inserção de nós}
-
-    Insere um nó em um ROBDD, mantendo-o reduzido e ordenado. Funciona assim:
-
-    \small
-    \begin{outline}
-        \1 Recebe como entrada uma variável $v$ e os identificadores de seus filhos $t$ e $f$
-
-        \vspace{0.5em}
-
-        \1 Se o nó $v$ for redundante ($t = f$), devolve imediatamente o identificador do nó filho ($t$)
-
-        \vspace{0.5em}
-        
-        \1 Caso o nó $v$ já tenha sido criado, devolve seu identificador
-        
-        \vspace{0.5em}
-        
-        \1 Caso o nó $v$ seja novo, cria-o e devolve o identificador
-    \end{outline}
-
-\end{frame}
-%-------------------------------------------
-
-%-------------------------------------------
-\begin{frame}{Pseudocódigo de \texttt{INS}}
+    Assim, o algoritmo \textproc{exists} pode ser implementado em termos dos algoritmos \textproc{apply} e \textproc{restrict} da seguinte forma:
+    \\
     \scriptsize
-    \begin{algorithm}[H]
-        \begin{algorithmic}[1]
-            \Function{INS}{$T,v,t,f$}
-                \If{$t = f$}
-                    \State \Return $t$
-                \EndIf
-                \State $n \gets T^{-1}(\langle v,t,f \rangle)$
-                \If{$n = \textproc{null}$}
-                    \State $n \gets |T|$
-                    \State $T \gets T \cup \{(n, \langle v, t, f \rangle)\}$
-                \EndIf
-                \State \Return $n$
-            \EndFunction
-        \end{algorithmic}
-    \end{algorithm}
+    $$\Call{apply}{\lor,\Call{restrict}{0,p,B_\phi},\Call{restrict}{1,p,B_\phi}}$$
+
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo de construção de ROBDDs}
+\begin{frame}{Construção de ROBDDs}
 
-    Constrói um ROBDD a partir de uma expressão em forma normal condicional. Funciona assim:
+    \renewcommand{\arraystretch}{1.2}
+    \begin{table}
+        \scriptsize
+        \caption{Formas de construção de ROBDDs com os algoritmos}
+        \begin{tabular}{c|c}
+            Fórmula booleana $\phi$ & ROBDD $B_\phi representante$\\
+            \hline
+            $0$ & $B_0$\\
+            $1$ & $B_1$\\
+            $p$ & $B_p$\\
+            $\lnot{\phi}$ & trocar $0$ por $1$ e vice-versa em $B_\phi$\\
+            $\phi \lor \psi$ & $\textproc{apply}(\lor,B_\phi,B_\psi)$\\
+            $\phi \land \psi$ & $\textproc{apply}(\land,B_\phi,B_\psi)$\\
+            $\phi \oplus \psi$ & $\textproc{apply}(\oplus,B_\phi,B_\psi)$\\
+            $\phi[1/p]$ & $\textproc{restrict}(1,p,B_\phi)$\\
+            $\phi[0/p]$ & $\textproc{restrict}(0,p,B_\phi)$\\
+            $\exists{p.\phi}$ & $\textproc{apply}(\lor,B_{\phi[0/p]},B_{\phi[1/p]})$\\
+            $\forall{p.\phi}$ & $\textproc{apply}(\land,B_{\phi[0/p]},B_{\phi[1/p]})$\\
+        \end{tabular}
+    \end{table}    
 
-    \small
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Desempenho dos algoritmos}
+
+    \renewcommand{\arraystretch}{1.2}
+    \begin{table}
+        \scriptsize
+        \caption{Formas de construção de ROBDDs com os algoritmos}
+        \begin{tabular}{c|c}
+            Algoritmo & Complexidade no Tempo\\
+            \hline
+            \textproc{reduce} & $O(|B| \times \log |B|)$\\
+            \textproc{apply} & $O(|B_\phi| \times |B_\psi|)$\\
+            \textproc{restrict} & $O(|B| \times \log |B|)$\\
+            \textproc{exists} & NP completo\\
+        \end{tabular}
+    \end{table}    
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Biblioteca de ROBDDs para o EP}
+
     \begin{outline}
-        \1 Recebe como entrada uma variável $v$ e os identificadores de seus filhos $t$ e $f$
-
-        \vspace{0.5em}
-
-        \1 Se o nó $v$ for redundante ($t = f$), devolve imediatamente o identificador do nó filho ($t$)
-
-        \vspace{0.5em}
-        
-        \1 Caso o nó $v$ já tenha sido criado, devolve seu identificador
-        
-        \vspace{0.5em}
-        
-        \1 Caso o nó $v$ seja novo, cria-o e devolve o identificador
+        \1 BDDs from Python EDA: \url{http://pyeda.readthedocs.org/en/latest/bdd.html}
+            \2[-] Python EDA é uma biblioteca Python para projetos de automação
+            \2[-] usando álgebra booleana
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Pseudocódigo de \texttt{BUILD}}
-    \scriptsize
-    \begin{algorithm}[H]
-        \begin{algorithmic}[1]
-            \Function{BUILD}{$\textproc{ite}(v,\phi_{t},\phi_{f})$}
-                \If{$\phi_{t},\phi_{f} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\phi_{t},\phi_{f}}$
-                \EndIf
-                \If{$\phi_{f} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\Call{BUILD}{\phi_{t}},\phi_{f}}$
-                \EndIf
-                \If{$\phi_{t} \in \{0,1\}$}
-                    \State \Return $\Call{INS}{v,\phi_{t},\Call{BUILD}{\phi_{f}}}$
-                \EndIf
-                \State \Return $\Call{INS}{v,\Call{BUILD}{\phi_{t}},\Call{BUILD}{\phi_{f}}}$
-            \EndFunction
-        \end{algorithmic}
-    \end{algorithm}
+\begin{frame}[fragile]{Uso é simples}
+
+\small
+\begin{verbatim}
+>>> from pyeda.inter import *
+        
+>>> f = expr("a & b | a & c | b & c")
+>>> f
+Or(And(a, b), And(a, c), And(b, c))
+>>> f = expr2bdd(f)
+>>> f
+<pyeda.boolalg.bdd.BinaryDecisionDiagram at 0x7f556874ed68>
+\end{verbatim}
 
 \end{frame}
 %-------------------------------------------
-\fi
+
+%-------------------------------------------
+\begin{frame}[fragile]{Verificações}
+
+\small
+\begin{verbatim}
+>>> f = ~a & ~b | ~a & b | a & ~b | a & b
+>>> f
+1
+>>> f.is_one()
+True
+>>> g = (~a | ~b) & (~a | b) & (a | ~b) & (a | b)
+>>> g
+0
+>>> g.is_zero()
+True
+\end{verbatim}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}[fragile]{Operações}
+
+\small
+\begin{verbatim}
+>>> f = expr("a & b | a & c | b & c")
+
+>>> f.restrict({a: 0})
+<pyeda.boolalg.bdd.BinaryDecisionDiagram at 0x7f556874eb38>
+>>> f.restrict({a: 1, b: 0})
+c
+>>> f.restrict({a: 1, b: 1})
+1
+\end{verbatim}
+
+\end{frame}
+%-------------------------------------------
 
 \end{document}
