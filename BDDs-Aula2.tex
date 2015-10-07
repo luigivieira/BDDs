@@ -771,13 +771,12 @@
             
         \vspace{1em}
         
-        \1 Por outro lado, não se pode realizar as operações $\land$ e $\lor$ da forma anteriormente estudada
+        \1 Por outro lado, não se pode realizar as operações $\land$ e $\lor$ da forma ``inocente'' anteriormente estudada
             \2[-] elas podem introduzir ocorrências múltiplas de variáveis
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
-
 
 %-------------------------------------------
 \begin{frame}{Operações eficientes com ROBDDs}
@@ -788,7 +787,7 @@
         \1 \textbf{Redução}. A redução é o cerne da utilização séria de ROBDDs
             \2[-] consistindo da aplicação eficiente das simplificações C1-C3
             
-        \1 \textbf{Aplicação}. A aplicação permite realizar as operações lógicas $\land$, $\lor$, $\oplus$ e $\lnot$ (via $\phi \oplus 1$)
+        \1 \textbf{Aplicação}. A aplicação permite realizar as operações lógicas $\land$, $\lor$ e $\lnot$ (via $\phi \oplus 1$)
             \2[-] mantendo o BDD ordenado e reduzido
     \end{outline}
 
@@ -930,8 +929,8 @@
     \begin{algorithm}[H]
         \scriptsize
         \begin{algorithmic}[1]
-            \Require $v,i_l,i_h$ \Comment recebe uma variável e os IDs de seus filhos
-            \Ensure $i$ \Comment devolve o ID único do nó da variável
+            \Require recebe uma variável e os identificadores dos nós canônicos de seus filhos
+            \Ensure devolve o identificador do nó canônico da variável
             \Function{getnode}{$v,i_l,i_h$}
                 \If{$v \notin \{0,1\}$}
                     \If{$i_l = i_h$} \Comment simplificação C2
@@ -957,8 +956,8 @@
     \begin{algorithm}[H]
         \scriptsize
         \begin{algorithmic}[1]
-            \Require $n$ \Comment recebe o nó a ser reduzido
-            \Ensure $i_n$ \Comment devolve o ID do nó canônico (reduzido)
+            \Require recebe o nó raiz de um diagrama a ser reduzido
+            \Ensure devolve o identificador do nó canônico (isto é, do diagrama reduzido)
             \Function{reduce}{$n$}
                 \If{$n \in \{0,1\}$} \Comment simplificação C1
                     \State \Return \Call{getnode}{\Call{var}{n},\textproc{null},\textproc{null}}
@@ -1191,17 +1190,13 @@
 
 
 
-
-
-
-
 %-------------------------------------------
 \begin{frame}{Pseudocódigo de \textproc{apply}}
     \begin{algorithm}[H]
         \tiny
         \begin{algorithmic}[1]
-            \Require $n$ 
-            \Ensure $i_n$
+            \Require recebe um operador lógico e os nós raízes de dois diagramas com ordens compatíveis
+            \Ensure devolve o identificador do nó canônico do resultado da operação
             \Function{apply}{$op,n_\phi,n_\psi$}
                 \State $v_\phi \gets \Call{var}{n_\phi}$
                 \State $v_\psi \gets \Call{var}{n_\psi}$
