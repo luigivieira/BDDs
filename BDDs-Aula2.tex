@@ -895,6 +895,8 @@
         \1 $\textproc{lo}$ e $\textproc{hi}$ acessam os nós-filhos de um nó
 
         \1 $\textproc{id}$ acessa o identificador de um nó
+        
+        \1 $\textproc{var}$ acessa a variável de um nó
             
     \end{outline}
     
@@ -905,15 +907,19 @@
 \begin{frame}{Algoritmo de redução}
 
     \small
-    \begin{outline}
-        \1 Percorre os níveis de $B$ de baixo para cima
-            \2[-] {\small isto é, com  busca em profundidade}
-            
-        \1 Atribui o mesmo identificador a nós que denotam a mesma função
-            \2[-] {\small compartilhando subdiagramas (simplificações C1/C3)}
+    Reduz um OBDD de maneira recorrente. Funciona assim:
+    
+    \begin{outline}[enumerate]
+        \1 Percorre o OBDD de baixo para cima (busca em profundidade) atribuindo identificadores inteiros aos nós
         
-        \1 Atribui o identificador dos filhos um nó se eles forem os mesmos
-            \2[-] {\small ignorando nós redundantes (simplificação C2)}
+        \1 Se o nó for terminal, atribui ou reutiliza o identificador (simplificação C1)
+        
+        \1 Se os identificadores dos filhos forem iguais, atribui ao nó esse mesmo identificador (simplificação C2)
+        
+        \1 Se existir outro nó com os mesmos filhos, atribui seu identificador ao nó (simplificação C3)
+        
+        \1 Caso contrário, atribui ao nó o próximo inteiro livre
+        
     \end{outline}
 
 \end{frame}
@@ -927,7 +933,7 @@
             \Require $v,i_l,i_h$ \Comment recebe uma variável e os IDs de seus filhos
             \Ensure $i$ \Comment devolve o ID único do nó da variável
             \Function{getnode}{$v,i_l,i_h$}
-                \If{$v \neq 0 \land v \neq 1$}
+                \If{$v \notin \{0,1\}$}
                     \If{$i_l = i_h$} \Comment simplificação C2
                         \State \Return $i_l$
                     \EndIf
@@ -954,16 +960,16 @@
             \Require $n$ \Comment recebe o nó a ser reduzido
             \Ensure $i_n$ \Comment devolve o ID do nó canônico (reduzido)
             \Function{reduce}{$n$}
-                \If{$n = 0 \lor n = 1$} \Comment simplificação C1
-                    \State \Return \Call{getnode}{n,\textproc{null},\textproc{null}}
+                \If{$n \in \{0,1\}$} \Comment simplificação C1
+                    \State \Return \Call{getnode}{\Call{var}{n},\textproc{null},\textproc{null}}
                 \EndIf
 
-                \State $i_n \gets T(\langle n,\Call{id}{\Call{lo}{n}},\Call{id}{\Call{hi}{n}} \rangle)$
+                \State $i_n \gets T(\langle \Call{var}{n},\Call{id}{\Call{lo}{n}},\Call{id}{\Call{hi}{n}} \rangle)$
                 \If{$i_n = \textproc{NULL}$}
                     \State $i_l \gets \Call{reduce}{\Call{lo}{n}}$
                     \State $i_h \gets \Call{reduce}{\Call{hi}{n}}$                
 
-                    \State $i_n = \Call{getnode}{n,i_l,i_h}$ \Comment simplificação C3
+                    \State $i_n \gets \Call{getnode}{\Call{var}{n},i_l,i_h}$ \Comment simplificação C3
                 \EndIf
 
                 \State \Return $i_n$
@@ -1093,6 +1099,30 @@
 %-------------------------------------------
 
 %-------------------------------------------
+\begin{frame}{Algoritmo de aplicação}
+
+    \small
+    Obtém o resultado de $B_\phi~op~B_\psi$, sendo $op$ uma operação booleana ($\land$, $\lor$, $\oplus$ ou $\lnot$ via $B_\phi \oplus 1$). Funciona assim:
+
+    \begin{outline}[enumerate]
+        \1 inicia com a variável $v$ de maior ordem (mais à esquerda na lista de ordenação)
+        \1 divide o problema em dois subproblemas, dependendo de $v$ ser $0$ ou $1$, e resolve de maneira recorrente
+        \1 nas folhas, aplica a operação booleana $op$ diretamente
+    \end{outline}
+
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
+\begin{frame}{Dependência conceitual}
+
+    \centering
+    O algoritmo para a aplicação de operações booleanas entre OBDDs utiliza o conceito da \underline{Expansão de Shannon}
+    
+\end{frame}
+%-------------------------------------------
+
+%-------------------------------------------
 \begin{frame}{Definição: restrições}
 
     \begin{block}{\textbf{Definição 6.9}}
@@ -1162,6 +1192,47 @@
 
 
 
+
+
+
+%-------------------------------------------
+\begin{frame}{Pseudocódigo de \textproc{apply}}
+    \begin{algorithm}[H]
+        \tiny
+        \begin{algorithmic}[1]
+            \Require $n$ 
+            \Ensure $i_n$
+            \Function{apply}{$op,n_\phi,n_\psi$}
+                \State $v_\phi \gets \Call{var}{n_\phi}$
+                \State $v_\psi \gets \Call{var}{n_\psi}$
+                
+                \If{$(v_\phi \in \{0,1\}) \land (v_\psi \in \{0,1\})$} \Comment se ambos são nós terminais
+                    \State $r \gets n_\phi~op~n_\psi$ \Comment aplica a operação diretamente
+                    \State \Return $\Call{getnode}{r,\textproc{null},\textproc{null}}$
+                \EndIf
+                
+                \If{$v_\phi = v_\psi$} \Comment se têm a mesma variável
+                    \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},\Call{lo}{n_\psi}}$
+                    \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},\Call{hi}{n_\psi}}$
+                    \State \Return $\Call{getnode}{v_\phi,i_l,i_h}$
+                \Else
+                    \If{$v_\phi \prec v_\psi$} \Comment se $v_\phi$ ocorre antes de $v_\psi$
+                        \State $i_l \gets \Call{apply}{op,\Call{lo}{n_\phi},n_\psi}$
+                        \State $i_h \gets \Call{apply}{op,\Call{hi}{n_\phi},n_\psi}$
+                        \State \Return $\Call{getnode}{v_\phi,i_l,i_h}$
+                    \Else \Comment se $v_\phi$ ocorre após $v_\psi$
+                        \State $i_l \gets \Call{apply}{op,n_\phi,\Call{lo}{n_\psi}}$
+                        \State $i_h \gets \Call{apply}{op,n_\phi,\Call{hi}{n_\psi}}$
+                        \State \Return $\Call{getnode}{v_\psi,i_l,i_h}$
+                    \EndIf
+                \EndIf
+                
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
+%-------------------------------------------
 
 
 
