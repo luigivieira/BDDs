@@ -549,7 +549,7 @@
         \1 Reduções em um OBDDs mantêm ordem original
             \2[-] C1: compartilha nós terminais
             \2[-] C2: elimina nós não-terminais redundantes
-            \2[-] C2: compartilha sub-diagramas idênticos
+            \2[-] C3: compartilha sub-diagramas idênticos
         
         \vspace{1em}
         
@@ -766,7 +766,7 @@
 \begin{frame}{ROBDDs como representação}
 
     \begin{outline}
-        \1 RODDBs permitem representações compactas de certas classes de funções booleanas
+        \1 ROBDDs permitem representações compactas de certas classes de funções booleanas
             \2[-] que seriam exponenciais em outros formatos/representações
             
         \vspace{1em}
@@ -784,10 +784,10 @@
     As seguintes operações estão no cerne do uso sério de ROBDDs:
     
     \begin{outline}
-        \1 \textbf{Redução}. Permite reduzir OBDDs de forma eficiente
+        \1 \textproc{reduce}. Permite reduzir OBDDs de forma eficiente
             \2[-] consiste basicamente da aplicação das simplificações C1-C3
             
-        \1 \textbf{Aplicação}. Permite realizar as operações lógicas $\land$, $\lor$ e $\lnot$ (via $\phi \oplus 1$)
+        \1 \textproc{apply}. Permite realizar as operações lógicas $\land$, $\lor$ e $\lnot$ (via $\phi \oplus 1$)
             \2[-] mantendo o BDD ordenado e reduzido
     \end{outline}
 
@@ -903,7 +903,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo de redução}
+\begin{frame}{Algoritmo \textproc{reduce}}
 
     \small
     Reduz um OBDD de maneira recorrente. Funciona assim:
@@ -980,7 +980,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ilustração do algoritmo de redução}
+\begin{frame}{Ilustração do algoritmo \textproc{reduce}}
 
     \begin{columns}[c]
 
@@ -1189,7 +1189,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Algoritmo de aplicação}
+\begin{frame}{Algoritmo \textproc{apply}}
 
     \small
     Obtém o resultado de $B_\phi~op~B_\psi$, sendo $op$ uma operação booleana ($\land$, $\lor$, $\oplus$ ou $\lnot$ via $B_\phi \oplus 1$). Funciona assim:
@@ -1207,7 +1207,7 @@
 \begin{frame}{Dependência conceitual}
 
     \centering
-    O algoritmo para a aplicação de operações booleanas entre OBDDs utiliza o conceito da \underline{Expansão de Shannon}
+    O algoritmo \textproc{apply} utiliza o conceito da \underline{Expansão de Shannon}
     
 \end{frame}
 %-------------------------------------------
@@ -1279,7 +1279,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Uso no algoritmo de aplicação}
+\begin{frame}{Uso no algoritmo \textproc{apply}}
 
     \small
     A Expansão de Shannon permite expressar qualquer operador da gramática da Lógica Proposicional:
@@ -1291,7 +1291,7 @@
         \ovalbox{
             \begin{minipage}[h]{0.9\columnwidth}
                 \noindent\scriptsize
-                E, no algoritmo de aplicação, é usada para eliminar as variáveis com a aplicação das restrições
+                E, no algoritmo \textproc{apply}, é usada para eliminar as variáveis com a realização de restrições
             \end{minipage}
         }
     \end{center}
@@ -1303,7 +1303,7 @@
 \begin{frame}{Programação dinâmica}
 
     \begin{outline}
-        \1 O algoritmo de aplicação também utiliza programação dinâmica para melhorar a eficiência
+        \1 O algoritmo \textproc{apply} também utiliza programação dinâmica para melhorar a eficiência
             \2[-] recursão com tabela para armazenar valores já calculados
     \end{outline}
     
@@ -1364,7 +1364,7 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{Ilustração do algoritmo de aplicação}
+\begin{frame}{Ilustração do algoritmo \textproc{apply}}
 
     \centering
     Ordem: $[p,q,r,s]$
@@ -1540,19 +1540,19 @@
     Há também esses outros dois algoritmos importantes:
     
     \begin{outline}
-        \1 \textbf{Restrição}. Permite eliminar variáveis em diagramas
+        \1 \textproc{restrict}. Permite eliminar variáveis em diagramas
             
-        \1 \textbf{Existência}. Permite utilizar quantificadores em expressões
+        \1 \textproc{exists}. Permite utilizar quantificadores em expressões
     \end{outline}
 
 \end{frame}
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{O algoritmo de restrição}
+\begin{frame}{O algoritmo \textproc{restrict}}
 
     \small
-    O algoritmo de restrição (\textproc{restrict}) calcula o RODDB que representem $\phi[0/p]$ ou $\phi[1/p]$. É bem simples, e funciona assim:
+    O algoritmo \textproc{restrict} calcula o ROBDD que representem $\phi[0/p]$ ou $\phi[1/p]$. É bem simples, e funciona assim:
 
     \begin{outline}
         \1 Para cada nó $n$ marcado com a variável $p$, as arestas que entram são redirecionadas
@@ -1561,7 +1561,7 @@
             
         \vspace{1em}
             
-        \1 Então, o algoritmo de redução é chamado para reduzir o OBDD resultante
+        \1 Então, o algoritmo \textproc{reduce} é chamado para simplificar o OBDD resultante
         
     \end{outline}
 
@@ -1569,13 +1569,13 @@
 %-------------------------------------------
 
 %-------------------------------------------
-\begin{frame}{O algoritmo de existência}
+\begin{frame}{O algoritmo \textproc{exists}}
 
     \small
-    O algoritmo de existência (\textproc{exists}) representa expressões em termos de subconjuntos de restrições. Funciona assim:
+    O algoritmo \textproc{exists} representa expressões em termos de subconjuntos de restrições. Funciona assim:
 
     \begin{outline}
-        \1 Seja uma expressão $p \lor (\lnot{q} \land r)$. Ela só é verdadeira se $p = 1$ ou se $y = 0$ e $r = 1$
+        \1 Seja uma expressão $p \lor (\lnot{q} \land r)$. Ela só é verdadeira se $p = 1$ ou se $q = 0$ e $r = 1$
             \2[-] ou seja, tratam-se de restrições sobre $p$, $q$ e $r$
             
         \vspace{1em}
